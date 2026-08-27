@@ -901,3 +901,102 @@ iframe {
     font-size: 8px !important;
   }
 }
+
+/* Mobile 2-Column Product Grid Contract (Strict 2 Items Per Row on Mobile) */
+@media (max-width: 768px) {
+  .wooden-products-grid,
+  .products-grid,
+  .product-grid,
+  .collection-grid,
+  .shop-products-grid,
+  .home-quick-product-grid,
+  .wooden-category-grid,
+  .myntra-products-grid,
+  .wooden-promo-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px 8px !important;
+    width: 100% !important;
+  }
+
+  .product-card {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+  }
+
+  .product-card .product-media-wrapper {
+    min-width: 0 !important;
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  .product-card .product-media {
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    max-height: 160px !important;
+  }
+
+  .product-card .product-info {
+    min-width: 0 !important;
+    padding: 6px 4px 2px !important;
+  }
+
+  .product-card .product-brand-row {
+    font-size: 0.7rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  .product-card .product-title-link h3 {
+    font-size: 0.8rem !important;
+    line-height: 1.25 !important;
+    font-weight: 600 !important;
+    white-space: normal !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    margin: 2px 0 4px !important;
+    height: 2.5em !important;
+  }
+
+  .product-card .price-row {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .product-card .price {
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+  }
+
+  .product-card .old-price {
+    font-size: 0.72rem !important;
+  }
+
+  .product-card .card-variant-mini-row {
+    display: none !important;
+  }
+
+  .product-card .product-stock-line {
+    font-size: 0.68rem !important;
+    margin: 2px 0 6px !important;
+  }
+
+  .product-card .button,
+  .product-card .card-choose-options-btn,
+  .product-card .add-to-cart-drawer button {
+    font-size: 0.72rem !important;
+    padding: 6px 4px !important;
+    min-height: 32px !important;
+    height: auto !important;
+    width: 100% !important;
+    border-radius: 6px !important;
+  }
+}
+

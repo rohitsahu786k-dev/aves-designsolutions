@@ -9,7 +9,7 @@ import { HomeEngineeringBento } from "@/components/home-engineering-bento";
 import { BulkRfqBanner } from "@/components/bulk-rfq-banner";
 import { HomeBlogShowcase } from "@/components/home-blog-showcase";
 import { TextMarquee } from "@/components/text-marquee";
-import { getCategories, getFrontPage, getPopularProducts, getProducts, getProductsByCategory, getTopCategoriesFromProducts } from "@/lib/wp";
+import { getCategories, getFrontPage, getPopularProducts, getPosts, getProducts, getProductsByCategory, getTopCategoriesFromProducts } from "@/lib/wp";
 import { getBannersByPlacement, getMarqueeNotice } from "@/lib/wp-storefront";
 import { yoastToMetadata } from "@/lib/utils";
 
@@ -30,12 +30,14 @@ export default async function Home({ searchParams }) {
     categories,
     marqueeNotice,
     heroBanners,
+    wpPosts,
   ] = await Promise.all([
     getProducts({ per_page: "16", orderby: "date", search: query?.search || "" }),
     getPopularProducts(),
     getCategories(),
     getMarqueeNotice(),
     getBannersByPlacement("home_hero"),
+    getPosts({ per_page: "6" }).catch(() => []),
   ]);
 
   const countLeaders = categories
@@ -116,7 +118,7 @@ export default async function Home({ searchParams }) {
       <BulkRfqBanner />
       <CustomerStoriesSection />
       <WhyChooseUs />
-      <HomeBlogShowcase />
+      <HomeBlogShowcase posts={wpPosts} />
 
       <section className="section home-seo-block">
         <div className="container max-w-5xl">

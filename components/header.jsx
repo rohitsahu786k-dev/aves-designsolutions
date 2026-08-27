@@ -1,11 +1,10 @@
 import Link from "next/link";
-import { BadgeCheck, ChevronDown, Headphones, PackageCheck, Truck, UserRound } from "lucide-react";
+import { ChevronDown, Headphones, Search, UserRound } from "lucide-react";
 import { getCategories } from "@/lib/wp";
 import { getPrimaryMenu } from "@/lib/wp-menus";
 import { getAnnouncementBar } from "@/lib/wp-storefront";
 import { AnnouncementBar } from "@/components/announcement-bar";
 import { HeaderTools } from "@/components/header-tools";
-import { HeaderSearchBar } from "@/components/header-search-bar";
 import { WishlistNavLink } from "@/components/wishlist-button";
 import { CartNavLink } from "@/components/cart-nav-link";
 import { decodeHtml } from "@/lib/utils";
@@ -46,8 +45,6 @@ export async function Header() {
           </span>
           <span className="brand-logo-sub">.in</span>
         </Link>
-
-        <HeaderSearchBar />
 
         <nav className="main-nav" aria-label="Primary navigation">
           {topLevelItems.map((item) => {
@@ -106,23 +103,7 @@ export async function Header() {
           <CartNavLink />
         </div>
       </div>
-
-      <div className="header-catalog-row">
-        <div className="container header-catalog-inner">
-          <div className="header-service-points" aria-label="Store service promises">
-            <span><PackageCheck size={14} /> Track Order</span>
-            <span><BadgeCheck size={14} /> Quality Checked</span>
-            <span><Truck size={14} /> Pan-India Delivery</span>
-          </div>
-          <nav className="header-quick-cats" aria-label="Popular categories">
-            {featuredCategories.slice(0, 7).map((category) => (
-              <Link href={`/category/${category.slug}`} key={category.id}>
-                {decodeHtml(category.name)}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </div>
     </header>
   );
 }
+
