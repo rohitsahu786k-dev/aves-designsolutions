@@ -1,0 +1,65 @@
+"use client";
+
+import Link from "next/link";
+import { ArrowRight, ChevronRight, Grid, Wrench } from "lucide-react";
+import { decodeHtml } from "@/lib/utils";
+
+export function ExploreCategoryGrid({ categories = [] }) {
+  const visible = categories
+    .filter((c) => c.count > 0 && c.slug !== "uncategorized")
+    .slice(0, 8);
+
+  if (visible.length === 0) return null;
+
+  return (
+    <section className="section wooden-explore-section">
+      <div className="container">
+        <div className="wooden-section-header">
+          <div>
+            <div className="wooden-section-tag">
+              <Grid size={14} />
+              <span>SHOP BY CATEGORY</span>
+            </div>
+            <h2 className="wooden-section-title">Explore Fastener Head Styles</h2>
+            <p className="wooden-section-subtitle">
+              Browse our comprehensive range of metric socket caps, hex structural bolts, countersunk screws, and dome nuts.
+            </p>
+          </div>
+          <Link href="/shop" className="wooden-view-all-btn">
+            <span>All Categories ({categories.length})</span>
+            <ArrowRight size={16} />
+          </Link>
+        </div>
+
+        <div className="wooden-category-grid">
+          {visible.map((cat) => (
+            <Link href={`/category/${cat.slug}`} key={cat.id} className="wooden-cat-card">
+              <div className="wooden-cat-img-box">
+                {cat.image?.src ? (
+                  <img
+                    src={cat.image.src}
+                    alt={cat.image.alt || cat.name}
+                    className="wooden-cat-img"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="wooden-cat-fallback">
+                    <Wrench size={36} />
+                  </div>
+                )}
+                <span className="wooden-cat-count">{cat.count} Designs</span>
+              </div>
+              <div className="wooden-cat-info">
+                <h3 className="wooden-cat-name">{decodeHtml(cat.name)}</h3>
+                <div className="wooden-cat-link">
+                  <span>Explore Range</span>
+                  <ChevronRight size={14} />
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

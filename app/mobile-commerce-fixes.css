@@ -1,0 +1,219 @@
+/* Mobile commerce corrections. Loaded last to override legacy responsive rules. */
+
+/* Filter drawer must be above sticky header so title + X are always visible. */
+.filter-drawer {
+  z-index: 2200 !important;
+}
+
+.filter-drawer > div {
+  position: relative !important;
+}
+
+.filter-drawer .myntra-filter {
+  position: static !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.filter-drawer .filter-title {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 30 !important;
+  min-height: 54px;
+  margin: 0 -18px !important;
+  padding: 9px 14px !important;
+  border-bottom: 1px solid #e8e8e8 !important;
+  background: #fff !important;
+}
+
+.filter-drawer .filter-title button {
+  display: grid !important;
+  width: 36px !important;
+  height: 36px !important;
+  place-items: center !important;
+  flex: 0 0 36px;
+  border: 1px solid #ddd !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  color: #111 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+@media (max-width: 767px) {
+  /* PDP action hierarchy:
+     row 1 = quantity | Add to bag | wishlist
+     row 2 = Buy now full width */
+  .pdp-purchase-panel .qty-row {
+    display: grid !important;
+    grid-template-columns: 78px minmax(0, 1fr) 42px !important;
+    grid-template-rows: auto auto !important;
+    gap: 7px !important;
+    align-items: stretch !important;
+    width: 100% !important;
+  }
+
+  .pdp-purchase-panel .pdp-quantity {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 78px !important;
+    min-width: 78px !important;
+    height: 42px !important;
+    margin: 0 !important;
+  }
+
+  .pdp-purchase-panel .pdp-cart-actions {
+    display: contents !important;
+  }
+
+  .pdp-purchase-panel .add-cart-button {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 42px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  .pdp-purchase-panel .pdp-wishlist {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
+    margin: 0 !important;
+  }
+
+  .pdp-purchase-panel .pdp-buy-now {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 40px !important;
+    height: 40px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+  }
+
+  /* Compact collection cards. Variant chips are kept on PDP instead. */
+  .product-card {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .product-info {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 8px 7px 9px !important;
+  }
+
+  .product-info h3 {
+    min-height: 31px !important;
+    max-height: 31px !important;
+    margin: 3px 0 5px !important;
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+    -webkit-line-clamp: 2 !important;
+  }
+
+  .product-brand {
+    min-height: 0 !important;
+    font-size: 8px !important;
+    line-height: 1.2 !important;
+  }
+
+  .price-row {
+    min-height: 0 !important;
+    margin: 0 0 4px !important;
+    gap: 2px !important;
+  }
+
+  .product-card .card-variants {
+    display: none !important;
+  }
+
+  .product-stock-line {
+    min-height: 0 !important;
+    margin: 3px 0 6px !important;
+    font-size: 8.5px !important;
+    line-height: 1.2 !important;
+  }
+
+  .card-purchase-block,
+  .card-purchase-row {
+    margin-top: 0 !important;
+  }
+
+  .card-purchase-row {
+    grid-template-columns: 52px minmax(0,1fr) !important;
+    gap: 4px !important;
+  }
+
+  .card-quantity {
+    width: 52px !important;
+    min-width: 52px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    font-size: 9px !important;
+  }
+
+  .card-quantity button {
+    width: 17px !important;
+    min-width: 17px !important;
+    padding: 0 !important;
+  }
+
+  .card-quick-add {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 3px 4px !important;
+    font-size: 8.5px !important;
+    line-height: 1 !important;
+  }
+
+  .product-card .card-buy-now {
+    display: none !important;
+  }
+
+  /* Mobile filter panel sizing. */
+  .filter-drawer > div {
+    width: min(88vw, 350px) !important;
+    max-width: 350px !important;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    padding: 0 18px 28px !important;
+  }
+
+  .filter-drawer .filter-options {
+    max-height: none !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .pdp-purchase-panel .qty-row {
+    grid-template-columns: 72px minmax(0, 1fr) 40px !important;
+    gap: 6px !important;
+  }
+
+  .pdp-purchase-panel .pdp-quantity {
+    width: 72px !important;
+    min-width: 72px !important;
+  }
+
+  .pdp-purchase-panel .pdp-wishlist {
+    width: 40px !important;
+    min-width: 40px !important;
+  }
+
+  .pdp-purchase-panel .add-cart-button {
+    padding-inline: 6px !important;
+    font-size: 8.5px !important;
+  }
+}

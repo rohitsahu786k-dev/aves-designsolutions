@@ -1,0 +1,50 @@
+/* Keep the complete announcement + navigation header visible while scrolling. */
+html,
+body,
+main {
+  overflow-x: clip !important;
+}
+
+.site-header {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0 !important;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000 !important;
+  overflow: visible !important;
+  isolation: isolate;
+  transform: translateZ(0);
+  box-shadow: 0 1px 0 rgba(17, 17, 17, 0.08), 0 8px 24px rgba(17, 17, 17, 0.04);
+}
+
+.site-header .top-strip,
+.site-header .nav-row,
+.site-header .main-nav {
+  position: relative;
+  z-index: 1;
+}
+
+.site-header .nav-row,
+.site-header .main-nav {
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Keep dropdowns/mega menus above page content while header is sticky. */
+.site-header .mega-menu,
+.site-header .header-panel-backdrop {
+  z-index: 1100 !important;
+}
+
+@media (max-width: 767px) {
+  .site-header {
+    top: 0 !important;
+  }
+
+  .site-header .nav-row {
+    background: rgba(255, 255, 255, 0.99) !important;
+  }
+}
