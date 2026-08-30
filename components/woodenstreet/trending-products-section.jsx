@@ -9,13 +9,14 @@ export function TrendingProductsSection({
   products = [],
   popularProducts = [],
   shelves = [],
+  initialTab = "trending",
 }) {
-  const [activeTab, setActiveTab] = useState("trending");
+  const [activeTab, setActiveTab] = useState(initialTab);
 
   const tabs = [
     {
       id: "trending",
-      label: "Trending Fasteners",
+      label: "Best Sellers",
       products: popularProducts.length ? popularProducts.slice(0, 8) : products.slice(0, 8),
       href: "/shop?orderby=popularity",
     },
@@ -48,11 +49,11 @@ export function TrendingProductsSection({
           <div>
             <div className="wooden-section-tag">
               <Flame size={14} />
-              <span>POPULAR SELECTION</span>
+              <span>NEW & POPULAR</span>
             </div>
-            <h2 className="wooden-section-title">Trending Fasteners & Screws</h2>
+            <h2 className="wooden-section-title">New Arrivals</h2>
             <p className="wooden-section-subtitle">
-              Most ordered metric screws, structural bolts, and stainless fasteners with real-time warehouse stock.
+              Freshly added products, ready stock picks, and fast-moving essentials for your next order.
             </p>
           </div>
           <Link href={currentTab.href} className="wooden-view-all-btn">

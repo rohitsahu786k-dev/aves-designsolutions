@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ChevronRight, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { decodeHtml } from "@/lib/utils";
 
@@ -48,14 +48,8 @@ export function HeroCarousel({ banners = [] }) {
           const mobile = banner.mobileImage || desktop;
           const fallback = banner.fallbackImage || mobile;
 
-          const heading = decodeHtml(banner.heading || banner.title || "");
-          const eyebrow = decodeHtml(banner.eyebrow || "");
-          const subheading = decodeHtml(banner.subheading || banner.text || "");
-          const ctaLabel = decodeHtml(banner.ctaLabel || "Shop Now");
           const ctaUrl = banner.ctaUrl || banner.href || "/shop";
-
-          const overlayOpacity = banner.overlayOpacity !== undefined ? banner.overlayOpacity / 100 : 0.45;
-          const overlayColor = banner.overlayColor || "#0f172a";
+          const imageAlt = decodeHtml(banner.alt || banner.title || "screwnet banner");
 
           return (
             <article
@@ -70,51 +64,22 @@ export function HeroCarousel({ banners = [] }) {
                   {tablet && <source media="(max-width: 1024px)" srcSet={tablet} />}
                   <img
                     src={desktop || fallback}
-                    alt={heading || "screwnet industrial fastener hero banner"}
+                    alt={imageAlt}
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchPriority={index === 0 ? "high" : "auto"}
                     className="hero-bg-image"
                   />
                 </picture>
-
-                <div
-                  className="hero-overlay-layer"
-                  style={{
-                    backgroundColor: overlayColor,
-                    opacity: overlayOpacity,
-                  }}
-                />
               </div>
 
-              {/* Text & Content Layer */}
-              <div className="container hero-content-container">
-                <div className={`hero-content-box align-${banner.textAlignment || "left"} theme-${banner.contentTheme || "light"}`}>
-                  {eyebrow ? (
-                    <div className="hero-eyebrow-tag">
-                      <Sparkles size={13} />
-                      <span>{eyebrow}</span>
-                    </div>
-                  ) : null}
-
-                  {heading ? <h1 className="hero-main-heading">{heading}</h1> : null}
-                  {subheading ? <p className="hero-subheading-text">{subheading}</p> : null}
-
-                  {ctaLabel && ctaUrl ? (
-                    <div className="hero-actions-row">
-                      <Link
-                        href={ctaUrl}
-                        target={banner.openNewTab ? "_blank" : undefined}
-                        rel={banner.openNewTab ? "noreferrer" : undefined}
-                        className="button hero-cta-btn"
-                        tabIndex={isActive ? 0 : -1}
-                      >
-                        <span>{ctaLabel}</span>
-                        <ChevronRight size={16} />
-                      </Link>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
+              <Link
+                href={ctaUrl}
+                target={banner.openNewTab ? "_blank" : undefined}
+                rel={banner.openNewTab ? "noreferrer" : undefined}
+                className="hero-slide-link"
+                tabIndex={isActive ? 0 : -1}
+                aria-label={imageAlt}
+              />
             </article>
           );
         })}

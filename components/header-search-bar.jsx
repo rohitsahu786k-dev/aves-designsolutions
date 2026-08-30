@@ -29,8 +29,6 @@ export function HeaderSearchBar() {
   useEffect(() => {
     const clean = query.trim();
     if (clean.length < 2) {
-      setResults([]);
-      setIsOpen(false);
       return undefined;
     }
 
@@ -68,6 +66,15 @@ export function HeaderSearchBar() {
     router.push(`/shop?search=${encodeURIComponent(query.trim())}`);
   };
 
+  const handleQueryChange = (e) => {
+    const nextQuery = e.target.value;
+    setQuery(nextQuery);
+    if (nextQuery.trim().length < 2) {
+      setResults([]);
+      setIsOpen(false);
+    }
+  };
+
   const clearQuery = () => {
     setQuery("");
     setResults([]);
@@ -81,12 +88,11 @@ export function HeaderSearchBar() {
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleQueryChange}
           onFocus={() => query.trim().length >= 2 && setIsOpen(true)}
           placeholder="Search DIN 912, SS304, M3x10, socket cap, bolts, nuts..."
           autoComplete="off"
           aria-label="FiboSearch Fastener Catalog"
-          aria-expanded={isOpen}
           aria-autocomplete="list"
         />
         {loading && <Loader2 size={15} className="search-loading-spinner animate-spin" />}
@@ -146,7 +152,7 @@ export function HeaderSearchBar() {
             </div>
           ) : (
             <div className="fibosearch-empty-state">
-              <p>No exact fastener matches found for "{query}".</p>
+              <p>No exact fastener matches found for &quot;{query}&quot;.</p>
               <small>Press Enter to search entire warehouse inventory.</small>
             </div>
           )}
@@ -157,7 +163,7 @@ export function HeaderSearchBar() {
               onClick={() => setIsOpen(false)}
               className="fibosearch-all-link"
             >
-              <span>See all results for "{query}"</span>
+              <span>See all results for &quot;{query}&quot;</span>
               <ChevronRight size={13} />
             </Link>
             <span className="fibosearch-engine-brand">FiboSearch Engine</span>

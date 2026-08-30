@@ -17,6 +17,11 @@ function withQuery(basePath, current, updates) {
   return query ? `${basePath}?${query}` : basePath;
 }
 
+function queryValue(query, key) {
+  const value = query?.[key];
+  return Array.isArray(value) ? value[0] : value;
+}
+
 export function CollectionBrowser({ products = [], pagination, categories = [], attributes = [], basePath = "/shop", activeQuery = {} }) {
   const router = useRouter();
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -24,19 +29,19 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
 
   const visibleCategories = categories.filter((item) => item.count > 0).sort((a, b) => b.count - a.count);
   const reserved = new Set(["search", "orderby", "order", "page", "per_page"]);
-  const activeEntries = Object.entries(activeQuery).filter(([key, value]) => !reserved.has(key) && value);
+  const activeEntries = Object.entries(activeQuery).filter(([key]) => !reserved.has(key) && queryValue(activeQuery, key));
   const activeCount = activeEntries.length;
 
   const totalProducts = pagination?.total ?? products.length;
-  const currentPage = Number(pagination?.page || activeQuery.page || 1);
+  const currentPage = Number(pagination?.page || queryValue(activeQuery, "page") || 1);
   const totalPages = Number(pagination?.totalPages || Math.ceil(totalProducts / (pagination?.perPage || 50)) || 1);
   const perPage = Number(pagination?.perPage || 50);
 
   const startIndex = totalProducts > 0 ? (currentPage - 1) * perPage + 1 : 0;
   const endIndex = Math.min(totalProducts, currentPage * perPage);
 
-  const currentSort = activeQuery.orderby
-    ? `${Array.isArray(activeQuery.orderby) ? activeQuery.orderby[0] : activeQuery.orderby}:${Array.isArray(activeQuery.order) ? activeQuery.order[0] : (activeQuery.order || "asc")}`
+  const currentSort = queryValue(activeQuery, "orderby")
+    ? `${queryValue(activeQuery, "orderby")}:${queryValue(activeQuery, "order") || "asc"}`
     : "menu_order:asc";
 
   function handleSortChange(e) {
@@ -47,11 +52,11 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
   }
 
   function toggleHref(key, value) {
-    return withQuery(basePath, activeQuery, { [key]: activeQuery[key] === value ? null : value, page: 1 });
+    return withQuery(basePath, activeQuery, { [key]: queryValue(activeQuery, key) === value ? null : value, page: 1 });
   }
 
   function priceHref(min, max) {
-    const selected = activeQuery.min_price === min && activeQuery.max_price === max;
+    const selected = queryValue(activeQuery, "min_price") === min && queryValue(activeQuery, "max_price") === max;
     return withQuery(basePath, activeQuery, { min_price: selected ? null : min, max_price: selected ? null : max, page: 1 });
   }
 
@@ -124,11 +129,11 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
         </summary>
         <div className="filter-options-list">
           <Link href={toggleHref("stock_status", "instock")} className="filter-option-row">
-            <span className="filter-custom-check">{activeQuery.stock_status === "instock" ? <Check size={11} /> : null}</span>
+            <span className="filter-custom-check">{queryValue(activeQuery, "stock_status") === "instock" ? <Check size={11} /> : null}</span>
             <span className="option-name">In Stock Only</span>
           </Link>
           <Link href={toggleHref("on_sale", "true")} className="filter-option-row">
-            <span className="filter-custom-check">{activeQuery.on_sale === "true" ? <Check size={11} /> : null}</span>
+            <span className="filter-custom-check">{queryValue(activeQuery, "on_sale") === "true" ? <Check size={11} /> : null}</span>
             <span className="option-name">Special Offers & Deals</span>
           </Link>
         </div>
@@ -142,19 +147,19 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
         </summary>
         <div className="filter-options-list">
           <Link href={priceHref(null, "50000")} className="filter-option-row">
-            <span className="filter-custom-check">{!activeQuery.min_price && activeQuery.max_price === "50000" ? <Check size={11} /> : null}</span>
+            <span className="filter-custom-check">{!queryValue(activeQuery, "min_price") && queryValue(activeQuery, "max_price") === "50000" ? <Check size={11} /> : null}</span>
             <span className="option-name">Under ₹500</span>
           </Link>
           <Link href={priceHref("50000", "100000")} className="filter-option-row">
-            <span className="filter-custom-check">{activeQuery.min_price === "50000" && activeQuery.max_price === "100000" ? <Check size={11} /> : null}</span>
+            <span className="filter-custom-check">{queryValue(activeQuery, "min_price") === "50000" && queryValue(activeQuery, "max_price") === "100000" ? <Check size={11} /> : null}</span>
             <span className="option-name">₹500 - ₹1,000</span>
           </Link>
           <Link href={priceHref("100000", "250000")} className="filter-option-row">
-            <span className="filter-custom-check">{activeQuery.min_price === "100000" && activeQuery.max_price === "250000" ? <Check size={11} /> : null}</span>
+            <span className="filter-custom-check">{queryValue(activeQuery, "min_price") === "100000" && queryValue(activeQuery, "max_price") === "250000" ? <Check size={11} /> : null}</span>
             <span className="option-name">₹1,000 - ₹2,500</span>
           </Link>
           <Link href={priceHref("250000", null)} className="filter-option-row">
-            <span className="filter-custom-check">{activeQuery.min_price === "250000" && !activeQuery.max_price ? <Check size={11} /> : null}</span>
+            <span className="filter-custom-check">{queryValue(activeQuery, "min_price") === "250000" && !queryValue(activeQuery, "max_price") ? <Check size={11} /> : null}</span>
             <span className="option-name">Above ₹2,500</span>
           </Link>
         </div>
@@ -176,7 +181,7 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
             <div className="filter-options-list">
               {terms.slice(0, 30).map((term) => {
                 const key = attribute.taxonomy.replace("pa_", "");
-                const selected = activeQuery[key] === term.slug;
+                const selected = queryValue(activeQuery, key) === term.slug;
                 const swatch = isFinish ? getColorSwatch(term.slug || term.name) : null;
 
                 return (
@@ -209,8 +214,9 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
       {activeCount > 0 ? (
         <div className="active-filters-bar" aria-label="Active filter tags">
           <span className="active-filter-label">Active Filters:</span>
-          {activeEntries.map(([key, value]) => {
+          {activeEntries.map(([key]) => {
             const displayLabel = formatAttributeLabel(key);
+            const displayValue = queryValue(activeQuery, key);
             return (
               <Link
                 key={key}
@@ -218,7 +224,7 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
                 className="active-filter-tag"
                 title={`Remove ${displayLabel} filter`}
               >
-                <span>{displayLabel}: <strong>{String(value).replace(/-/g, " ")}</strong></span>
+                <span>{displayLabel}: <strong>{String(displayValue).replace(/-/g, " ")}</strong></span>
                 <X size={13} />
               </Link>
             );

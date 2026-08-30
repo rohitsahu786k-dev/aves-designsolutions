@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowRight, Info, Sparkles, Tag, X } from "lucide-react";
+import { ArrowRight, Info, X } from "lucide-react";
 import { decodeHtml } from "@/lib/utils";
 
 const DISMISSED_KEY_PREFIX = "screwnet_announcement_dismissed_";
@@ -11,19 +11,23 @@ export function AnnouncementBar({ announcement }) {
   const [dismissed, setDismissed] = useState(true);
 
   useEffect(() => {
-    if (!announcement || !announcement.text) {
-      setDismissed(true);
-      return;
-    }
+    const timer = window.setTimeout(() => {
+      if (!announcement || !announcement.text) {
+        setDismissed(true);
+        return;
+      }
 
-    if (!announcement.isDismissible) {
-      setDismissed(false);
-      return;
-    }
+      if (!announcement.isDismissible) {
+        setDismissed(false);
+        return;
+      }
 
-    const dismissedKey = `${DISMISSED_KEY_PREFIX}${announcement.id || announcement.text.slice(0, 20)}`;
-    const isDismissed = localStorage.getItem(dismissedKey) === "true";
-    setDismissed(isDismissed);
+      const dismissedKey = `${DISMISSED_KEY_PREFIX}${announcement.id || announcement.text.slice(0, 20)}`;
+      const isDismissed = localStorage.getItem(dismissedKey) === "true";
+      setDismissed(isDismissed);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [announcement]);
 
   function handleDismiss() {

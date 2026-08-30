@@ -5,8 +5,6 @@ import { ExploreCategoryGrid } from "@/components/woodenstreet/explore-category-
 import { CustomerStoriesSection } from "@/components/woodenstreet/customer-stories-section";
 import { WhyChooseUs } from "@/components/woodenstreet/why-choose-us";
 import { HeroCarousel } from "@/components/hero-carousel";
-import { HomeEngineeringBento } from "@/components/home-engineering-bento";
-import { BulkRfqBanner } from "@/components/bulk-rfq-banner";
 import { HomeBlogShowcase } from "@/components/home-blog-showcase";
 import { TextMarquee } from "@/components/text-marquee";
 import { getCategories, getFrontPage, getPopularProducts, getPosts, getProducts, getProductsByCategory, getTopCategoriesFromProducts } from "@/lib/wp";
@@ -108,36 +106,15 @@ export default async function Home({ searchParams }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <TopCategoryBubbleStrip categories={enrichedCategories} />
       <HeroCarousel banners={heroBanners} />
-      <PromoOfferGrid />
-      <TrendingProductsSection products={products} popularProducts={popularProducts} shelves={shelves} />
+      <WhyChooseUs />
+      <TrendingProductsSection products={products} popularProducts={popularProducts} shelves={shelves} initialTab="new" />
       <TextMarquee text={marqueeNotice} />
       <ExploreCategoryGrid categories={enrichedCategories} />
-      <HomeEngineeringBento />
-      <BulkRfqBanner />
+      <TopCategoryBubbleStrip categories={enrichedCategories} />
+      <PromoOfferGrid />
       <CustomerStoriesSection />
-      <WhyChooseUs />
       <HomeBlogShowcase posts={wpPosts} />
-
-      <section className="section home-seo-block">
-        <div className="container max-w-5xl">
-          <details className="home-seo-details">
-            <summary>screwnet online fastener and hardware store in India</summary>
-            <div className="seo-prose">
-              <p>
-                screwnet supplies industrial screws, high-tensile structural bolts, self-drilling Tek screws,
-                drywall fasteners, concrete wedge anchors, and SS 304 / SS 316 stainless steel hardware from
-                Udaipur, Rajasthan.
-              </p>
-              <p>
-                Buyers can order from live warehouse inventory with DIN / ISO specifications, master carton
-                volume discounts, GST invoices, and pan-India tracked dispatch.
-              </p>
-            </div>
-          </details>
-        </div>
-      </section>
     </>
   );
 }

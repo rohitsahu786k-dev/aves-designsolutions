@@ -6,23 +6,23 @@ export function WhyChooseUs() {
   const features = [
     {
       icon: Truck,
-      title: "Pan-India Express Dispatch",
-      desc: "Fast freight priority across India with real-time SMS & WhatsApp tracking updates.",
+      title: "Fast Delivery",
+      desc: "Dispatch-ready stock with tracking support across India.",
     },
     {
       icon: ShieldCheck,
-      title: "DIN & ISO Conformance",
-      desc: "Calibrated 6g/6H thread pitch and ISO 898-1 tensile ratings for guaranteed industrial reliability.",
+      title: "Quality Checked",
+      desc: "Curated fasteners from trusted grades, finishes, and sizes.",
     },
     {
       icon: FileCheck,
-      title: "Instant 18% GST Tax Credit",
-      desc: "B2B itemized invoice generated with standard HSN codes (7318/7415) for immediate ITC claiming.",
+      title: "GST Invoice",
+      desc: "Clean billing for retail, trade, and business purchases.",
     },
     {
       icon: PackageCheck,
-      title: "Heavy-Duty Packaging",
-      desc: "Reinforced corrugated master cartons with moisture barriers to ensure zero thread damage in transit.",
+      title: "Secure Packaging",
+      desc: "Packed neatly so products reach you safely and easy to identify.",
     },
   ];
 

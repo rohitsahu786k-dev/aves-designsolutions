@@ -28,12 +28,18 @@ function variationMatchesSelection(candidate, selected) {
   });
 }
 
+function alignedQuantity(value, moq, step) {
+  const validBase = Math.max(moq, value);
+  const rem = (validBase - moq) % step;
+  return rem === 0 ? validBase : validBase + (step - rem);
+}
+
 export function ProductPurchasePanel({ product }) {
   const acf = product.acf_fields || {};
   const moq = acf.moq || 1;
   const step = acf.quantityStep || 1;
 
-  const [quantity, setQuantity] = useState(moq);
+  const [quantity, setQuantity] = useState(() => alignedQuantity(moq, moq, step));
   const [bulkModalOpen, setBulkModalOpen] = useState(false);
   const variationAttributes = product.attributes?.filter((attribute) => attribute.has_variations) || [];
 
@@ -48,15 +54,6 @@ export function ProductPurchasePanel({ product }) {
     });
     return initial;
   });
-
-  // Ensure quantity aligns with MOQ and step
-  useEffect(() => {
-    setQuantity((current) => {
-      const validBase = Math.max(moq, current);
-      const rem = (validBase - moq) % step;
-      return rem === 0 ? validBase : validBase + (step - rem);
-    });
-  }, [moq, step]);
 
   const ready = !product.has_options || variationAttributes.every((attribute) => selected[attribute.name]);
 
@@ -124,6 +121,13 @@ export function ProductPurchasePanel({ product }) {
 
   function handleQuantityIncrement() {
     setQuantity((q) => q + step);
+  }
+
+  function toggleSelected(attributeName, value) {
+    setSelected((current) => ({
+      ...current,
+      [attributeName]: current[attributeName] === value ? "" : value,
+    }));
   }
 
   function handleBulkEnquiryClick() {
@@ -236,7 +240,7 @@ export function ProductPurchasePanel({ product }) {
                       <button
                         type="button"
                         className={`fastener-finish-pill ${isSelected ? "is-selected" : ""}`}
-                        onClick={() => setSelected((current) => ({ ...current, [attribute.name]: term.slug || term.name }))}
+                        onClick={() => toggleSelected(attribute.name, term.slug || term.name)}
                         key={`${attribute.name}-${term.slug || term.name}`}
                         title={decodeHtml(term.name)}
                       >
@@ -258,7 +262,7 @@ export function ProductPurchasePanel({ product }) {
                     <button
                       type="button"
                       className={`fastener-size-pill ${isSelected ? "is-active" : ""}`}
-                      onClick={() => setSelected((current) => ({ ...current, [attribute.name]: term.slug || term.name }))}
+                      onClick={() => toggleSelected(attribute.name, term.slug || term.name)}
                       key={`${attribute.name}-${term.slug || term.name}`}
                     >
                       {decodeHtml(term.name)}
@@ -294,7 +298,7 @@ export function ProductPurchasePanel({ product }) {
             >
               <Minus size={15} />
             </button>
-            <span className="stepper-val font-mono">{quantity}</span>
+            <span className="stepper-val">{quantity}</span>
             <button
               type="button"
               onClick={handleQuantityIncrement}
@@ -329,7 +333,7 @@ export function ProductPurchasePanel({ product }) {
             disabled={!ready || (product.has_options && !variation) || !selectedInStock}
           >
             <Zap size={18} />
-            <span>Instant Checkout &bull; Buy Now</span>
+            <span>Buy Now</span>
           </button>
         </div>
 

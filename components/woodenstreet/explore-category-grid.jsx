@@ -20,9 +20,9 @@ export function ExploreCategoryGrid({ categories = [] }) {
               <Grid size={14} />
               <span>SHOP BY CATEGORY</span>
             </div>
-            <h2 className="wooden-section-title">Explore Fastener Head Styles</h2>
+            <h2 className="wooden-section-title">Shop By Category</h2>
             <p className="wooden-section-subtitle">
-              Browse our comprehensive range of metric socket caps, hex structural bolts, countersunk screws, and dome nuts.
+              Find the right screws, bolts, washers, anchors, and hardware by category.
             </p>
           </div>
           <Link href="/shop" className="wooden-view-all-btn">
@@ -47,7 +47,7 @@ export function ExploreCategoryGrid({ categories = [] }) {
                     <Wrench size={36} />
                   </div>
                 )}
-                <span className="wooden-cat-count">{cat.count} Designs</span>
+                <span className="wooden-cat-count">{cat.count} Products</span>
               </div>
               <div className="wooden-cat-info">
                 <h3 className="wooden-cat-name">{decodeHtml(cat.name)}</h3>

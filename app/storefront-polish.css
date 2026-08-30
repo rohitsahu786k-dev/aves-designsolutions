@@ -4134,6 +4134,8 @@ html, body, main {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
 /* Card Swatch Horizontal Slider Row */
 .card-variant-slider-wrapper {
   margin: 6px 0 4px;

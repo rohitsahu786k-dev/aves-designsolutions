@@ -49,7 +49,7 @@ export function CustomerStoriesSection() {
                   <Star key={idx} size={15} className="fill-black text-black" />
                 ))}
               </div>
-              <p className="wooden-review-quote">"{r.review}"</p>
+              <p className="wooden-review-quote">&quot;{r.review}&quot;</p>
               <div className="wooden-review-footer">
                 <div className="wooden-review-author-box">
                   <div className="wooden-review-avatar">
