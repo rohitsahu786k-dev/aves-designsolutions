@@ -39,6 +39,38 @@ textarea {
   min-height: 74px !important;
 }
 
+/* Header layout: balanced row with centered brand, primary nav on its own row below */
+.site-header .nav-row {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  row-gap: 0 !important;
+}
+
+.header-utilities {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  justify-self: start !important;
+}
+
+.site-header .brand {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  justify-self: center !important;
+  width: auto !important;
+}
+
+.nav-actions {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  justify-self: end !important;
+}
+
+.site-header .main-nav {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  justify-content: center !important;
+}
+
 .screwnet-brand {
   align-items: baseline !important;
   min-width: max-content;
