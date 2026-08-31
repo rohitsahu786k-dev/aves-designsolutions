@@ -99,7 +99,7 @@ export default async function BlogPage({ searchParams }) {
                       style={{
                         fontSize: "0.75rem",
                         fontWeight: "700",
-                        color: "#ea580c",
+                        color: "#111111",
                         textTransform: "uppercase",
                         letterSpacing: "0.05em",
                         marginBottom: "0.4rem",

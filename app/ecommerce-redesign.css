@@ -31,6 +31,9 @@ textarea {
 }
 
 .site-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1200 !important;
   border-bottom: 1px solid rgba(17, 17, 17, 0.08) !important;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
 }
@@ -43,6 +46,7 @@ textarea {
 .site-header .nav-row {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
   grid-template-rows: auto auto !important;
+  align-items: center !important;
   row-gap: 0 !important;
 }
 
@@ -55,7 +59,10 @@ textarea {
 .site-header .brand {
   grid-column: 2 !important;
   grid-row: 1 !important;
+  align-self: center !important;
+  align-items: center !important;
   justify-self: center !important;
+  min-height: 74px !important;
   width: auto !important;
 }
 
@@ -72,7 +79,7 @@ textarea {
 }
 
 .screwnet-brand {
-  align-items: baseline !important;
+  align-items: center !important;
   min-width: max-content;
   font-family: var(--font-retail), Montserrat, Arial, sans-serif !important;
   letter-spacing: 0 !important;
@@ -402,6 +409,12 @@ textarea {
 }
 
 @media (max-width: 760px) {
+  .site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1200 !important;
+  }
+
   .container,
   .site-header .container,
   .site-footer .container,
@@ -416,6 +429,9 @@ textarea {
   }
 
   .brand {
+    align-self: center !important;
+    align-items: center !important;
+    min-height: 62px !important;
     width: auto !important;
     min-width: 0 !important;
     justify-self: center;

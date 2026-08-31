@@ -70,7 +70,7 @@ export function HomeBlogShowcase({ posts = [] }) {
                       style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.4s ease" }}
                       className="wp-blog-thumb"
                     />
-                    <div style={{ position: "absolute", top: "12px", left: "12px", backgroundColor: "rgba(15, 23, 42, 0.85)", backdropFilter: "blur(6px)", padding: "0.25rem 0.65rem", borderRadius: "6px", color: "#ea580c", fontSize: "0.72rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.05em", border: "1px solid rgba(255,255,255,0.12)" }}>
+                    <div style={{ position: "absolute", top: "12px", left: "12px", backgroundColor: "#111111", backdropFilter: "blur(6px)", padding: "0.25rem 0.65rem", borderRadius: "6px", color: "#ffffff", fontSize: "0.72rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.05em", border: "1px solid rgba(255,255,255,0.2)" }}>
                       {categoryName}
                     </div>
                   </div>

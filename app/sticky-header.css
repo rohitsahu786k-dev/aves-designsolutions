@@ -19,6 +19,31 @@ main {
   box-shadow: 0 1px 0 rgba(17, 17, 17, 0.08), 0 8px 24px rgba(17, 17, 17, 0.04);
 }
 
+.site-header:has(.header-panel-backdrop) {
+  transform: none;
+}
+
+.site-header .header-panel-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+}
+
+.site-header .header-panel {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+}
+
+.site-header .myntra-menu-container,
+.site-header .live-search-wrapper {
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 .site-header .top-strip,
 .site-header .nav-row,
 .site-header .main-nav {

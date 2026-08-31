@@ -106,12 +106,12 @@ export default async function Home({ searchParams }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <TopCategoryBubbleStrip categories={enrichedCategories} />
       <HeroCarousel banners={heroBanners} />
       <WhyChooseUs />
       <TrendingProductsSection products={products} popularProducts={popularProducts} shelves={shelves} initialTab="new" />
       <TextMarquee text={marqueeNotice} />
       <ExploreCategoryGrid categories={enrichedCategories} />
-      <TopCategoryBubbleStrip categories={enrichedCategories} />
       <PromoOfferGrid />
       <CustomerStoriesSection />
       <HomeBlogShowcase posts={wpPosts} />
