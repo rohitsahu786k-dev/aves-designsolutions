@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Clock, Mail, MapPin, MessageCircle, Phone, ShieldCheck } from "lucide-react";
+import { ClipboardCheck, Clock, Headphones, Mail, MapPin, MessageCircle, PackageCheck, Phone, ShieldCheck, Truck } from "lucide-react";
 import { FooterPolicyLinks } from "@/components/footer-policy-links";
 import { getStoreContactInfo } from "@/lib/wp-storefront";
 
@@ -17,14 +17,24 @@ export async function Footer() {
   const workingHours = contact.supportHours || "9:00 AM - 6:00 PM (Mon - Sat)";
 
   return (
-    <footer className="site-footer white-theme-footer">
+    <footer className="site-footer white-theme-footer pro-site-footer">
       <div className="container">
         <div className="footer-intro-bar">
           <div>
-            <span className="eyebrow">Industrial procurement desk</span>
-            <h2>Fasteners, hardware and bulk sourcing support.</h2>
+            <ClipboardCheck size={34} />
+            <span>
+              <h2>Need bulk quantities?</h2>
+              <p>Get the best prices for your business.</p>
+            </span>
           </div>
-          <p>Live stock, GST invoicing, technical guidance and dispatch-ready packs for trade buyers.</p>
+          <div className="footer-bulk-points">
+            <span><PackageCheck size={16} /> Best Wholesale Prices</span>
+            <span><Headphones size={16} /> Priority Support</span>
+            <span><Mail size={16} /> Quick Response</span>
+          </div>
+          <Link href="/contact" className="footer-rfq-button">
+            <ClipboardCheck size={16} /> Send Bulk RFQ
+          </Link>
         </div>
 
         <div className="footer-seo-copy" aria-label="About screwnet">
@@ -44,8 +54,7 @@ export async function Footer() {
               <span className="brand-logo-sub">.in</span>
             </Link>
             <p>
-              DIN/ISO standardized screws, high-tensile bolts, self-drilling fasteners and custom wholesale hardware
-              with nationwide dispatch and dedicated technical support.
+              Your trusted partner for industrial fasteners. Quality products, reliable service.
             </p>
             <div className="footer-social-links">
               <a href={`https://wa.me/${whatsappNum}`} target="_blank" rel="noreferrer" className="social-pill whatsapp">
@@ -56,20 +65,28 @@ export async function Footer() {
           </div>
 
           <div className="footer-column">
-            <h4>Catalog</h4>
-            <Link href="/shop">All Fasteners</Link>
+            <h4>Shop</h4>
+            <Link href="/shop">All Categories</Link>
             <Link href="/shop?search=screw">Screws</Link>
-            <Link href="/shop?search=bolt">Bolts & Nuts</Link>
-            <Link href="/shop?orderby=date&order=desc">New Arrivals</Link>
-            <Link href="/shop?on_sale=true">Bulk Deals</Link>
+            <Link href="/shop?search=bolt">Bolts</Link>
+            <Link href="/shop?search=nut">Nuts</Link>
+            <Link href="/category/washers">Washers</Link>
+            <Link href="/shop">View All Products</Link>
           </div>
 
           <div className="footer-column">
-            <h4>Buyer Support</h4>
-            <Link href="/contact">Bulk RFQ</Link>
-            <Link href="/account">Account / Order Status</Link>
-            <Link href="/wishlist">Saved Fasteners</Link>
-            <Link href="/blog">Engineering Guides</Link>
+            <h4>Information</h4>
+            <Link href="/about">About Us</Link>
+            <Link href="/shop">Quality Catalog</Link>
+            <Link href="/blog">Resources</Link>
+            <Link href="/blog">Blog</Link>
+            <Link href="/contact">Careers</Link>
+          </div>
+
+          <div className="footer-column">
+            <h4>Customer Service</h4>
+            <Link href="/contact">Contact Us</Link>
+            <Link href="/account">Track Order</Link>
             <FooterPolicyLinks />
           </div>
 
@@ -85,17 +102,25 @@ export async function Footer() {
               <Clock size={14} /> {workingHours}
             </span>
             <div className="footer-trust-badge">
-              <ShieldCheck size={15} /> <span>Verified GST invoicing</span>
+              <Truck size={15} /> <span>Pan India dispatch</span>
             </div>
           </div>
         </div>
 
         <div className="footer-bottom-bar">
           <div className="copyright-text">
-            Copyright {year} <strong>screwnet</strong>. All rights reserved.
+            &copy; {year} screwnet. All rights reserved.
           </div>
           <div className="developer-credit">
-            {contact.footerNote || "Industrial Hardware & Fasteners Supplier, Udaipur, India"}
+            <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/UPI_logo.svg" alt="UPI" />
+            <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/RuPay.svg" alt="RuPay" />
+            <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/BHIM_logo.svg" alt="BHIM" />
+            <img src="https://cdn.simpleicons.org/visa/1434CB" alt="Visa" />
+            <img src="https://cdn.simpleicons.org/mastercard/EB001B" alt="Mastercard" />
+            <img src="https://cdn.simpleicons.org/paytm/00BAF2" alt="Paytm" />
+            <img src="https://cdn.simpleicons.org/phonepe/5F259F" alt="PhonePe" />
+            <img src="https://cdn.simpleicons.org/googlepay/4285F4" alt="Google Pay" />
+            <span><ShieldCheck size={14} /> ISO 9001:2015</span>
           </div>
         </div>
       </div>

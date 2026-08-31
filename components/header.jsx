@@ -1,13 +1,17 @@
 import Link from "next/link";
-import { ChevronDown, Headphones, Search, UserRound } from "lucide-react";
+import { ChevronDown, Download, FileText, Headphones, Mail, PackageCheck, Phone, ReceiptText, UserRound } from "lucide-react";
 import { getCategories } from "@/lib/wp";
 import { getPrimaryMenu } from "@/lib/wp-menus";
 import { getAnnouncementBar } from "@/lib/wp-storefront";
 import { AnnouncementBar } from "@/components/announcement-bar";
 import { HeaderTools } from "@/components/header-tools";
+import { HeaderSearchBar } from "@/components/header-search-bar";
+import { HeaderCategoryDropdown } from "@/components/header-category-dropdown";
+import { HeaderSearchTrigger } from "@/components/header-search-trigger";
 import { WishlistNavLink } from "@/components/wishlist-button";
 import { CartNavLink } from "@/components/cart-nav-link";
 import { decodeHtml } from "@/lib/utils";
+import { getStoreContactInfo } from "@/lib/wp-storefront";
 
 const fallbackNav = [
   { id: "home", label: "Home", href: "/", parent: 0 },
@@ -20,22 +24,39 @@ const fallbackNav = [
 ];
 
 export async function Header() {
-  const [categories, wordpressMenu, announcement] = await Promise.all([
+  const [categories, wordpressMenu, announcement, contact] = await Promise.all([
     getCategories().catch(() => []),
     getPrimaryMenu().catch(() => []),
     getAnnouncementBar().catch(() => null),
+    getStoreContactInfo().catch(() => ({})),
   ]);
 
   const featuredCategories = categories.filter((category) => category.count > 0).slice(0, 18);
   const menu = wordpressMenu.length ? wordpressMenu : fallbackNav;
   const topLevelItems = menu.filter((item) => !item.parent);
+  const phoneDisplay = contact.phonePrimary || "+91 98765 43210";
+  const phoneRaw = phoneDisplay.replace(/[^0-9+]/g, "");
+  const salesEmail = contact.salesEmail || "sales@screwnet.in";
 
   return (
-    <header className="site-header">
-      {/* 1. Dynamic Top Announcement Bar from CMS */}
-      <AnnouncementBar announcement={announcement} />
+    <header className="site-header pro-site-header">
+      <div className="pro-header-top">
+        <div className="container pro-header-top-inner">
+          <div className="pro-header-contact">
+            <a href={`tel:${phoneRaw}`}><Phone size={13} /> <span>{phoneDisplay}</span></a>
+            <a href={`mailto:${salesEmail}`}><Mail size={13} /> <span>{salesEmail}</span></a>
+          </div>
+          <div className="pro-header-services">
+            <Link href="/contact"><FileText size={13} /> <span>Bulk RFQ</span></Link>
+            <Link href="/account"><PackageCheck size={13} /> <span>Track Order</span></Link>
+            <Link href="/shop"><Download size={13} /> <span>Download Catalog</span></Link>
+            <Link href="/pages/terms-and-conditions"><ReceiptText size={13} /> <span>GST Invoice</span></Link>
+            <span className="pro-currency-pill">IN | INR</span>
+          </div>
+        </div>
+      </div>
 
-      <div className="container nav-row">
+      <div className="container nav-row pro-header-main">
         <HeaderTools menu={menu} categories={featuredCategories} />
 
         <Link className="brand screwnet-brand" href="/" aria-label="screwnet homepage">
@@ -92,9 +113,10 @@ export async function Header() {
         </nav>
 
         <div className="nav-actions">
+          <HeaderSearchTrigger />
           <Link className="header-text-link nav-support-pill" href="/contact">
             <Headphones size={14} />
-            <span>Bulk Order</span>
+            <span>Bulk RFQ</span>
           </Link>
           <WishlistNavLink />
           <Link className="icon-button" href="/account" aria-label="My Account">
@@ -102,6 +124,17 @@ export async function Header() {
           </Link>
           <CartNavLink />
         </div>
+      </div>
+
+      <div className="pro-header-search-row">
+        <div className="container pro-header-search-inner">
+          <HeaderCategoryDropdown categories={featuredCategories} />
+          <HeaderSearchBar />
+        </div>
+      </div>
+
+      <div className="pro-announcement-wrap">
+        <AnnouncementBar announcement={announcement} />
       </div>
     </header>
   );

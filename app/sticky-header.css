@@ -1,26 +1,23 @@
 /* Keep the complete announcement + navigation header visible while scrolling. */
 html,
-body,
-main {
+body {
   overflow-x: clip !important;
 }
 
-.site-header {
+header.site-header,
+.site-header,
+.pro-site-header {
   position: -webkit-sticky !important;
   position: sticky !important;
   top: 0 !important;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 1000 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 9999 !important;
   overflow: visible !important;
-  isolation: isolate;
-  transform: translateZ(0);
-  box-shadow: 0 1px 0 rgba(17, 17, 17, 0.08), 0 8px 24px rgba(17, 17, 17, 0.04);
-}
-
-.site-header:has(.header-panel-backdrop) {
-  transform: none;
+  background: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08) !important;
+  transform: none !important;
 }
 
 .site-header .header-panel-backdrop {
@@ -61,12 +58,23 @@ main {
 /* Keep dropdowns/mega menus above page content while header is sticky. */
 .site-header .mega-menu,
 .site-header .header-panel-backdrop {
-  z-index: 1100 !important;
+  z-index: 10000 !important;
 }
 
 @media (max-width: 767px) {
-  .site-header {
+  header.site-header,
+  .site-header,
+  .pro-site-header {
+    position: -webkit-sticky !important;
+    position: sticky !important;
     top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 9999 !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+    transform: none !important;
   }
 
   .site-header .nav-row {

@@ -69,11 +69,10 @@ export function HeaderTools({ menu = [], categories = [] }) {
   return (
     <>
       <div className="header-utilities">
-        <button type="button" onClick={() => setPanel("menu")} aria-label="Open Navigation Menu">
-          <Menu size={16} />
-          <span>Menu</span>
+        <button type="button" className="modern-menu-btn" onClick={() => setPanel("menu")} aria-label="Open Navigation Menu">
+          <Menu size={24} className="menu-icon" />
         </button>
-        <button type="button" onClick={() => setPanel("search")} aria-label="Search Catalog">
+        <button type="button" className="desktop-search-util-btn" onClick={() => setPanel("search")} aria-label="Search Catalog">
           <Search size={16} />
           <span>Search</span>
         </button>
@@ -235,9 +234,6 @@ export function HeaderTools({ menu = [], categories = [] }) {
                     <span className="myntra-section-title">Quick Links</span>
                     <Link href="/shop?on_sale=true" onClick={() => setPanel(null)} className="quick-service-link highlight">
                       <Sparkles size={16} /> <span>Special Offers & Deals</span>
-                    </Link>
-                    <Link href="/wishlist" onClick={() => setPanel(null)} className="quick-service-link">
-                      <Heart size={16} /> <span>Saved Wishlist</span>
                     </Link>
                     <Link href="/account" onClick={() => setPanel(null)} className="quick-service-link">
                       <Package size={16} /> <span>Orders & Account</span>

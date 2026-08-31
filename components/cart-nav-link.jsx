@@ -19,11 +19,11 @@ export function CartNavLink() {
   return (
     <button
       type="button"
-      className="icon-button wishlist-nav cart-nav-button"
+      className="icon-button cart-nav-button"
       onClick={openCartDrawer}
       aria-label={`Open cart with ${count} items`}
     >
-      <ShoppingBag size={18} />
+      <ShoppingBag size={20} />
       {count ? <span>{count}</span> : null}
     </button>
   );

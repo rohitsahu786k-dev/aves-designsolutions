@@ -1,20 +1,10 @@
 import Link from "next/link";
-import { ArrowLeft, FileText, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { getPage } from "@/lib/wp";
 import { decodeHtml, stripHtml, yoastToMetadata } from "@/lib/utils";
-import { getPolicyBySlug } from "@/lib/screwnet-policies";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const policy = getPolicyBySlug(slug);
-  if (policy) {
-    return {
-      title: policy.metaTitle,
-      description: policy.metaDescription,
-      alternates: { canonical: `${(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "")}/pages/${slug}` },
-    };
-  }
-
   const page = await getPage(slug);
   return yoastToMetadata(page?.yoast_head_json, {
     title: decodeHtml(page?.title?.rendered || "Policy & Information | screwnet"),
@@ -24,18 +14,17 @@ export async function generateMetadata({ params }) {
 
 export default async function ContentPage({ params }) {
   const { slug } = await params;
-  const policy = getPolicyBySlug(slug);
-  const page = policy ? null : await getPage(slug);
+  const page = await getPage(slug);
 
-  const title = policy ? policy.title : decodeHtml(page?.title?.rendered || "Store Policy");
-  const contentHtml = policy ? policy.content : page?.content?.rendered || "<p>Information for this page is being updated. Please contact support.</p>";
+  const title = decodeHtml(page?.title?.rendered || "Store Policy");
+  const contentHtml = page?.content?.rendered || "<p>Information for this page is being updated in WordPress. Please contact support.</p>";
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: title,
-    description: policy ? policy.metaDescription : stripHtml(contentHtml).slice(0, 160),
+    description: stripHtml(contentHtml).slice(0, 160),
     url: `${siteUrl}/pages/${slug}`,
     publisher: {
       "@type": "Organization",
@@ -58,7 +47,7 @@ export default async function ContentPage({ params }) {
 
       <div className="page-hero" style={{ textAlign: "left", padding: "0 0 1.5rem", borderBottom: "1px solid #e2e8f0" }}>
         <span className="eyebrow" style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-          <ShieldCheck size={14} /> Official screwnet Policy
+          <ShieldCheck size={14} /> Official WordPress Policy
         </span>
         <h1 style={{ fontSize: "2rem", fontWeight: "800", color: "#0f172a", margin: "0.5rem 0" }}>{title}</h1>
       </div>

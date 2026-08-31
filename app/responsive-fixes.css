@@ -248,9 +248,13 @@ iframe {
   }
 
   .container {
-    width: calc(100% - 24px) !important;
+    width: 100% !important;
     max-width: 100% !important;
-    margin-inline: auto;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
   }
 
   .section {
@@ -290,18 +294,25 @@ iframe {
     grid-column: 1 !important;
     grid-row: 1 !important;
     justify-self: start;
+    display: flex !important;
+    align-items: center !important;
     gap: 4px !important;
   }
 
-  .header-utilities button {
-    width: 36px;
-    height: 36px;
-    display: grid !important;
-    place-items: center;
+  .header-utilities .modern-menu-btn {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #111111 !important;
   }
 
-  .header-utilities button span {
+  .header-utilities .desktop-nav-label,
+  .header-utilities .desktop-search-util-btn {
     display: none !important;
   }
 
@@ -321,19 +332,27 @@ iframe {
     grid-column: 3 !important;
     grid-row: 1 !important;
     justify-self: end;
-    gap: 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
   }
 
   .nav-actions .header-text-link,
-  .nav-actions a[aria-label="Wishlist"],
-  .nav-actions a[aria-label="Account"] {
+  .nav-actions a[aria-label="Account"],
+  .nav-actions .wishlist-nav,
+  .nav-actions a[aria-label^="Wishlist"] {
     display: none !important;
   }
 
-  .nav-actions .icon-button,
-  .cart-nav-button {
-    width: 36px !important;
-    height: 36px !important;
+  .nav-actions .pro-search-trigger,
+  .nav-actions .cart-nav-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 38px !important;
+    height: 38px !important;
+    color: #111111 !important;
+    position: relative !important;
   }
 
   /* Full-bleed drawers; no mystery left padding. */
@@ -383,27 +402,34 @@ iframe {
     margin-inline: 14px;
   }
 
-  /* Mobile hero is square and uses the dedicated mobile WordPress image source. */
-  .hero-banner-only {
+  /* Mobile hero is 1:1 square and uses the dedicated mobile WordPress image source. */
+  .hero-banner-only,
+  .hero-carousel-section {
     width: 100% !important;
     margin: 0 !important;
     border-radius: 0 !important;
   }
 
-  .hero-banner-only .hero-slide {
+  .hero-banner-only .hero-slide,
+  .hero-carousel-section .hero-slide-item {
     aspect-ratio: 1 / 1 !important;
     min-height: 0 !important;
+    height: auto !important;
+    width: 100% !important;
   }
 
-  .hero-banner-only .hero-arrows {
+  .hero-banner-only .hero-arrows,
+  .hero-carousel-section .hero-arrows-group {
     display: none !important;
   }
 
-  .hero-banner-only .hero-dots {
+  .hero-banner-only .hero-dots,
+  .hero-carousel-section .hero-dots-group {
     bottom: 10px !important;
   }
 
-  .hero-banner-only .hero-dot {
+  .hero-banner-only .hero-dot,
+  .hero-carousel-section .hero-dot-indicator {
     width: 24px !important;
   }
 
@@ -752,19 +778,113 @@ iframe {
   }
 
   /* Filter drawer */
-  .filter-drawer {
-    z-index: 160 !important;
+  .filter-drawer-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 99999 !important;
+    background: rgba(15, 23, 42, 0.65) !important;
+    backdrop-filter: blur(4px) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.25s ease !important;
   }
 
-  .filter-drawer > div {
-    width: min(86vw, 360px) !important;
-    max-width: 360px !important;
-    padding: 0 18px 24px !important;
+  .filter-drawer-backdrop.open {
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 
-  .filter-drawer .filter-panel {
-    max-height: none !important;
-    overflow: visible !important;
+  .filter-drawer-sheet {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: min(88vw, 380px) !important;
+    max-width: 380px !important;
+    height: 100% !important;
+    background: #ffffff !important;
+    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.25) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transform: translateX(100%) !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    z-index: 100000 !important;
+  }
+
+  .filter-drawer-backdrop.open .filter-drawer-sheet {
+    transform: translateX(0) !important;
+  }
+
+  .mobile-filter-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    background: #ffffff !important;
+    padding: 14px 18px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+  }
+
+  .mobile-filter-header h3 {
+    margin: 0 !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+  }
+
+  .mobile-filter-close-btn {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .mobile-filter-close-btn:active {
+    background: #e2e8f0 !important;
+    transform: scale(0.95) !important;
+  }
+
+  .mobile-filter-body {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 16px 18px 24px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .mobile-filter-body .filter-title {
+    display: none !important;
+  }
+
+  .filter-drawer-footer {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 50 !important;
+    background: #ffffff !important;
+    padding: 14px 18px calc(14px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid #e2e8f0 !important;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.04) !important;
+  }
+
+  .apply-filters-btn {
+    width: 100% !important;
+    min-height: 46px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    border-radius: 8px !important;
+    background: #d50012 !important;
+    color: #ffffff !important;
+    border: 0 !important;
   }
 
   /* Bottom nav: six items, clean dividers, WhatsApp remains last/right. */

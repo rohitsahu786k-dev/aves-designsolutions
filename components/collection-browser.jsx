@@ -60,7 +60,6 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
     return withQuery(basePath, activeQuery, { min_price: selected ? null : min, max_price: selected ? null : max, page: 1 });
   }
 
-  // Generate pagination pages list
   function getPageNumbers() {
     if (totalPages <= 7) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -367,7 +366,15 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
       {/* Mobile Filter Drawer / Bottom Sheet */}
       <div className={`filter-drawer-backdrop ${filtersOpen ? "open" : ""}`} onClick={() => setFiltersOpen(false)}>
         <aside className="filter-drawer-sheet" onClick={(e) => e.stopPropagation()}>
-          {filterContent}
+          <div className="mobile-filter-header">
+            <h3>Filter Fasteners {activeCount ? `(${activeCount})` : ""}</h3>
+            <button type="button" className="mobile-filter-close-btn" onClick={() => setFiltersOpen(false)} aria-label="Close filters">
+              <X size={20} />
+            </button>
+          </div>
+          <div className="mobile-filter-body">
+            {filterContent}
+          </div>
           <div className="filter-drawer-footer">
             <button type="button" className="button apply-filters-btn" onClick={() => setFiltersOpen(false)}>
               Apply Filters ({totalProducts} items)

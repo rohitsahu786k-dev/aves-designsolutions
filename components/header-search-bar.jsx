@@ -84,7 +84,7 @@ export function HeaderSearchBar() {
   return (
     <div className="desktop-search-container" ref={dropdownRef}>
       <form onSubmit={handleSubmit} className="desktop-search-form" role="search">
-        <Search size={16} className="search-icon" />
+        <Search size={17} className="search-icon" />
         <input
           type="text"
           value={query}
@@ -102,7 +102,7 @@ export function HeaderSearchBar() {
           </button>
         )}
         <button type="submit" className="search-submit-btn" aria-label="Search">
-          Search
+          <Search size={18} />
         </button>
       </form>
 
@@ -166,7 +166,7 @@ export function HeaderSearchBar() {
               <span>See all results for &quot;{query}&quot;</span>
               <ChevronRight size={13} />
             </Link>
-            <span className="fibosearch-engine-brand">FiboSearch Engine</span>
+            <span className="fibosearch-engine-brand">Powered by FiboSearch Engine</span>
           </div>
         </div>
       )}

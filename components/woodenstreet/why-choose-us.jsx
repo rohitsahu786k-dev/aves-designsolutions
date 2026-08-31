@@ -1,44 +1,56 @@
 "use client";
 
-import { FileCheck, PackageCheck, ShieldCheck, Sparkles, Truck, Wrench } from "lucide-react";
+import { FileCheck, Headphones, ShieldCheck, Tag, Truck, Zap } from "lucide-react";
 
 export function WhyChooseUs() {
-  const features = [
-    {
-      icon: Truck,
-      title: "Fast Delivery",
-      desc: "Dispatch-ready stock with tracking support across India.",
-    },
+  const usps = [
     {
       icon: ShieldCheck,
-      title: "Quality Checked",
-      desc: "Curated fasteners from trusted grades, finishes, and sizes.",
+      line1: "ISO 9001:2015",
+      line2: "Certified",
+    },
+    {
+      icon: Truck,
+      line1: "Pan-India",
+      line2: "Delivery",
+    },
+    {
+      icon: Tag,
+      line1: "Bulk",
+      line2: "Discounts",
+    },
+    {
+      icon: Headphones,
+      line1: "Technical",
+      line2: "Support",
     },
     {
       icon: FileCheck,
-      title: "GST Invoice",
-      desc: "Clean billing for retail, trade, and business purchases.",
+      line1: "GST Invoice",
+      line2: "Billing",
     },
     {
-      icon: PackageCheck,
-      title: "Secure Packaging",
-      desc: "Packed neatly so products reach you safely and easy to identify.",
+      icon: Zap,
+      line1: "Express",
+      line2: "Dispatch",
     },
   ];
 
   return (
-    <section className="section wooden-why-us-section">
+    <section className="section usp-strip-section">
       <div className="container">
-        <div className="wooden-why-us-grid">
-          {features.map((f, i) => {
-            const Icon = f.icon;
+        <div className="usp-strip-card">
+          {usps.map((usp, index) => {
+            const Icon = usp.icon;
             return (
-              <div key={i} className="wooden-why-card">
-                <div className="wooden-why-icon-box">
-                  <Icon size={22} />
+              <div key={index} className="usp-strip-item">
+                <div className="usp-icon-wrap">
+                  <Icon size={30} strokeWidth={1.5} />
                 </div>
-                <h3 className="wooden-why-title">{f.title}</h3>
-                <p className="wooden-why-desc">{f.desc}</p>
+                <div className="usp-text-wrap">
+                  <span className="usp-line1">{usp.line1}</span>
+                  <span className="usp-line2">{usp.line2}</span>
+                </div>
               </div>
             );
           })}
