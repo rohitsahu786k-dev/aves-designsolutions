@@ -24,7 +24,7 @@ export function CheckoutHandoff() {
     <div className="checkout-layout checkout-handoff">
       <section className="checkout-review">
         <h2>Ready for secure checkout</h2>
-        <p>Your bag will be transferred to WooCommerce. Delivery address, shipping, coupon validation and Nimbbl payment are completed there.</p>
+        <p>Your bag will be transferred securely. Delivery address, shipping, coupon validation and Nimbbl payment are completed in the checkout portal.</p>
         <div className="checkout-review-items">{items.map((item) => <div key={item.key}>{item.product.images?.[0]?.src ? <img src={item.product.images[0].src} alt="" /> : null}<span><strong>{item.product.name}</strong><small>Quantity {item.quantity}</small></span></div>)}</div>
       </section>
       <aside className="summary-panel premium-summary">
@@ -33,7 +33,7 @@ export function CheckoutHandoff() {
         <p><span>Subtotal</span><strong>{money(subtotal)}</strong></p>
         {coupon ? <p><span>Coupon</span><strong>{coupon.toUpperCase()}</strong></p> : null}
         {subtotal >= 300 ? <a className="button" href={checkoutUrl}><LockKeyhole size={17} /> Continue securely <ArrowRight size={17} /></a> : <Link className="button" href="/cart">Minimum order is Rs. 300</Link>}
-        <div className="summary-trust"><span><ShieldCheck size={16} /> Nimbbl secure payment</span><span><PackageCheck size={16} /> WooCommerce order receipt</span></div>
+        <div className="summary-trust"><span><ShieldCheck size={16} /> Nimbbl secure payment</span><span><PackageCheck size={16} /> Verified order receipt</span></div>
       </aside>
     </div>
   );

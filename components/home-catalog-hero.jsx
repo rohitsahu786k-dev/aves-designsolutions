@@ -6,7 +6,7 @@ import { decodeHtml } from "@/lib/utils";
 
 export function HomeCatalogHero({ products = [], categories = [] }) {
   const featuredProducts = products.slice(0, 4);
-  const featuredCategories = categories.filter((category) => category.count > 0 && category.slug !== "uncategorized").slice(0, 6);
+  const featuredCategories = categories.filter((category) => category.slug !== "uncategorized").slice(0, 6);
   const heroProduct = featuredProducts[0];
   const heroImage = heroProduct?.images?.[0];
 
@@ -20,7 +20,7 @@ export function HomeCatalogHero({ products = [], categories = [] }) {
           </div>
           <h1>Industrial screws, bolts and anchors ready for dispatch.</h1>
           <p>
-            Shop live WooCommerce stock by head style, material grade, finish and pack size. Built for contractors,
+            Shop live stock by head style, material grade, finish and pack size. Built for contractors,
             fabricators, OEM teams and maintenance buyers.
           </p>
 
@@ -61,7 +61,7 @@ export function HomeCatalogHero({ products = [], categories = [] }) {
               {featuredCategories.map((category) => (
                 <Link href={`/category/${category.slug}`} key={category.id}>
                   <span>{decodeHtml(category.name)}</span>
-                  <small>{category.count}</small>
+                  <small>{Number(category.count || 0) > 0 ? category.count : "New"}</small>
                 </Link>
               ))}
             </div>

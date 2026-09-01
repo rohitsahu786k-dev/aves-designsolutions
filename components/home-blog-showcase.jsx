@@ -25,7 +25,7 @@ export function HomeBlogShowcase({ posts = [] }) {
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.25rem 0.75rem", borderRadius: "99px", backgroundColor: "#fff7ed", border: "1px solid #ffedd5", marginBottom: "0.6rem" }}>
               <BookOpen size={13} style={{ color: "#ea580c" }} />
               <span style={{ color: "#ea580c", fontSize: "0.78rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                WordPress Knowledge Base
+                Fastener Knowledge Base
               </span>
             </div>
             <h2 style={{ fontSize: "2rem", fontWeight: "800", color: "#0f172a", margin: "0.2rem 0 0", letterSpacing: "-0.02em" }}>
@@ -33,7 +33,7 @@ export function HomeBlogShowcase({ posts = [] }) {
             </h2>
           </div>
           <Link href="/blog" className="button secondary" style={{ fontSize: "0.88rem", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "0.45rem", padding: "0.6rem 1.25rem", borderRadius: "8px", backgroundColor: "#0f172a", color: "#ffffff", border: "none" }}>
-            Explore All WordPress Articles <ArrowRight size={15} />
+            Explore All Articles <ArrowRight size={15} />
           </Link>
         </div>
 

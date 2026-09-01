@@ -41,8 +41,18 @@ add_action( 'template_redirect', function () {
 
 		$variation = array();
 		foreach ( (array) ( $item['variation'] ?? array() ) as $key => $value ) {
-			$attribute_key = 0 === strpos( $key, 'attribute_' ) ? $key : 'attribute_' . sanitize_title( $key );
-			$variation[ sanitize_key( $attribute_key ) ] = sanitize_title( $value );
+			if ( is_array( $value ) ) {
+				$raw_key   = $value['taxonomy'] ?? $value['name'] ?? $key;
+				$raw_value = $value['value'] ?? $value['option'] ?? '';
+			} else {
+				$raw_key   = $key;
+				$raw_value = $value;
+			}
+			if ( '' === $raw_value ) {
+				continue;
+			}
+			$attribute_key = 0 === strpos( $raw_key, 'attribute_' ) ? $raw_key : 'attribute_' . sanitize_title( $raw_key );
+			$variation[ sanitize_key( $attribute_key ) ] = sanitize_title( $raw_value );
 		}
 		WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation );
 	}

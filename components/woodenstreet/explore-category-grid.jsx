@@ -6,7 +6,7 @@ import { decodeHtml } from "@/lib/utils";
 
 export function ExploreCategoryGrid({ categories = [] }) {
   const visible = categories
-    .filter((c) => c.count > 0 && c.slug !== "uncategorized")
+    .filter((c) => c.slug !== "uncategorized")
     .slice(0, 8);
 
   if (visible.length === 0) return null;
@@ -47,7 +47,7 @@ export function ExploreCategoryGrid({ categories = [] }) {
                     <Wrench size={36} />
                   </div>
                 )}
-                <span className="wooden-cat-count">{cat.count} Products</span>
+                <span className="wooden-cat-count">{Number(cat.count || 0) > 0 ? `${cat.count} Products` : "New Category"}</span>
               </div>
               <div className="wooden-cat-info">
                 <h3 className="wooden-cat-name">{decodeHtml(cat.name)}</h3>

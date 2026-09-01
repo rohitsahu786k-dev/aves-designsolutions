@@ -17,7 +17,7 @@ const CATEGORY_META_MAP = {
 
 export function HomeCategoryMatrix({ categories = [] }) {
   const visible = categories
-    .filter((c) => c.count > 0 && c.slug !== "uncategorized")
+    .filter((c) => c.slug !== "uncategorized")
     .slice(0, 8);
 
   if (visible.length === 0) return null;
@@ -51,7 +51,7 @@ export function HomeCategoryMatrix({ categories = [] }) {
               <Link href={`/category/${cat.slug}`} key={cat.id} className="category-matrix-card">
                 <div className="card-top-row">
                   <span className="cat-standard-badge">{meta.standard}</span>
-                  <span className="cat-count-pill">{cat.count} items</span>
+                  <span className="cat-count-pill">{Number(cat.count || 0) > 0 ? `${cat.count} items` : "New"}</span>
                 </div>
 
                 <div className="card-thumb-frame">

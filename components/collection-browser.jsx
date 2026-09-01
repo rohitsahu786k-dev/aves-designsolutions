@@ -27,7 +27,9 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [columns, setColumns] = useState(3);
 
-  const visibleCategories = categories.filter((item) => item.count > 0).sort((a, b) => b.count - a.count);
+  const visibleCategories = categories
+    .filter((item) => item.slug !== "uncategorized")
+    .sort((a, b) => Number(b.count || 0) - Number(a.count || 0));
   const reserved = new Set(["search", "orderby", "order", "page", "per_page"]);
   const activeEntries = Object.entries(activeQuery).filter(([key]) => !reserved.has(key) && queryValue(activeQuery, key));
   const activeCount = activeEntries.length;
@@ -113,7 +115,7 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
               <Link href={`/category/${category.slug}`} key={category.id} onClick={() => setFiltersOpen(false)} className="filter-option-row">
                 <span className="filter-custom-check" />
                 <span className="option-name">{decodeHtml(category.name)}</span>
-                <small className="option-count">{category.count}</small>
+                <small className="option-count">{Number(category.count || 0) > 0 ? category.count : "New"}</small>
               </Link>
             ))}
           </div>
@@ -164,7 +166,7 @@ export function CollectionBrowser({ products = [], pagination, categories = [], 
         </div>
       </details>
 
-      {/* Dynamic WooCommerce Global Fastener Attributes */}
+      {/* Dynamic catalog attributes */}
       {attributes.map((attribute) => {
         const isFinish = isFinishAttribute(attribute.taxonomy || attribute.name);
         const label = formatAttributeLabel(attribute.name);

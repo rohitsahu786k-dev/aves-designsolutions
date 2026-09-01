@@ -17,7 +17,7 @@ export default async function ContentPage({ params }) {
   const page = await getPage(slug);
 
   const title = decodeHtml(page?.title?.rendered || "Store Policy");
-  const contentHtml = page?.content?.rendered || "<p>Information for this page is being updated in WordPress. Please contact support.</p>";
+  const contentHtml = page?.content?.rendered || "<p>Information for this page is being updated. Please contact support.</p>";
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const jsonLd = {
@@ -47,7 +47,7 @@ export default async function ContentPage({ params }) {
 
       <div className="page-hero" style={{ textAlign: "left", padding: "0 0 1.5rem", borderBottom: "1px solid #e2e8f0" }}>
         <span className="eyebrow" style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-          <ShieldCheck size={14} /> Official WordPress Policy
+          <ShieldCheck size={14} /> Official Store Policy
         </span>
         <h1 style={{ fontSize: "2rem", fontWeight: "800", color: "#0f172a", margin: "0.5rem 0" }}>{title}</h1>
       </div>

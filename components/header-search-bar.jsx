@@ -92,7 +92,7 @@ export function HeaderSearchBar() {
           onFocus={() => query.trim().length >= 2 && setIsOpen(true)}
           placeholder="Search DIN 912, SS304, M3x10, socket cap, bolts, nuts..."
           autoComplete="off"
-          aria-label="FiboSearch Fastener Catalog"
+          aria-label="Fastener catalog search"
           aria-autocomplete="list"
         />
         {loading && <Loader2 size={15} className="search-loading-spinner animate-spin" />}
@@ -106,11 +106,11 @@ export function HeaderSearchBar() {
         </button>
       </form>
 
-      {/* FiboSearch Dropdown Results */}
+      {/* Live catalog dropdown results */}
       {isOpen && (
         <div className="fibosearch-dropdown-modal" role="listbox">
           <div className="fibosearch-dropdown-header">
-            <span>FiboSearch Live Results</span>
+            <span>Live Catalog Results</span>
             <span className="fibosearch-count-badge">{results.length} found</span>
           </div>
 
@@ -166,7 +166,7 @@ export function HeaderSearchBar() {
               <span>See all results for &quot;{query}&quot;</span>
               <ChevronRight size={13} />
             </Link>
-            <span className="fibosearch-engine-brand">Powered by FiboSearch Engine</span>
+            <span className="fibosearch-engine-brand">Live catalog search</span>
           </div>
         </div>
       )}

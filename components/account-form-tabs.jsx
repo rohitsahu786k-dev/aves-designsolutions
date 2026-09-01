@@ -37,7 +37,7 @@ export function AccountFormTabs({ nonces, accountUrl, lostPasswordUrl }) {
                 <UserCheck size={26} />
               </div>
               <h2>Sign in to screwnet</h2>
-              <p>Manage your orders, saved addresses, and track shipments via WooCommerce.</p>
+              <p>Manage your orders, saved addresses, and shipment tracking securely.</p>
             </div>
 
             <form className="account-form-grid" action={accountUrl} method="post">
@@ -128,7 +128,7 @@ export function AccountFormTabs({ nonces, accountUrl, lostPasswordUrl }) {
 
                 <div className="form-note-box">
                   <p>
-                    A password will be automatically generated and sent to your email address, or configured during account setup in WordPress.
+                    A password will be automatically generated and sent to your email address, or configured during account setup.
                   </p>
                 </div>
 
@@ -141,9 +141,9 @@ export function AccountFormTabs({ nonces, accountUrl, lostPasswordUrl }) {
               </form>
             ) : (
               <div className="registration-disabled-box">
-                <p>Registration is managed directly through your WordPress dashboard.</p>
+                <p>Registration is currently managed by the secure account portal.</p>
                 <a className="button account-submit-btn" href={accountUrl}>
-                  Open WooCommerce Registration
+                  Open Account Registration
                 </a>
               </div>
             )}

@@ -8,7 +8,7 @@ import { decodeHtml } from "@/lib/utils";
 export function HeaderCategoryDropdown({ categories = [] }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const visibleCategories = categories.filter((category) => category.count > 0).slice(0, 28);
+  const visibleCategories = categories.filter((category) => category.slug !== "uncategorized").slice(0, 36);
 
   useEffect(() => {
     function closeOnOutsideClick(event) {
@@ -43,7 +43,7 @@ export function HeaderCategoryDropdown({ categories = [] }) {
           {visibleCategories.map((category) => (
             <Link href={`/category/${category.slug}`} role="menuitem" onClick={() => setOpen(false)} key={category.id}>
               <span>{decodeHtml(category.name)}</span>
-              <small>{category.count}</small>
+              <small>{Number(category.count || 0) > 0 ? category.count : "New"}</small>
             </Link>
           ))}
         </div>

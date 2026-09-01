@@ -8,7 +8,7 @@ import { WpImage } from "@/components/wp-image";
 
 export function CategoryCarousel({ categories }) {
   const trackRef = useRef(null);
-  const visible = categories.filter((category) => category.count > 0).slice(0, 18);
+  const visible = categories.filter((category) => category.slug !== "uncategorized").slice(0, 18);
 
   function scroll(direction) {
     trackRef.current?.scrollBy({ left: direction * Math.max(320, trackRef.current.clientWidth * 0.72), behavior: "smooth" });

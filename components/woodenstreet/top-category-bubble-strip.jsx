@@ -6,8 +6,7 @@ import { Wrench } from "lucide-react";
 
 export function TopCategoryBubbleStrip({ categories = [] }) {
   const visible = categories
-    .filter((c) => c.count > 0 && c.slug !== "uncategorized")
-    .slice(0, 10);
+    .filter((c) => c.slug !== "uncategorized");
 
   if (visible.length === 0) return null;
 

@@ -25,8 +25,8 @@ export function TrustBar() {
     <section className="trust-bar">
       <div className="container trust-grid">
         <span>Pan India delivery</span>
-        <span>Real WooCommerce stock</span>
-        <span>Secure WordPress checkout</span>
+        <span>Real-time stock</span>
+        <span>Secure checkout</span>
         <span>Craft supplies specialists</span>
       </div>
     </section>

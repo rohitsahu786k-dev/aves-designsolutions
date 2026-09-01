@@ -28,9 +28,9 @@ export function CouponOffers({ items = [], appliedCode = "", onApply, compact = 
 
   return (
     <section className={`coupon-offers ${compact ? "compact" : ""}`}>
-      <div className="coupon-heading"><span><Gift size={17} /> Available offers</span><small>WooCommerce validated at checkout</small></div>
+      <div className="coupon-heading"><span><Gift size={17} /> Available offers</span><small>Validated at checkout</small></div>
       {onApply ? <form className="coupon-manual" onSubmit={submitManual}><input value={manualCode} onChange={(event) => setDraftCode(event.target.value.toUpperCase())} placeholder="Enter coupon code" aria-label="Coupon code" /><button type="submit" disabled={!manualCode.trim()}>{appliedCode && manualCode.trim().toLowerCase() === appliedCode.toLowerCase() ? "Applied" : "Apply"}</button>{appliedCode ? <button type="button" className="coupon-remove-manual" onClick={() => { setDraftCode(""); onApply(""); }} aria-label="Remove coupon"><X size={15} /></button> : null}</form> : null}
-      {appliedCode && !knownApplied ? <p className="coupon-pending"><Check size={14} /> {appliedCode.toUpperCase()} added. WooCommerce will confirm eligibility at checkout.</p> : null}
+      {appliedCode && !knownApplied ? <p className="coupon-pending"><Check size={14} /> {appliedCode.toUpperCase()} added. Eligibility will be confirmed at checkout.</p> : null}
       {offers.length ? <div className="coupon-list">
         {offers.map(({ coupon, eligible, reason }) => {
           const applied = appliedCode.toLowerCase() === coupon.code.toLowerCase();
@@ -45,7 +45,7 @@ export function CouponOffers({ items = [], appliedCode = "", onApply, compact = 
             </article>
           );
         })}
-      </div> : <p className="coupon-empty">Enter any WooCommerce coupon above. Live offer cards appear when coupon API credentials are configured.</p>}
+      </div> : <p className="coupon-empty">Enter any store coupon above. Live offer cards appear when coupon access is configured.</p>}
     </section>
   );
 }

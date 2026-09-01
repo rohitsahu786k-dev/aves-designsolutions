@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, FileSpreadsheet, MessageCircle, Percent, Phone, ShieldCheck, Truck } from "lucide-react";
 
-const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "918107753647";
-
-export function BulkRfqBanner() {
+export function BulkRfqBanner({ whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "918107753647", phoneDisplay = "+91 81077 53647" }) {
   const rfqText = encodeURIComponent("Hello screwnet B2B Desk! I would like to request a bulk wholesale quotation for fastener requirements (BOM).");
   const whatsappRfqUrl = `https://wa.me/${whatsappNumber}?text=${rfqText}`;
 
@@ -53,7 +51,7 @@ export function BulkRfqBanner() {
                   borderRadius: "4px",
                 }}
               >
-                <MessageCircle size={17} /> WhatsApp Instant RFQ (+91 81077 53647)
+                <MessageCircle size={17} /> WhatsApp Instant RFQ ({phoneDisplay})
               </a>
               <Link href="/pages/bulk-orders" className="button button-outline" style={{ color: "#fff", borderColor: "#3f3f46", backgroundColor: "transparent", borderRadius: "4px" }}>
                 View Bulk Tiers <ArrowRight size={15} />

@@ -31,10 +31,10 @@ export async function Header() {
     getStoreContactInfo().catch(() => ({})),
   ]);
 
-  const featuredCategories = categories.filter((category) => category.count > 0).slice(0, 18);
+  const featuredCategories = categories.filter((category) => category.slug !== "uncategorized").slice(0, 36);
   const menu = wordpressMenu.length ? wordpressMenu : fallbackNav;
   const topLevelItems = menu.filter((item) => !item.parent);
-  const phoneDisplay = contact.phonePrimary || "+91 98765 43210";
+  const phoneDisplay = contact.phonePrimary || "+91 81077 53647";
   const phoneRaw = phoneDisplay.replace(/[^0-9+]/g, "");
   const salesEmail = contact.salesEmail || "sales@screwnet.in";
 
@@ -57,7 +57,7 @@ export async function Header() {
       </div>
 
       <div className="container nav-row pro-header-main">
-        <HeaderTools menu={menu} categories={featuredCategories} />
+        <HeaderTools menu={menu} categories={featuredCategories} whatsappNumber={contact.whatsappNumber} />
 
         <Link className="brand screwnet-brand" href="/" aria-label="screwnet homepage">
           <span className="brand-logo-text">
@@ -102,7 +102,7 @@ export async function Header() {
                       featuredCategories.map((category) => (
                         <Link href={`/category/${category.slug}`} key={`category-${category.id}`}>
                           <span>{decodeHtml(category.name)}</span>
-                          <small>{category.count} items</small>
+                          <small>{Number(category.count || 0) > 0 ? `${category.count} items` : "New"}</small>
                         </Link>
                       ))}
                   </div>

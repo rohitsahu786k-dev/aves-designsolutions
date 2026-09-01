@@ -7,9 +7,7 @@ import { useEffect, useState } from "react";
 import { getCartCount, openCartDrawer } from "@/lib/cart-store";
 import { readWishlist } from "@/components/wishlist-button";
 
-const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "918107753647";
-
-export function MobileBottomNav() {
+export function MobileBottomNav({ whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "918107753647" }) {
   const pathname = usePathname();
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);

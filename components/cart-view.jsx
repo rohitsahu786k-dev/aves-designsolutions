@@ -68,7 +68,7 @@ export function CartView() {
       <div className="page-hero">
         <span className="eyebrow">Fastener Order</span>
         <h1>Shopping Cart</h1>
-        <p className="muted">Live quantities, real-time prices, offers & discounts connected directly to WooCommerce.</p>
+        <p className="muted">Live quantities, real-time prices, offers and discounts connected directly to the store catalog.</p>
       </div>
 
       {!items.length ? (
@@ -210,13 +210,13 @@ export function CartView() {
 
             <div className="summary-trust">
               <span>
-                <ShieldCheck size={16} /> 100% Safe WooCommerce Checkout
+                <ShieldCheck size={16} /> 100% Safe Checkout
               </span>
               <span>
                 <Truck size={16} /> Pan-India Express Delivery
               </span>
             </div>
-            <small className="summary-disclaimer">Final coupon, shipping, taxes and GST invoicing take place securely inside WooCommerce.</small>
+            <small className="summary-disclaimer">Final coupon validation, shipping, taxes and GST invoicing are completed securely at checkout.</small>
           </aside>
         </div>
       )}

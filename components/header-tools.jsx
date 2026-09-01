@@ -5,9 +5,7 @@ import { ChevronDown, ChevronRight, Heart, HelpCircle, LogIn, Menu, MessageCircl
 import { useEffect, useState } from "react";
 import { decodeHtml } from "@/lib/utils";
 
-const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "918107753647";
-
-export function HeaderTools({ menu = [], categories = [] }) {
+export function HeaderTools({ menu = [], categories = [], whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "918107753647" }) {
   const [panel, setPanel] = useState(null);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -119,7 +117,7 @@ export function HeaderTools({ menu = [], categories = [] }) {
                   )}
                   <div className="search-results">
                     {loading && query.trim().length >= 2 ? (
-                      <p className="search-loading">Searching FiboSearch index...</p>
+                      <p className="search-loading">Searching catalog...</p>
                     ) : null}
                     {!loading &&
                       query.trim().length >= 2 &&
@@ -153,7 +151,7 @@ export function HeaderTools({ menu = [], categories = [] }) {
                     ) : null}
                     {suggestions.length > 0 && (
                       <div className="mobile-fibosearch-footer">
-                        <span className="fibosearch-engine-brand">FiboSearch Engine</span>
+                        <span className="fibosearch-engine-brand">Live catalog search</span>
                       </div>
                     )}
                   </div>
@@ -197,7 +195,7 @@ export function HeaderTools({ menu = [], categories = [] }) {
                     )}
                   </div>
 
-                  {/* WordPress Primary Menu roots */}
+                  {/* Primary menu roots */}
                   <div className="myntra-nav-section">
                     <span className="myntra-section-title">Navigation</span>
                     {roots.map((item) => {

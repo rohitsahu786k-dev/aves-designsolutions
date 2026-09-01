@@ -214,7 +214,7 @@ export function GlobalCartDrawer() {
               <span>Estimated Total</span>
               <strong>{money(total)}</strong>
             </div>
-            <small className="checkout-note">Direct checkout with live WooCommerce pricing, stock & GST billing.</small>
+            <small className="checkout-note">Direct checkout with live pricing, stock and GST billing.</small>
             {subtotal >= 300 ? (
               <a className="button drawer-checkout" href={checkoutUrl}>
                 <CreditCard size={18} /> Proceed to Checkout
@@ -225,7 +225,7 @@ export function GlobalCartDrawer() {
               </button>
             )}
             <div className="drawer-trust">
-              <ShieldCheck size={15} /> 100% Safe & Secure Payment via WooCommerce
+              <ShieldCheck size={15} /> 100% Safe & Secure Payment
             </div>
             <div className="drawer-footer-links">
               <Link href="/cart" onClick={() => setOpen(false)}>

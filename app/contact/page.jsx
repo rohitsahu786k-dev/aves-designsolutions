@@ -6,10 +6,14 @@ import { yoastToMetadata } from "@/lib/utils";
 import { ContactForm } from "@/components/contact-form";
 
 export async function generateMetadata() {
-  const page = await getPage("contact-us").catch(() => null);
+  const [page, contact] = await Promise.all([
+    getPage("contact-us").catch(() => null),
+    getStoreContactInfo().catch(() => ({})),
+  ]);
+  const phoneDisplay = contact.phonePrimary || "+91 81077 53647";
   return yoastToMetadata(page?.yoast_head_json, {
     title: "Contact Us & B2B RFQ | screwnet Industrial Fasteners Udaipur",
-    description: "Contact screwnet in Udaipur, Rajasthan. Call/WhatsApp +91 81077 53647 for customer support, fastener technical specs, bulk contractor orders and GST proforma quotes.",
+    description: `Contact screwnet in Udaipur, Rajasthan. Call/WhatsApp ${phoneDisplay} for customer support, fastener technical specs, bulk contractor orders and GST proforma quotes.`,
   });
 }
 

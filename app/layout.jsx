@@ -12,6 +12,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { GlobalCartDrawer } from "@/components/global-cart-drawer";
+import { getStoreContactInfo } from "@/lib/wp-storefront";
 
 const montserrat = Montserrat({
   variable: "--font-retail",
@@ -32,14 +33,16 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const contact = await getStoreContactInfo().catch(() => ({}));
+
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className={montserrat.variable}>
         <Header />
         <main>{children}</main>
         <Footer />
-        <MobileBottomNav />
+        <MobileBottomNav whatsappNumber={contact.whatsappNumber} />
         <GlobalCartDrawer />
       </body>
     </html>
