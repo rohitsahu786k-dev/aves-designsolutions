@@ -19,11 +19,14 @@ export async function POST(request) {
       cache: "no-store",
     }).catch(() => null);
 
-    if (response?.ok) {
+    const result = await response?.json().catch(() => null);
+    if (response?.ok && result?.sent === true) {
       return NextResponse.json({ sent: true });
     }
   }
 
-  // Gracefully acknowledge inquiry submission
-  return NextResponse.json({ sent: true });
+  return NextResponse.json(
+    { sent: false, message: "Your enquiry could not be sent. Please try again or contact us by phone." },
+    { status: 502 }
+  );
 }

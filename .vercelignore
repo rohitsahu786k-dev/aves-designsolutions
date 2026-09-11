@@ -1,0 +1,10 @@
+.env*
+.vercel/recovery/
+node_modules/
+.next/
+.git/
+mcp_config.json
+woocommerce-mcp-server.js
+wc-client.js
+wordpress/
+wordpress-plugin/

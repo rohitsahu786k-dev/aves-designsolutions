@@ -3,6 +3,10 @@ import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { getPage } from "@/lib/wp";
 import { decodeHtml, stripHtml, yoastToMetadata } from "@/lib/utils";
 
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const page = await getPage(slug);

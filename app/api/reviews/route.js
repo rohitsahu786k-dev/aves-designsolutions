@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const WP_URL = process.env.NEXT_PUBLIC_WP_URL || "https://slateblue-frog-836232.hostingersite.com";
+const WP_URL = process.env.NEXT_PUBLIC_WP_URL || "https://wp.screwnet.in";
 const WP_USER = process.env.WOOCOMMERCE_CONSUMER_KEY || process.env.WP_APPLICATION_USERNAME || process.env.WP_ADMIN_USER || "";
 const WP_PASS = process.env.WOOCOMMERCE_CONSUMER_SECRET || process.env.WP_APPLICATION_PASSWORD || process.env.WP_ADMIN_PASSWORD || "";
 

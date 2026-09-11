@@ -1,6 +1,6 @@
 import { SCREWNET_BLOGS } from "@/lib/screwnet-blogs";
 
-const WP_URL = process.env.NEXT_PUBLIC_WP_URL || "https://slateblue-frog-836232.hostingersite.com";
+const WP_URL = process.env.NEXT_PUBLIC_WP_URL || "https://wp.screwnet.in";
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
 
 async function all(endpoint, perPage = 100, maxPages = 3) {

@@ -25,6 +25,9 @@ export const metadata = {
   title: { default: "screwnet | Industrial Screws, Fasteners & Hardware Online", template: "%s | screwnet" },
   description: "Buy industrial screws, self-drilling Tek screws, drywall screws, high tensile bolts, SS 304/316 fasteners, nuts and washers online at screwnet.",
   robots: { index: true, follow: true },
+  verification: {
+    google: "xjntV3GekeUY1GYlJT7kvNDcPDj9QIhyUgG8pxaCsMg",
+  },
   openGraph: {
     type: "website",
     siteName: "screwnet",

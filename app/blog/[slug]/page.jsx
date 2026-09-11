@@ -3,6 +3,10 @@ import { ArrowLeft, CalendarDays, Clock, Share2, User, Wrench } from "lucide-rea
 import { getFeaturedImage, getPost } from "@/lib/wp";
 import { decodeHtml, stripHtml, yoastToMetadata } from "@/lib/utils";
 
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const post = await getPost(slug);

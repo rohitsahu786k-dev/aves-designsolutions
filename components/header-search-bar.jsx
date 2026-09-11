@@ -51,7 +51,7 @@ export function HeaderSearchBar() {
       } finally {
         setLoading(false);
       }
-    }, 150);
+    }, 350);
 
     return () => {
       window.clearTimeout(timer);

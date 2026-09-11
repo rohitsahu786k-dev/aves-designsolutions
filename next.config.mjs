@@ -1,4 +1,12 @@
 const nextConfig = {
+  async redirects() {
+    return [{
+      source: "/",
+      has: [{ type: "query", key: "search" }],
+      destination: "/shop",
+      permanent: false,
+    }];
+  },
   images: {
     unoptimized: true,
     remotePatterns: [

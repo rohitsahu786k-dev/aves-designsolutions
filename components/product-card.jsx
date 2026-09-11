@@ -62,7 +62,7 @@ export function ProductCard({ product }) {
   return (
     <article className="product-card">
       <div className="product-media-wrapper">
-        <Link className="product-media" href={`/product/${product.slug}`}>
+        <Link prefetch={false} className="product-media" href={`/product/${product.slug}`}>
           <WpImage className="product-image-primary" src={image?.src || image?.thumbnail} alt={image?.alt || title} />
           {secondImage?.src && secondImage.src !== image?.src ? (
             <WpImage className="product-image-secondary" src={secondImage.src} alt={secondImage.alt || `${title} view`} />
@@ -94,7 +94,7 @@ export function ProductCard({ product }) {
           ) : null}
         </div>
 
-        <Link href={`/product/${product.slug}`} className="product-title-link">
+        <Link prefetch={false} href={`/product/${product.slug}`} className="product-title-link">
           <h3 title={title}>{title}</h3>
         </Link>
 
@@ -167,7 +167,7 @@ export function ProductCard({ product }) {
 
         {/* Action Button: Choose Options for variable vs Add to Cart for simple */}
         {isVariable ? (
-          <Link href={`/product/${product.slug}`} className="button button-outline card-choose-options-btn">
+          <Link prefetch={false} href={`/product/${product.slug}`} className="button button-outline card-choose-options-btn">
             <SlidersHorizontal size={14} />
             <span>Choose Options</span>
           </Link>

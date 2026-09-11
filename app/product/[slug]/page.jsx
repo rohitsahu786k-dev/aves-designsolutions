@@ -13,6 +13,11 @@ import { ProfessionalPdpSections } from "@/components/pdp/professional-sections"
 import { getProduct, getRelatedProducts, getSeoHead } from "@/lib/wp";
 import { cleanDescriptionHtml, decodeHtml, formatPrice, stripHtml, yoastToMetadata } from "@/lib/utils";
 
+// Cache each public product page after its first visit, with the existing data TTL.
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const product = await getProduct(slug);

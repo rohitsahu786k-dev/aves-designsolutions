@@ -20,8 +20,7 @@ export async function generateMetadata() {
   });
 }
 
-export default async function Home({ searchParams }) {
-  const query = await searchParams;
+export default async function Home() {
   const [
     products,
     popularProducts,
@@ -31,7 +30,7 @@ export default async function Home({ searchParams }) {
     wpPosts,
     contact,
   ] = await Promise.all([
-    getProducts({ per_page: "16", orderby: "date", search: query?.search || "" }),
+    getProducts({ per_page: "16", orderby: "date" }),
     getPopularProducts(),
     getCategories(),
     getMarqueeNotice(),
@@ -45,17 +44,19 @@ export default async function Home({ searchParams }) {
     .sort((a, b) => Number(a.menu_order || 0) - Number(b.menu_order || 0));
   const topCategories = categoryList.length ? categoryList : getTopCategoriesFromProducts(popularProducts.length ? popularProducts : products);
 
-  const enrichedCategories = topCategories;
-  const shelfCategories = topCategories.filter((category) => Number(category.count || 0) > 0).slice(0, 4);
-  const shelfProductGroups = await Promise.all(
-    shelfCategories.map((category) =>
-      getProductsByCategory(category.id, { per_page: "8", orderby: "popularity" })
-        .then((categoryProducts) => ({ category, products: categoryProducts }))
-        .catch(() => ({ category, products: [] }))
-    )
+  const enrichedCategories = await Promise.all(
+    topCategories.slice(0, 10).map(async (category, index) => {
+      // Only the first four categories render product shelves. Other categories need an image only.
+      if (index >= 4 && category.image) return { ...category, products: [] };
+      const categoryProducts = index < 4
+        ? await getProductsByCategory(category.id, { per_page: "8", orderby: "popularity" }).catch(() => [])
+        : await getProducts({ category: String(category.id), per_page: "1", orderby: "popularity" }, { hydrateVariations: false }).catch(() => []);
+      return { ...category, image: category.image || categoryProducts[0]?.images?.[0], products: categoryProducts };
+    })
   );
 
-  const shelves = shelfProductGroups.filter((shelf) => shelf.products.length > 0);
+  const shelves = enrichedCategories.slice(0, 4).map((category) => ({ category, products: category.products }));
+  const categoryLinks = enrichedCategories.map(({ products, ...category }) => category);
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const jsonLd = {
@@ -111,12 +112,12 @@ export default async function Home({ searchParams }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <TopCategoryBubbleStrip categories={enrichedCategories} />
+      <TopCategoryBubbleStrip categories={categoryLinks} />
       <HeroCarousel banners={heroBanners} />
       <WhyChooseUs />
       <TrendingProductsSection products={products} popularProducts={popularProducts} shelves={shelves} initialTab="new" />
       <TextMarquee text={marqueeNotice} />
-      <ExploreCategoryGrid categories={enrichedCategories} />
+      <ExploreCategoryGrid categories={categoryLinks} />
       <PromoOfferGrid />
       <CustomerStoriesSection />
       <HomeBlogShowcase posts={wpPosts} />

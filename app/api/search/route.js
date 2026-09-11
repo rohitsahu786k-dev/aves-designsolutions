@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
-import { getCategories, getProducts } from "@/lib/wp";
+import { WP_URL, getCategories, getProducts } from "@/lib/wp";
 
-const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || "https://slateblue-frog-836232.hostingersite.com";
+const publicSearchCache = {
+  headers: { "Cache-Control": "public, max-age=0, s-maxage=30, stale-while-revalidate=30" },
+};
 
 export async function GET(request) {
   const query = new URL(request.url).searchParams.get("q")?.trim() || "";
   if (query.length < 2) {
     return NextResponse.json({ suggestions: [], total: 0 });
+  }
+  if (query.length > 100) {
+    return NextResponse.json({ error: "Search must be 100 characters or fewer." }, { status: 400 });
   }
 
   try {
@@ -22,7 +27,7 @@ export async function GET(request) {
           suggestions: data.suggestions,
           total: data.total || data.suggestions.length,
           engine: "fibosearch",
-        });
+        }, publicSearchCache);
       }
     }
   } catch (error) {
@@ -31,7 +36,7 @@ export async function GET(request) {
 
   // 2. Fallback to native WooCommerce catalog search
   const [products, categories] = await Promise.all([
-    getProducts({ search: query, per_page: "6" }).catch(() => []),
+    getProducts({ search: query, per_page: "6" }, { hydrateVariations: false }).catch(() => []),
     getCategories({ search: query, per_page: "4", hide_empty: "true" }).catch(() => []),
   ]);
 
@@ -63,5 +68,5 @@ export async function GET(request) {
     suggestions: combined,
     total: combined.length,
     engine: "wc_fallback",
-  });
+  }, publicSearchCache);
 }
