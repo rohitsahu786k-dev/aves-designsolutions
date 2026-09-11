@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { WP_URL, getCategories, getProducts } from "@/lib/wp";
 
 const publicSearchCache = {
-  headers: { "Cache-Control": "public, max-age=0, s-maxage=30, stale-while-revalidate=30" },
+  headers: { "Cache-Control": "public, max-age=0, s-maxage=300, stale-while-revalidate=600" },
 };
 
 export async function GET(request) {
@@ -17,7 +17,7 @@ export async function GET(request) {
   try {
     // 1. Primary Engine: FiboSearch - AJAX Search for WooCommerce
     const fiboResponse = await fetch(`${WP_URL}/wp-json/screwnet/v1/fibosearch?s=${encodeURIComponent(query)}`, {
-      next: { revalidate: 30 },
+      next: { revalidate: 300 },
     });
 
     if (fiboResponse.ok) {

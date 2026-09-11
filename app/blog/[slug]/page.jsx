@@ -3,6 +3,8 @@ import { ArrowLeft, CalendarDays, Clock, Share2, User, Wrench } from "lucide-rea
 import { getFeaturedImage, getPost } from "@/lib/wp";
 import { decodeHtml, stripHtml, yoastToMetadata } from "@/lib/utils";
 
+export const revalidate = 1800;
+
 export async function generateStaticParams() {
   return [];
 }

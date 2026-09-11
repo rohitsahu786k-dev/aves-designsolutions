@@ -3,6 +3,8 @@ import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { getPage } from "@/lib/wp";
 import { decodeHtml, stripHtml, yoastToMetadata } from "@/lib/utils";
 
+export const revalidate = 1800;
+
 export async function generateStaticParams() {
   return [];
 }
