@@ -723,61 +723,72 @@ add_action( 'login_enqueue_scripts', function () {
 	?>
 	<style type="text/css">
 		body.login {
-			background-color: #0f172a !important;
+			background-color: #f8fafc !important;
+			background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px) !important;
+			background-size: 24px 24px !important;
 			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 		}
 		#login {
 			padding-top: 5% !important;
 		}
 		#login h1 a, .login h1 a {
-			background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 70"><rect width="320" height="70" rx="8" fill="%230f172a"/><g transform="translate(15, 12)"><circle cx="23" cy="23" r="21" fill="%23f97316"/><path d="M14 23h18M23 14v18" stroke="%23ffffff" stroke-width="4" stroke-linecap="round"/><circle cx="23" cy="23" r="12" fill="none" stroke="%230f172a" stroke-width="2.5"/></g><text x="75" y="44" font-family="Montserrat, -apple-system, sans-serif" font-weight="900" font-size="32" fill="%23ffffff" letter-spacing="-0.5">screw<tspan fill="%23f97316">net</tspan><tspan font-size="18" fill="%2394a3b8">.in</tspan></text></svg>') !important;
-			height: 70px !important;
+			background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 75"><g transform="translate(10, 8)"><circle cx="28" cy="28" r="26" fill="%230f172a"/><circle cx="28" cy="28" r="22" fill="%23c40012"/><path d="M18 28h20M28 18v20" stroke="%23ffffff" stroke-width="4.5" stroke-linecap="round"/><circle cx="28" cy="28" r="13" fill="none" stroke="%230f172a" stroke-width="2.5"/></g><text x="75" y="44" font-family="-apple-system, BlinkMacSystemFont, Montserrat, Segoe UI, Roboto, sans-serif" font-weight="900" font-size="34" fill="%23050505" letter-spacing="-0.04em">screw<tspan fill="%23c40012">net</tspan><tspan font-size="20" font-weight="700" fill="%2371717a">.in</tspan></text><text x="77" y="62" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="700" font-size="9" fill="%2364748b" letter-spacing="3.5px">INDUSTRIAL FASTENERS</text></svg>') !important;
+			height: 75px !important;
 			width: 320px !important;
 			background-size: contain !important;
 			background-repeat: no-repeat !important;
 			background-position: center !important;
-			margin-bottom: 25px !important;
+			margin-bottom: 24px !important;
 		}
 		.login form {
 			background: #ffffff !important;
 			border: 1px solid #e2e8f0 !important;
-			border-radius: 12px !important;
-			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25) !important;
-			padding: 28px 24px !important;
+			border-radius: 16px !important;
+			box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08) !important;
+			padding: 32px 28px !important;
 		}
 		.login label {
 			font-weight: 600 !important;
 			color: #334155 !important;
+			font-size: 13px !important;
 		}
 		.login input[type="text"],
 		.login input[type="password"] {
 			border: 1px solid #cbd5e1 !important;
-			border-radius: 6px !important;
-			padding: 8px 12px !important;
+			border-radius: 8px !important;
+			padding: 10px 14px !important;
+			font-size: 14px !important;
+			background: #f8fafc !important;
 		}
 		.login input[type="text"]:focus,
 		.login input[type="password"]:focus {
-			border-color: #f97316 !important;
-			box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important;
+			border-color: #0f172a !important;
+			background: #ffffff !important;
+			box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.12) !important;
 		}
 		.wp-core-ui .button-primary {
-			background: #f97316 !important;
-			border-color: #ea580c !important;
+			background: #0f172a !important;
+			border-color: #0f172a !important;
 			color: #ffffff !important;
 			text-shadow: none !important;
-			box-shadow: none !important;
-			border-radius: 6px !important;
+			box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2) !important;
+			border-radius: 8px !important;
 			font-weight: 700 !important;
-			padding: 4px 18px !important;
+			padding: 6px 20px !important;
+			transition: all 150ms ease !important;
 		}
 		.wp-core-ui .button-primary:hover {
-			background: #ea580c !important;
+			background: #c40012 !important;
+			border-color: #c40012 !important;
+			box-shadow: 0 4px 14px rgba(196, 0, 18, 0.3) !important;
 		}
 		.login #nav a, .login #backtoblog a {
-			color: #94a3b8 !important;
+			color: #64748b !important;
+			font-weight: 600 !important;
+			font-size: 13px !important;
 		}
 		.login #nav a:hover, .login #backtoblog a:hover {
-			color: #f97316 !important;
+			color: #c40012 !important;
 		}
 	</style>
 	<?php
