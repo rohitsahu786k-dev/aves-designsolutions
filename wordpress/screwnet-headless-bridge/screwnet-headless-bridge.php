@@ -1356,6 +1356,49 @@ add_action( 'rest_api_init', function () {
 		},
 	) );
 
+	// Q. Resolve ACF Image IDs to Full URLs in REST API for site_banner & site_contact
+	add_filter( 'rest_prepare_site_banner', function ( $response, $post, $request ) {
+		$data = $response->get_data();
+		if ( isset( $data['acf'] ) && is_array( $data['acf'] ) ) {
+			$keys = array( 'desktop_image', 'mobile_image', 'tablet_image', 'fallback_image' );
+			foreach ( $keys as $k ) {
+				if ( ! empty( $data['acf'][ $k ] ) ) {
+					if ( is_numeric( $data['acf'][ $k ] ) ) {
+						$url = wp_get_attachment_image_url( (int) $data['acf'][ $k ], 'full' );
+						if ( $url ) {
+							$data['acf'][ $k ] = $url;
+						}
+					} elseif ( is_array( $data['acf'][ $k ] ) && isset( $data['acf'][ $k ]['url'] ) ) {
+						$data['acf'][ $k ] = $data['acf'][ $k ]['url'];
+					}
+				}
+			}
+			$response->set_data( $data );
+		}
+		return $response;
+	}, 10, 3 );
+
+	add_filter( 'rest_prepare_site_contact', function ( $response, $post, $request ) {
+		$data = $response->get_data();
+		if ( isset( $data['acf'] ) && is_array( $data['acf'] ) ) {
+			$keys = array( 'logo_dark', 'logo_light' );
+			foreach ( $keys as $k ) {
+				if ( ! empty( $data['acf'][ $k ] ) ) {
+					if ( is_numeric( $data['acf'][ $k ] ) ) {
+						$url = wp_get_attachment_image_url( (int) $data['acf'][ $k ], 'full' );
+						if ( $url ) {
+							$data['acf'][ $k ] = $url;
+						}
+					} elseif ( is_array( $data['acf'][ $k ] ) && isset( $data['acf'][ $k ]['url'] ) ) {
+						$data['acf'][ $k ] = $data['acf'][ $k ]['url'];
+					}
+				}
+			}
+			$response->set_data( $data );
+		}
+		return $response;
+	}, 10, 3 );
+
 } );
 
 // Register ACF Options Page for Storefront Site Settings
