@@ -1138,6 +1138,224 @@ add_action( 'rest_api_init', function () {
 		},
 	) );
 
+	// O. Inspect ACF field groups definition
+	register_rest_route( 'screwnet/v1', '/inspect-acf', array(
+		'methods'             => 'GET',
+		'permission_callback' => '__return_true',
+		'callback'            => function () {
+			$contact_fields = function_exists( 'acf_get_fields' ) ? acf_get_fields( 'group_6b74134791018' ) : array();
+			$banner_fields  = function_exists( 'acf_get_fields' ) ? acf_get_fields( 'group_77faf9b290de5' ) : array();
+			return rest_ensure_response( array(
+				'contact_fields' => array_map( function ( $f ) {
+					return array( 'name' => $f['name'], 'key' => $f['key'], 'type' => $f['type'], 'label' => $f['label'] );
+				}, $contact_fields ?: array() ),
+				'banner_fields'  => array_map( function ( $f ) {
+					return array( 'name' => $f['name'], 'key' => $f['key'], 'type' => $f['type'], 'label' => $f['label'] );
+				}, $banner_fields ?: array() ),
+			) );
+		},
+	) );
+
+	// P. Seed Initial ACF Data for Site Contact, Site Banners, and Announcements
+	register_rest_route( 'screwnet/v1', '/seed-acf-data', array(
+		'methods'             => array( 'POST', 'GET' ),
+		'permission_callback' => '__return_true',
+		'callback'            => function () {
+			$created = array();
+
+			// 1. Seed Site Contact & Global Settings if empty
+			$existing_contact = get_posts( array(
+				'post_type'      => 'site_contact',
+				'posts_per_page' => 1,
+				'post_status'    => 'any',
+			) );
+
+			if ( empty( $existing_contact ) ) {
+				$contact_id = wp_insert_post( array(
+					'post_title'   => 'Global Settings',
+					'post_name'    => 'global-settings',
+					'post_type'    => 'site_contact',
+					'post_status'  => 'publish',
+					'post_content' => '',
+				) );
+
+				if ( $contact_id && ! is_wp_error( $contact_id ) ) {
+					$contact_data = array(
+						'company_name'        => 'screwnet Industrial Fasteners',
+						'display_name'        => 'screwnet',
+						'support_hours'       => 'Monday – Saturday: 9:00 AM – 6:30 PM IST',
+						'phone_primary'       => '+91 81077 53647',
+						'phone_secondary'     => '+91 81077 53647',
+						'whatsapp_number'     => '918107753647',
+						'support_email'       => 'aves.designsolutions@gmail.com',
+						'sales_email'         => 'aves.designsolutions@gmail.com',
+						'address_line_1'      => '2, Paneri Belda Road',
+						'address_line_2'      => '',
+						'city'                => 'Udaipur',
+						'state'               => 'Rajasthan',
+						'postal_code'         => '313001',
+						'country'             => 'India',
+						'latitude'            => 24.5854,
+						'longitude'           => 73.7125,
+						'google_maps_url'     => 'https://www.google.com/maps/search/?api=1&query=2+PANERI+BELDA+ROAD+UDAIPUR',
+						'map_embed_url'       => 'https://maps.google.com/maps?q=2%2C%20Paneri%20Belda%20Road%2C%20Udaipur%2C%20Rajasthan%2C%20313001%2C%20India&t=m&z=15&output=embed&iwloc=near',
+						'privacy_policy_url'  => '/pages/privacy-policy',
+						'terms_url'           => '/pages/terms-and-conditions',
+						'shipping_policy_url' => '/pages/shipping-policy',
+						'returns_policy_url'  => '/pages/refund-policy',
+						'footer_note'         => 'screwnet — India\'s Premier Online Industrial Fasteners & Screws Store',
+					);
+
+					foreach ( $contact_data as $key => $val ) {
+						if ( function_exists( 'update_field' ) ) {
+							update_field( $key, $val, $contact_id );
+						}
+						update_post_meta( $contact_id, $key, $val );
+					}
+					$created[] = "site_contact (ID: $contact_id - Global Settings)";
+				}
+			}
+
+			// 2. Seed Site Banners if empty
+			$existing_banners = get_posts( array(
+				'post_type'      => 'site_banner',
+				'posts_per_page' => 1,
+				'post_status'    => 'any',
+			) );
+
+			if ( empty( $existing_banners ) ) {
+				$banners_to_create = array(
+					array(
+						'title'       => 'Precision Industrial Fasteners & Structural Hardware',
+						'placement'   => 'home_hero',
+						'sort_order'  => 0,
+						'is_active'   => 1,
+						'eyebrow'     => 'PRECISION INDUSTRIAL FASTENERS',
+						'heading'     => 'High-Tensile Bolts, Screws & Structural Hardware',
+						'subheading'  => 'Certified Grade 8.8, 10.9 & 12.9 alloy steel and SS 304/316 marine stainless hardware with real-time stock sync.',
+						'cta_label'   => 'Explore All Fasteners',
+						'cta_url'     => '/shop',
+						'desktop'     => 'https://wp.screwnet.in/wp-content/uploads/2026/08/screwnet-precision-industrial-fasteners-desktop-banner.webp',
+						'mobile'      => 'https://wp.screwnet.in/wp-content/uploads/2026/08/screwnet-precision-industrial-fasteners-mobile-banner.webp',
+					),
+					array(
+						'title'       => 'Bulk Industrial Screws, Bolts & Hardware',
+						'placement'   => 'home_hero',
+						'sort_order'  => 1,
+						'is_active'   => 1,
+						'eyebrow'     => 'ENGINEERED FOR EVERY BUILD',
+						'heading'     => 'Bulk Industrial Screws, Bolts & Hardware',
+						'subheading'  => 'Hardened carbon steel & ruspert coated screws engineered for maximum pull-out strength and structural durability.',
+						'cta_label'   => 'Shop Bulk Hardware',
+						'cta_url'     => '/shop',
+						'desktop'     => 'https://wp.screwnet.in/wp-content/uploads/2026/08/screwnet-bulk-screws-bolts-hardware-desktop-banner.webp',
+						'mobile'      => 'https://wp.screwnet.in/wp-content/uploads/2026/08/screwnet-engineered-for-every-build-mobile-banner.webp',
+					),
+					array(
+						'title'       => 'Corrosion-Resistant Stainless Fasteners',
+						'placement'   => 'home_hero',
+						'sort_order'  => 2,
+						'is_active'   => 1,
+						'eyebrow'     => 'RELIABLE INDUSTRIAL SUPPLY',
+						'heading'     => 'Corrosion-Resistant Stainless Fasteners',
+						'subheading'  => 'Socket head cap screws, hex bolts, spring washers, and nyloc nuts with mill test certification available.',
+						'cta_label'   => 'View Stainless Range',
+						'cta_url'     => '/shop?search=stainless',
+						'desktop'     => 'https://wp.screwnet.in/wp-content/uploads/2026/08/screwnet-reliable-industrial-supply-desktop-banner.webp',
+						'mobile'      => 'https://wp.screwnet.in/wp-content/uploads/2026/08/screwnet-stainless-steel-screws-bolts-mobile-banner.webp',
+					),
+					array(
+						'title'       => 'Shop Catalog Hero Banner',
+						'placement'   => 'shop_hero',
+						'sort_order'  => 0,
+						'is_active'   => 1,
+						'eyebrow'     => 'PRECISION METRIC FASTENERS',
+						'heading'     => 'Complete Industrial Fastener Catalog',
+						'subheading'  => 'Order online with exact metric sizes, pitch specifications, and instant B2B quantity discounts.',
+						'cta_label'   => 'Filter Fasteners',
+						'cta_url'     => '/shop',
+						'desktop'     => 'https://wp.screwnet.in/wp-content/uploads/2026/08/screwnet-precision-industrial-fasteners-desktop-banner.webp',
+						'mobile'      => 'https://wp.screwnet.in/wp-content/uploads/2026/08/screwnet-precision-industrial-fasteners-mobile-banner.webp',
+					),
+				);
+
+				foreach ( $banners_to_create as $b ) {
+					$banner_id = wp_insert_post( array(
+						'post_title'   => $b['title'],
+						'post_type'    => 'site_banner',
+						'post_status'  => 'publish',
+						'post_content' => '',
+					) );
+
+					if ( $banner_id && ! is_wp_error( $banner_id ) ) {
+						$fields = array(
+							'placement'              => $b['placement'],
+							'carousel_group'         => 'default',
+							'sort_order'             => $b['sort_order'],
+							'is_active'              => $b['is_active'],
+							'eyebrow'                => $b['eyebrow'],
+							'heading'                => $b['heading'],
+							'subheading'             => $b['subheading'],
+							'cta_label'              => $b['cta_label'],
+							'cta_url'                => $b['cta_url'],
+							'whole_banner_clickable' => 1,
+							'open_new_tab'           => 0,
+							'text_alignment'         => 'left',
+							'content_theme'          => 'light',
+							'desktop_image'          => $b['desktop'],
+							'mobile_image'           => $b['mobile'],
+							'tablet_image'           => $b['desktop'],
+							'fallback_image'         => $b['desktop'],
+						);
+
+						foreach ( $fields as $fk => $fv ) {
+							if ( function_exists( 'update_field' ) ) {
+								update_field( $fk, $fv, $banner_id );
+							}
+							update_post_meta( $banner_id, $fk, $fv );
+						}
+						$created[] = "site_banner (ID: $banner_id - " . $b['title'] . ")";
+					}
+				}
+			}
+
+			// 3. Seed Announcement if empty
+			$existing_announcements = get_posts( array(
+				'post_type'      => 'announcement',
+				'posts_per_page' => 1,
+				'post_status'    => 'any',
+			) );
+
+			if ( empty( $existing_announcements ) ) {
+				$ann_id = wp_insert_post( array(
+					'post_title'   => 'Default Top Announcement Bar',
+					'post_type'    => 'announcement',
+					'post_status'  => 'publish',
+					'post_content' => '',
+				) );
+
+				if ( $ann_id && ! is_wp_error( $ann_id ) ) {
+					$ann_fields = array(
+						'announcement_text' => 'Fast Pan-India Delivery • ISO & DIN Certified High-Tensile Fasteners • Instant GST Invoicing',
+						'is_active'         => 1,
+					);
+					foreach ( $ann_fields as $ak => $av ) {
+						if ( function_exists( 'update_field' ) ) {
+							update_field( $ak, $av, $ann_id );
+						}
+						update_post_meta( $ann_id, $ak, $av );
+					}
+					$created[] = "announcement (ID: $ann_id)";
+				}
+			}
+
+			return rest_ensure_response( array(
+				'success' => true,
+				'created' => $created,
+			) );
+		},
+	) );
+
 } );
 
 // Register ACF Options Page for Storefront Site Settings
