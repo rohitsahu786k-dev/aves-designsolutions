@@ -3,6 +3,8 @@ import { Hammer, PackageCheck, ShieldCheck, Wrench } from "lucide-react";
 import { getPage } from "@/lib/wp";
 import { decodeHtml, stripHtml, yoastToMetadata } from "@/lib/utils";
 
+export const revalidate = 86400;
+
 export async function generateMetadata() {
   const page = await getPage("about-us").catch(() => null);
   return yoastToMetadata(page?.yoast_head_json, {

@@ -25,7 +25,7 @@ export function ExploreCategoryGrid({ categories = [] }) {
               Find the right screws, bolts, washers, anchors, and hardware by category.
             </p>
           </div>
-          <Link href="/shop" className="wooden-view-all-btn">
+          <Link prefetch={false} href="/shop" className="wooden-view-all-btn">
             <span>All Categories ({categories.length})</span>
             <ArrowRight size={16} />
           </Link>
@@ -33,7 +33,7 @@ export function ExploreCategoryGrid({ categories = [] }) {
 
         <div className="wooden-category-grid">
           {visible.map((cat) => (
-            <Link href={`/category/${cat.slug}`} key={cat.id} className="wooden-cat-card">
+            <Link prefetch={false} href={`/category/${cat.slug}`} key={cat.id} className="wooden-cat-card">
               <div className="wooden-cat-img-box">
                 {cat.image?.src ? (
                   <img

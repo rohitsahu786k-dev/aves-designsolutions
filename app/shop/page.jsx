@@ -8,7 +8,7 @@ export const metadata = {
   alternates: { canonical: "/shop" },
 };
 
-export const revalidate = 30;
+export const revalidate = 86400;
 
 export default async function ShopPage({ searchParams }) {
   const query = await searchParams;

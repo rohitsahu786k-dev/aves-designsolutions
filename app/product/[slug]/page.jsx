@@ -13,7 +13,7 @@ import { ProfessionalPdpSections } from "@/components/pdp/professional-sections"
 import { getProduct, getRelatedProducts, getSeoHead } from "@/lib/wp";
 import { cleanDescriptionHtml, decodeHtml, formatPrice, stripHtml, yoastToMetadata } from "@/lib/utils";
 
-export const revalidate = 15;
+export const revalidate = 86400;
 
 // Cache each public product page after its first visit, with the existing data TTL.
 export async function generateStaticParams() {

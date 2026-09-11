@@ -42,6 +42,26 @@ const nextConfig = {
         destination: "https://wp.screwnet.in/wp-login.php",
         permanent: false,
       },
+      {
+        source: "/download-catalogue",
+        destination: "/shop",
+        permanent: true,
+      },
+      {
+        source: "/download-catalogue/:path*",
+        destination: "/shop",
+        permanent: true,
+      },
+      {
+        source: "/catalogue",
+        destination: "/shop",
+        permanent: true,
+      },
+      {
+        source: "/catalogue/:path*",
+        destination: "/shop",
+        permanent: true,
+      },
     ];
   },
   images: {
@@ -60,6 +80,38 @@ const nextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: "/:all*(svg|jpg|jpeg|png|webp|ico|woff|woff2)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+
+      {
+        source: "/icon.svg",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+      {
+        source: "/apple-icon.svg",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+    ];
   },
 };
 

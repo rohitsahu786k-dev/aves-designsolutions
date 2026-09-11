@@ -1,5 +1,7 @@
 import { NativeCheckoutForm } from "@/components/native-checkout-form";
 
+export const revalidate = 86400;
+
 export const metadata = {
   title: "Checkout | screwnet",
   description: "Secure checkout for screwnet industrial fasteners and hardware.",

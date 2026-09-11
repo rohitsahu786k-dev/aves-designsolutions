@@ -11,7 +11,7 @@ import { getCategories, getFrontPage, getPopularProducts, getPosts, getProducts,
 import { getBannersByPlacement, getMarqueeNotice, getStoreContactInfo } from "@/lib/wp-storefront";
 import { yoastToMetadata } from "@/lib/utils";
 
-export const revalidate = 30;
+export const revalidate = 86400;
 
 export async function generateMetadata() {
   const page = await getFrontPage().catch(() => null);

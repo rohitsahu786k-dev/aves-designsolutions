@@ -51,19 +51,6 @@ async function runQCAudit() {
   }
 
   try {
-    const resCat = await fetch(`${WP_URL}/wp-json/screwnet/v1/catalogue`);
-    if (resCat.ok) {
-      const data = await resCat.json();
-      const count = Array.isArray(data.catalogues) ? data.catalogues.length : 0;
-      report('Fastener Catalogue ACF Endpoint', 'PASS', `${count} catalogues available`);
-    } else {
-      report('Fastener Catalogue ACF Endpoint', 'FAIL', `Status: ${resCat.status}`);
-    }
-  } catch (e) {
-    report('Fastener Catalogue ACF Endpoint', 'FAIL', e.message);
-  }
-
-  try {
     const resPosts = await fetch(`${WP_URL}/wp-json/wp/v2/posts?per_page=5`);
     if (resPosts.ok) {
       const posts = await resPosts.json();
@@ -195,7 +182,6 @@ async function runQCAudit() {
     'app/blog/[slug]/page.jsx',
     'app/product/[slug]/page.jsx',
     'app/category/[slug]/page.jsx',
-    'app/download-catalogue/page.jsx',
     'app/account/page.jsx',
     'app/cart/page.jsx',
     'app/checkout/page.jsx',

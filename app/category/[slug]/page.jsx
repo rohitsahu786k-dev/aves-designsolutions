@@ -3,7 +3,7 @@ import { getCategories, getCategory, getProductAttributes, getPaginatedProductsB
 import { stripHtml } from "@/lib/utils";
 import { productQueryParams } from "@/lib/product-query";
 
-export const revalidate = 30;
+export const revalidate = 86400;
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;

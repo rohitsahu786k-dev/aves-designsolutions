@@ -9,8 +9,7 @@ export const metadata = {
     "Comprehensive engineering articles, fastener selection guides, bolt torque charts, and installation best practices from screwnet.",
 };
 
-// Cached ISR with On-Demand webhook revalidation - preserves Vercel limits
-export const revalidate = 60;
+export const revalidate = 86400;
 
 export default async function BlogPage() {
   const [rawPosts, wpCategories] = await Promise.all([

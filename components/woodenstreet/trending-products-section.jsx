@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronRight, Flame } from "lucide-react";
+import { ArrowRight, Flame } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 
 export function TrendingProductsSection({
@@ -56,7 +56,7 @@ export function TrendingProductsSection({
               Freshly added products, ready stock picks, and fast-moving essentials for your next order.
             </p>
           </div>
-          <Link href={currentTab.href} className="wooden-view-all-btn">
+          <Link prefetch={false} href={currentTab.href} className="wooden-view-all-btn">
             <span>View All {currentTab.label}</span>
             <ArrowRight size={16} />
           </Link>

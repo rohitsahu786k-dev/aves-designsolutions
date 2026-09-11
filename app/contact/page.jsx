@@ -5,6 +5,8 @@ import { getStoreContactInfo } from "@/lib/wp-storefront";
 import { yoastToMetadata } from "@/lib/utils";
 import { ContactForm } from "@/components/contact-form";
 
+export const revalidate = 86400;
+
 export async function generateMetadata() {
   const [page, contact] = await Promise.all([
     getPage("contact-us").catch(() => null),

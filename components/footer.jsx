@@ -66,27 +66,26 @@ export async function Footer() {
 
           <div className="footer-column">
             <h4>Shop</h4>
-            <Link href="/shop">All Categories</Link>
-            <Link href="/shop?search=screw">Screws</Link>
-            <Link href="/shop?search=bolt">Bolts</Link>
-            <Link href="/shop?search=nut">Nuts</Link>
-            <Link href="/category/washers">Washers</Link>
-            <Link href="/shop">View All Products</Link>
+            <Link prefetch={false} href="/shop">All Categories</Link>
+            <Link prefetch={false} href="/shop?search=screw">Screws</Link>
+            <Link prefetch={false} href="/shop?search=bolt">Bolts</Link>
+            <Link prefetch={false} href="/shop?search=nut">Nuts</Link>
+            <Link prefetch={false} href="/category/washers">Washers</Link>
+            <Link prefetch={false} href="/shop">View All Products</Link>
           </div>
 
           <div className="footer-column">
             <h4>Information</h4>
-            <Link href="/about">About Us</Link>
-            <Link href="/download-catalogue">Download Fastener Catalogue</Link>
-            <Link href="/blog">Resources</Link>
-            <Link href="/blog">Blog</Link>
-            <Link href="/contact">Careers</Link>
+            <Link prefetch={false} href="/about">About Us</Link>
+            <Link prefetch={false} href="/blog">Resources</Link>
+            <Link prefetch={false} href="/blog">Blog</Link>
+            <Link prefetch={false} href="/contact">Careers</Link>
           </div>
 
           <div className="footer-column">
             <h4>Customer Service</h4>
-            <Link href="/contact">Contact Us</Link>
-            <Link href="/track-order">Track Order</Link>
+            <Link prefetch={false} href="/contact">Contact Us</Link>
+            <Link prefetch={false} href="/track-order">Track Order</Link>
             <FooterPolicyLinks />
           </div>
 

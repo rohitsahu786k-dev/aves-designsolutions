@@ -15,7 +15,7 @@ export function TopCategoryBubbleStrip({ categories = [] }) {
       <div className="container">
         <div className="wooden-bubble-track">
           {visible.map((cat) => (
-            <Link href={`/category/${cat.slug}`} key={cat.id} className="wooden-bubble-item">
+            <Link prefetch={false} href={`/category/${cat.slug}`} key={cat.id} className="wooden-bubble-item">
               <div className="wooden-bubble-circle">
                 {cat.image?.src ? (
                   <img

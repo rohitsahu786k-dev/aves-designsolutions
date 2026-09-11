@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronDown, Download, FileText, Headphones, Mail, PackageCheck, Phone, ReceiptText, UserRound } from "lucide-react";
+import { ChevronDown, FileText, Headphones, Mail, PackageCheck, Phone, ReceiptText, UserRound } from "lucide-react";
 import { getCategories } from "@/lib/wp";
 import { getPrimaryMenu } from "@/lib/wp-menus";
 import { getAnnouncementBar } from "@/lib/wp-storefront";
@@ -47,10 +47,9 @@ export async function Header() {
             <a href={`mailto:${salesEmail}`}><Mail size={13} /> <span>{salesEmail}</span></a>
           </div>
           <div className="pro-header-services">
-            <Link href="/contact"><FileText size={13} /> <span>Bulk RFQ</span></Link>
-            <Link href="/track-order"><PackageCheck size={13} /> <span>Track Order</span></Link>
-            <Link href="/download-catalogue"><Download size={13} /> <span>Download Catalog</span></Link>
-            <Link href="/pages/terms-and-conditions"><ReceiptText size={13} /> <span>GST Invoice</span></Link>
+            <Link prefetch={false} href="/contact"><FileText size={13} /> <span>Bulk RFQ</span></Link>
+            <Link prefetch={false} href="/track-order"><PackageCheck size={13} /> <span>Track Order</span></Link>
+            <Link prefetch={false} href="/pages/terms-and-conditions"><ReceiptText size={13} /> <span>GST Invoice</span></Link>
             <span className="pro-currency-pill">IN | INR</span>
           </div>
         </div>
@@ -59,7 +58,7 @@ export async function Header() {
       <div className="container nav-row pro-header-main">
         <HeaderTools menu={menu} categories={featuredCategories} whatsappNumber={contact.whatsappNumber} />
 
-        <Link className="brand screwnet-brand" href="/" aria-label="screwnet homepage">
+        <Link prefetch={false} className="brand screwnet-brand" href="/" aria-label="screwnet homepage">
           <span className="brand-logo-text">
             <span className="brand-logo-main">screw</span>
             <span className="brand-logo-accent">net</span>
@@ -73,14 +72,14 @@ export async function Header() {
             const showCategoryMega = /shop|fastener|categor|screw|bolt/i.test(item.label);
             if (!children.length && !showCategoryMega) {
               return (
-                <Link key={item.id} href={item.href}>
+                <Link prefetch={false} key={item.id} href={item.href}>
                   {decodeHtml(item.label)}
                 </Link>
               );
             }
             return (
               <div className="mega-trigger" key={item.id}>
-                <Link href={item.href}>
+                <Link prefetch={false} href={item.href}>
                   {decodeHtml(item.label)} <ChevronDown size={13} className="mega-arrow" />
                 </Link>
                 <div className="mega-menu">
@@ -88,19 +87,19 @@ export async function Header() {
                     <span className="eyebrow">Fastener Catalog</span>
                     <h3>{decodeHtml(item.label)}</h3>
                     <p>High-tensile bolts, self-drilling screws, stainless marine fasteners and precision engineering hardware.</p>
-                    <Link href="/shop" className="mega-cta-link">
+                    <Link prefetch={false} href="/shop" className="mega-cta-link">
                       View Full Warehouse Catalog &rarr;
                     </Link>
                   </div>
                   <div className="mega-links">
                     {children.map((child) => (
-                      <Link href={child.href} key={child.id}>
+                      <Link prefetch={false} href={child.href} key={child.id}>
                         <span>{decodeHtml(child.label)}</span>
                       </Link>
                     ))}
                     {showCategoryMega &&
                       featuredCategories.map((category) => (
-                        <Link href={`/category/${category.slug}`} key={`category-${category.id}`}>
+                        <Link prefetch={false} href={`/category/${category.slug}`} key={`category-${category.id}`}>
                           <span>{decodeHtml(category.name)}</span>
                           <small>{Number(category.count || 0) > 0 ? `${category.count} items` : "New"}</small>
                         </Link>
@@ -114,12 +113,12 @@ export async function Header() {
 
         <div className="nav-actions">
           <HeaderSearchTrigger />
-          <Link className="header-text-link nav-support-pill" href="/contact">
+          <Link prefetch={false} className="header-text-link nav-support-pill" href="/contact">
             <Headphones size={14} />
             <span>Bulk RFQ</span>
           </Link>
           <WishlistNavLink />
-          <Link className="icon-button" href="/account" aria-label="My Account">
+          <Link prefetch={false} className="icon-button" href="/account" aria-label="My Account">
             <UserRound size={18} />
           </Link>
           <CartNavLink />

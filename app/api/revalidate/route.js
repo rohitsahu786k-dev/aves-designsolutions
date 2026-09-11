@@ -53,8 +53,7 @@ async function handleRevalidation(request) {
 
     if (!path && !tag && !slug) {
       revalidatePath("/");
-      revalidatePath("/download-catalogue");
-      revalidated.push("/", "/download-catalogue");
+      revalidated.push("/");
     }
 
     if (redirectTarget === "admin") {
