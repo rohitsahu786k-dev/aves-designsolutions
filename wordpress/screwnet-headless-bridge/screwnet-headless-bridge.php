@@ -1469,3 +1469,67 @@ add_action( 'admin_bar_menu', function ( $wp_admin_bar ) {
 add_filter( 'admin_footer_text', function () {
 	return '<span id="footer-thankyou">screwnet Store Backend &bull; <a href="https://screwnet.in" target="_blank" rel="noopener noreferrer">View Live Storefront (screwnet.in)</a></span>';
 } );
+
+// =========================================================================
+// 12. AUTOMATIC FRONTEND CACHE PURGE & ON-DEMAND REVALIDATION
+// =========================================================================
+
+add_action( 'save_post', 'screwnet_trigger_frontend_revalidation', 20, 3 );
+function screwnet_trigger_frontend_revalidation( $post_id, $post, $update ) {
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( wp_is_post_revision( $post_id ) ) {
+		return;
+	}
+	if ( ! is_object( $post ) || $post->post_status !== 'publish' ) {
+		return;
+	}
+
+	$frontend_url = 'https://screwnet.in';
+	$secret       = 'screwnet_revalidate_secret_2026';
+	$slug         = $post->post_name;
+	$post_type    = $post->post_type;
+
+	$endpoint = $frontend_url . '/api/revalidate?secret=' . $secret;
+
+	if ( $post_type === 'post' ) {
+		$endpoint .= '&type=post&path=/blog&slug=' . urlencode( $slug );
+	} elseif ( $post_type === 'product' ) {
+		$endpoint .= '&type=product&path=/shop&slug=' . urlencode( $slug );
+	} else {
+		$endpoint .= '&path=/';
+	}
+
+	wp_remote_get( $endpoint, array(
+		'timeout'   => 3,
+		'blocking'  => false,
+		'sslverify' => false,
+	) );
+}
+
+add_action( 'acf/save_post', function ( $post_id ) {
+	if ( $post_id === 'options' || $post_id === 'screwnet_storefront_options' ) {
+		$endpoint = 'https://screwnet.in/api/revalidate?secret=screwnet_revalidate_secret_2026&path=/';
+		wp_remote_get( $endpoint, array(
+			'timeout'   => 3,
+			'blocking'  => false,
+			'sslverify' => false,
+		) );
+	}
+}, 25 );
+
+add_action( 'admin_bar_menu', function ( $wp_admin_bar ) {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	$wp_admin_bar->add_node( array(
+		'id'    => 'screwnet_purge_cache',
+		'title' => '⚡ Sync Frontend Cache',
+		'href'  => 'https://screwnet.in/api/revalidate?secret=screwnet_revalidate_secret_2026&redirect=admin',
+		'meta'  => array(
+			'title' => 'Purge frontend edge cache and immediately sync changes to screwnet.in',
+		),
+	) );
+}, 100 );
+
