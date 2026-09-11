@@ -216,9 +216,9 @@ export function GlobalCartDrawer() {
             </div>
             <small className="checkout-note">Direct checkout with live pricing, stock and GST billing.</small>
             {subtotal >= 300 ? (
-              <a className="button drawer-checkout" href={checkoutUrl}>
+              <Link className="button drawer-checkout" href="/checkout" onClick={() => setOpen(false)}>
                 <CreditCard size={18} /> Proceed to Checkout
-              </a>
+              </Link>
             ) : (
               <button className="button drawer-checkout" disabled>
                 Minimum Order {money(300)}

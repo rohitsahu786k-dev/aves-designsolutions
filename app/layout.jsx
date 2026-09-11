@@ -8,6 +8,7 @@ import "./wishlist-responsive.css";
 import "./mobile-commerce-fixes.css";
 import "./mobile-pdp-fix.css";
 import "./ecommerce-redesign.css";
+import "./native-checkout.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";

@@ -198,10 +198,10 @@ export function CartView() {
             </div>
 
             {minimumMet ? (
-              <a className="button full-width-checkout-btn" href={checkoutUrl}>
+              <Link className="button full-width-checkout-btn" href="/checkout">
                 <span>Proceed to Checkout</span>
                 <ArrowRight size={18} />
-              </a>
+              </Link>
             ) : (
               <button className="button full-width-checkout-btn" disabled>
                 Minimum Order {money(300)}

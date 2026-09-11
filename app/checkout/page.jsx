@@ -1,4 +1,4 @@
-import { CheckoutHandoff } from "@/components/checkout-handoff";
+import { NativeCheckoutForm } from "@/components/native-checkout-form";
 
 export const metadata = {
   title: "Checkout | screwnet",
@@ -9,11 +9,11 @@ export default function CheckoutPage() {
   return (
     <div className="container">
       <div className="page-hero">
-        <span className="eyebrow">Checkout</span>
+        <span className="eyebrow">Direct Store Checkout</span>
         <h1>Secure Checkout</h1>
-        <p className="muted">Review your order, then continue to payment for verified delivery and GST billing.</p>
+        <p className="muted">Enter your delivery address and contact details for verified Cash on Delivery dispatch.</p>
       </div>
-      <CheckoutHandoff />
+      <NativeCheckoutForm />
     </div>
   );
 }
