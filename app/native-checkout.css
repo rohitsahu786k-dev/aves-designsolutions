@@ -314,7 +314,7 @@
 }
 
 .free-shipping-text {
-  color: #16a34a;
+  color: #000000;
   font-weight: 700;
   font-size: 0.85rem;
 }
@@ -399,13 +399,13 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: #dcfce7;
-  color: #16a34a;
+  background: #000000;
+  color: #ffffff;
   margin-bottom: 1.25rem;
 }
 
 .success-eyebrow {
-  color: #16a34a;
+  color: #000000;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;

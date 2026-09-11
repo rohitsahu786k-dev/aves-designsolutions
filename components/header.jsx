@@ -49,7 +49,7 @@ export async function Header() {
           <div className="pro-header-services">
             <Link href="/contact"><FileText size={13} /> <span>Bulk RFQ</span></Link>
             <Link href="/track-order"><PackageCheck size={13} /> <span>Track Order</span></Link>
-            <Link href="/shop"><Download size={13} /> <span>Download Catalog</span></Link>
+            <Link href="/download-catalogue"><Download size={13} /> <span>Download Catalog</span></Link>
             <Link href="/pages/terms-and-conditions"><ReceiptText size={13} /> <span>GST Invoice</span></Link>
             <span className="pro-currency-pill">IN | INR</span>
           </div>

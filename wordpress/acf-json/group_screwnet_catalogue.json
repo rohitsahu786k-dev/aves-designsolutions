@@ -1,0 +1,260 @@
+{
+  "key": "group_screwnet_catalogue",
+  "title": "Download Catalogue Page Settings",
+  "fields": [
+    {
+      "key": "field_cat_hero_tab",
+      "label": "Hero & Banners",
+      "name": "",
+      "type": "tab",
+      "instructions": "",
+      "required": 0,
+      "placement": "top",
+      "endpoint": 0
+    },
+    {
+      "key": "field_cat_badge",
+      "label": "Hero Badge / Eyebrow",
+      "name": "catalogue_badge",
+      "type": "text",
+      "instructions": "Small badge text displayed above main heading",
+      "required": 0,
+      "default_value": "screwnet Technical Fasteners"
+    },
+    {
+      "key": "field_cat_title",
+      "label": "Catalogue Title",
+      "name": "catalogue_title",
+      "type": "text",
+      "instructions": "Main H1 title on the catalogue download page",
+      "required": 1,
+      "default_value": "Download Official Fastener Catalogues & Engineering Specifications"
+    },
+    {
+      "key": "field_cat_subtitle",
+      "label": "Catalogue Subtitle / Description",
+      "name": "catalogue_subtitle",
+      "type": "textarea",
+      "instructions": "Paragraph description introducing the engineering documentation",
+      "required": 0,
+      "rows": 3,
+      "default_value": "Get instant access to complete dimensions, DIN/ISO standards, tensile ratings, and torque specs for 5,000+ precision screws and industrial fasteners."
+    },
+    {
+      "key": "field_cat_banner_desktop",
+      "label": "Desktop Hero Banner Image",
+      "name": "banner_desktop",
+      "type": "image",
+      "instructions": "High-resolution banner displayed on desktop viewports (recommended: 1920x600)",
+      "required": 0,
+      "return_format": "url",
+      "preview_size": "medium",
+      "library": "all"
+    },
+    {
+      "key": "field_cat_banner_mobile",
+      "label": "Mobile Hero Banner Image",
+      "name": "banner_mobile",
+      "type": "image",
+      "instructions": "Vertical/compact banner displayed on mobile screens (recommended: 800x600)",
+      "required": 0,
+      "return_format": "url",
+      "preview_size": "medium",
+      "library": "all"
+    },
+    {
+      "key": "field_cat_docs_tab",
+      "label": "Catalogue PDF Documents",
+      "name": "",
+      "type": "tab",
+      "instructions": "",
+      "required": 0,
+      "placement": "top",
+      "endpoint": 0
+    },
+    {
+      "key": "field_cat_docs_list",
+      "label": "Catalogues & PDF Downloads",
+      "name": "catalogues_list",
+      "type": "repeater",
+      "instructions": "Add all downloadable catalog PDFs, technical guides, and torque specification charts",
+      "required": 0,
+      "layout": "block",
+      "button_label": "Add Catalogue Document",
+      "sub_fields": [
+        {
+          "key": "field_doc_title",
+          "label": "Document Title",
+          "name": "doc_title",
+          "type": "text",
+          "required": 1
+        },
+        {
+          "key": "field_doc_subtitle",
+          "label": "Short Summary / Specs Included",
+          "name": "doc_subtitle",
+          "type": "textarea",
+          "rows": 2,
+          "required": 0
+        },
+        {
+          "key": "field_doc_file",
+          "label": "PDF File Download",
+          "name": "doc_file",
+          "type": "file",
+          "instructions": "Upload the PDF catalogue file",
+          "required": 0,
+          "return_format": "url",
+          "library": "all",
+          "mime_types": "pdf"
+        },
+        {
+          "key": "field_doc_file_url",
+          "label": "Or External PDF URL",
+          "name": "doc_file_url",
+          "type": "url",
+          "instructions": "Optional direct PDF URL if hosted on external CDN/drive",
+          "required": 0
+        },
+        {
+          "key": "field_doc_thumbnail",
+          "label": "Cover / Thumbnail Image",
+          "name": "doc_thumbnail",
+          "type": "image",
+          "required": 0,
+          "return_format": "url",
+          "preview_size": "thumbnail",
+          "library": "all"
+        },
+        {
+          "key": "field_doc_size",
+          "label": "File Size (e.g. 18.4 MB)",
+          "name": "doc_size",
+          "type": "text",
+          "required": 0
+        },
+        {
+          "key": "field_doc_pages",
+          "label": "Page Count (e.g. 96 Pages)",
+          "name": "doc_pages",
+          "type": "text",
+          "required": 0
+        },
+        {
+          "key": "field_doc_edition",
+          "label": "Edition / Version (e.g. 2026 Edition)",
+          "name": "doc_edition",
+          "type": "text",
+          "required": 0
+        }
+      ]
+    },
+    {
+      "key": "field_cat_features_tab",
+      "label": "Features & Highlights",
+      "name": "",
+      "type": "tab",
+      "instructions": "",
+      "required": 0,
+      "placement": "top",
+      "endpoint": 0
+    },
+    {
+      "key": "field_cat_features",
+      "label": "Fastener Engineering Features",
+      "name": "features_list",
+      "type": "repeater",
+      "instructions": "Key manufacturing, quality, or testing highlights",
+      "required": 0,
+      "layout": "table",
+      "button_label": "Add Feature",
+      "sub_fields": [
+        {
+          "key": "field_feat_title",
+          "label": "Feature Title",
+          "name": "feature_title",
+          "type": "text",
+          "required": 1
+        },
+        {
+          "key": "field_feat_desc",
+          "label": "Description",
+          "name": "feature_desc",
+          "type": "textarea",
+          "rows": 2,
+          "required": 0
+        }
+      ]
+    },
+    {
+      "key": "field_cat_contact_tab",
+      "label": "Contact & Procurement Support",
+      "name": "",
+      "type": "tab",
+      "instructions": "",
+      "required": 0,
+      "placement": "top",
+      "endpoint": 0
+    },
+    {
+      "key": "field_cat_contact_email",
+      "label": "Procurement & Support Email",
+      "name": "contact_email",
+      "type": "email",
+      "required": 1,
+      "default_value": "aves.designsolutions@gmail.com"
+    },
+    {
+      "key": "field_cat_contact_phone",
+      "label": "Support Phone",
+      "name": "contact_phone",
+      "type": "text",
+      "required": 0,
+      "default_value": "+91 81077 53647"
+    },
+    {
+      "key": "field_cat_contact_whatsapp",
+      "label": "WhatsApp Contact Number",
+      "name": "contact_whatsapp",
+      "type": "text",
+      "instructions": "Numbers only with country code e.g. 918107753647",
+      "required": 0,
+      "default_value": "918107753647"
+    },
+    {
+      "key": "field_cat_contact_address",
+      "label": "Warehouse / Factory Address",
+      "name": "contact_address",
+      "type": "textarea",
+      "rows": 2,
+      "required": 0,
+      "default_value": "2, Paneri Belda Road, Udaipur, Rajasthan, India"
+    },
+    {
+      "key": "field_cat_working_hours",
+      "label": "Working Hours",
+      "name": "working_hours",
+      "type": "text",
+      "required": 0,
+      "default_value": "Monday – Saturday: 9:00 AM – 6:30 PM"
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "page"
+      }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "hide_on_screen": [],
+  "active": true,
+  "description": "ACF field group for Screwnet Headless Download Catalogue page",
+  "show_in_rest": 1
+}

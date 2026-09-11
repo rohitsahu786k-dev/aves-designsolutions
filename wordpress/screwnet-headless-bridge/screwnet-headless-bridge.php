@@ -927,7 +927,199 @@ add_action( 'rest_api_init', function () {
 		},
 	) );
 
+	// K. Test Email Endpoint - Cross-checks email delivery from aves.designsolutions@gmail.com
+	register_rest_route( 'screwnet/v1', '/test-email', array(
+		'methods'             => 'POST',
+		'permission_callback' => '__return_true',
+		'callback'            => function ( WP_REST_Request $request ) {
+			$to = sanitize_email( $request->get_param( 'to' ) ) ?: 'aves.designsolutions@gmail.com';
+			$subject = '[Screwnet Verification] Test Email Delivery Check';
+			$body = "<h2>Screwnet Email Delivery Test</h2>\n<p>This is a verification message sent from <strong>aves.designsolutions@gmail.com</strong>.</p>\n<p>Timestamp: " . current_time( 'mysql' ) . "</p>";
+			$headers = array(
+				'Content-Type: text/html; charset=UTF-8',
+				'From: Screwnet <aves.designsolutions@gmail.com>',
+				'Reply-To: aves.designsolutions@gmail.com',
+			);
+			$sent = wp_mail( $to, $subject, $body, $headers );
+			return rest_ensure_response( array(
+				'success'   => (bool) $sent,
+				'from'      => 'aves.designsolutions@gmail.com',
+				'recipient' => $to,
+				'timestamp' => current_time( 'mysql' ),
+				'message'   => $sent ? 'Test email dispatched successfully from aves.designsolutions@gmail.com.' : 'wp_mail failed to send test email. Check server mail logs.',
+			) );
+		},
+	) );
+
+	// L. Download Catalogue Endpoint (Reads ACF fields or provides default Screwnet fastener catalogues)
+	register_rest_route( 'screwnet/v1', '/catalogue', array(
+		'methods'             => 'GET',
+		'permission_callback' => '__return_true',
+		'callback'            => function ( WP_REST_Request $request ) {
+			$page = get_page_by_path( 'download-catalogue' );
+			if ( ! $page ) {
+				$page = get_page_by_path( 'catalogue' );
+			}
+
+			$acf = array();
+			if ( $page && function_exists( 'get_fields' ) ) {
+				$acf = get_fields( $page->ID ) ?: array();
+			}
+
+			$default_catalogues = array(
+				array(
+					'id'            => 'screwnet-master-catalogue-2026',
+					'doc_title'     => 'screwnet Master Industrial Fasteners Catalogue 2026',
+					'doc_subtitle'  => 'Complete technical specifications, DIN/ISO dimensional charts, and load ratings for machine screws, socket heads, hex bolts, nuts, and washers.',
+					'doc_file'      => 'https://wp.screwnet.in/wp-content/uploads/2026/08/screwnet_Fasteners_Master_Catalog_2026.pdf',
+					'doc_thumbnail' => 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80',
+					'doc_size'      => '18.4 MB',
+					'doc_pages'     => '96 Pages',
+					'doc_edition'   => '2026 Edition',
+					'category'      => 'Master Catalogue',
+				),
+				array(
+					'id'            => 'ss304-ss316-specification-guide',
+					'doc_title'     => 'Stainless Steel (SS304 & SS316) Fastener Technical Sheet',
+					'doc_subtitle'  => 'Corrosion resistance ratings, chemical composition, torque values, and marine/coastal grade selection criteria.',
+					'doc_file'      => 'https://wp.screwnet.in/wp-content/uploads/2026/08/SS304_SS316_Technical_Fastener_Guide.pdf',
+					'doc_thumbnail' => 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=600&q=80',
+					'doc_size'      => '8.2 MB',
+					'doc_pages'     => '42 Pages',
+					'doc_edition'   => 'Rev 4.1',
+					'category'      => 'Stainless Steel',
+				),
+				array(
+					'id'            => 'high-tensile-grade-handbook',
+					'doc_title'     => 'High Tensile Grade 8.8 & 10.9 Fastener Engineering Manual',
+					'doc_subtitle'  => 'Proof stress, shear strength, ultimate tensile strength (UTS), and precision automotive/structural clamping requirements.',
+					'doc_file'      => 'https://wp.screwnet.in/wp-content/uploads/2026/08/High_Tensile_Grade_8.8_10.9_Fasteners_Manual.pdf',
+					'doc_thumbnail' => 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80',
+					'doc_size'      => '12.5 MB',
+					'doc_pages'     => '58 Pages',
+					'doc_edition'   => 'ISO 898-1 Certified',
+					'category'      => 'High Tensile',
+				),
+				array(
+					'id'            => 'metric-thread-pitch-torque-matrix',
+					'doc_title'     => 'Standard Metric Thread Pitch & Torque Matrix (M2 – M36)',
+					'doc_subtitle'  => 'Coarse & fine pitch dimensions, tap drill sizes, tightening torque recommendations, and thread engagement depths.',
+					'doc_file'      => 'https://wp.screwnet.in/wp-content/uploads/2026/08/Metric_Thread_Pitch_Torque_Chart.pdf',
+					'doc_thumbnail' => 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=600&q=80',
+					'doc_size'      => '4.8 MB',
+					'doc_pages'     => '24 Pages',
+					'doc_edition'   => 'DIN 13-1 Spec',
+					'category'      => 'Thread Standards',
+				),
+			);
+
+			$default_features = array(
+				array(
+					'feature_title' => '5,000+ Fastener Sizes in Ready Stock',
+					'feature_desc'  => 'SS304, SS316, Grade 8.8, 10.9, Brass & Nickel-plated precision hardware available for immediate bulk dispatch.',
+				),
+				array(
+					'feature_title' => 'DIN, ISO & ASTM Certified Tolerances',
+					'feature_desc'  => 'Strict 6g / 6H thread fit gauges ensure perfect engagement without galling or thread stripping in production.',
+				),
+				array(
+					'feature_title' => 'EN 10204 3.1 Mill Test Certificates',
+					'feature_desc'  => 'Every batch is backed by 100% material traceability and laboratory chemical analysis reports.',
+				),
+				array(
+					'feature_title' => '24-48h Express Pan-India Delivery',
+					'feature_desc'  => 'Doorstep freight delivery with real-time consignment tracking via Delhivery, BlueDart, and DTDC.',
+				),
+			);
+
+			$catalogues = ! empty( $acf['catalogues_list'] ) ? $acf['catalogues_list'] : $default_catalogues;
+			$features   = ! empty( $acf['features_list'] ) ? $acf['features_list'] : $default_features;
+
+			return rest_ensure_response( array(
+				'badge'          => $acf['catalogue_badge'] ?? 'screwnet Technical Fasteners',
+				'title'          => $acf['catalogue_title'] ?? 'Download Official Fastener Catalogues & Engineering Specifications',
+				'subtitle'       => $acf['catalogue_subtitle'] ?? 'Get instant access to complete dimensions, DIN/ISO standards, tensile ratings, and torque specs for 5,000+ precision screws and industrial fasteners.',
+				'banner_desktop' => $acf['banner_desktop'] ?? '',
+				'banner_mobile'  => $acf['banner_mobile'] ?? '',
+				'catalogues'     => $catalogues,
+				'features'       => $features,
+				'contact'        => array(
+					'email'         => $acf['contact_email'] ?? 'aves.designsolutions@gmail.com',
+					'phone'         => $acf['contact_phone'] ?? '+91 81077 53647',
+					'phone_display' => $acf['contact_phone'] ?? '+91 81077 53647',
+					'whatsapp'      => $acf['contact_whatsapp'] ?? '918107753647',
+					'address'       => $acf['contact_address'] ?? '2, Paneri Belda Road, Udaipur, Rajasthan, India',
+					'working_hours' => $acf['working_hours'] ?? 'Monday – Saturday: 9:00 AM – 6:30 PM',
+				),
+			) );
+		},
+	) );
+
+	// M. Request Catalogue via Email / Lead Capture
+	register_rest_route( 'screwnet/v1', '/catalogue/request', array(
+		'methods'             => 'POST',
+		'permission_callback' => '__return_true',
+		'callback'            => function ( WP_REST_Request $request ) {
+			$name            = sanitize_text_field( $request->get_param( 'name' ) );
+			$email           = sanitize_email( $request->get_param( 'email' ) );
+			$phone           = sanitize_text_field( $request->get_param( 'phone' ) );
+			$company         = sanitize_text_field( $request->get_param( 'company' ) );
+			$catalogue_id    = sanitize_text_field( $request->get_param( 'catalogue_id' ) );
+			$catalogue_title = sanitize_text_field( $request->get_param( 'catalogue_title' ) ) ?: 'screwnet Master Fasteners Catalogue 2026';
+
+			if ( ! is_email( $email ) ) {
+				return new WP_Error( 'invalid_email', 'Please provide a valid email address.', array( 'status' => 400 ) );
+			}
+
+			// Send professional PDF download link to the user
+			$subject = 'Your screwnet Fasteners Catalogue Download Link';
+			$body = '
+			<div style="font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 8px;">
+				<h2 style="color: #000000; margin-top: 0;">screwnet Fasteners Catalogue</h2>
+				<p>Hello ' . esc_html( $name ?: 'Customer' ) . ',</p>
+				<p>Thank you for your interest in screwnet technical fasteners. Here is your official copy of the requested catalogue:</p>
+				<div style="background: #f4f4f5; padding: 18px; border-radius: 6px; margin: 20px 0; border: 1px solid #e4e4e7;">
+					<strong style="color: #000000; font-size: 16px; display: block; margin-bottom: 6px;">' . esc_html( $catalogue_title ) . '</strong>
+					<p style="margin: 0 0 12px; color: #52525b; font-size: 13px;">Full dimensional charts, torque specifications, and DIN/ISO standards.</p>
+					<a href="https://screwnet.in/download-catalogue" style="display: inline-block; background: #000000; color: #ffffff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 14px;">Download PDF Catalogue</a>
+				</div>
+				<p style="color: #52525b; font-size: 13px; line-height: 1.5;">For bulk B2B procurement, custom length fabrication, or GST tax invoices, contact our engineering sales desk directly at <a href="mailto:aves.designsolutions@gmail.com" style="color: #000000; font-weight: 700;">aves.designsolutions@gmail.com</a> or phone <strong>+91 81077 53647</strong>.</p>
+				<hr style="border: 0; border-top: 1px solid #e4e4e7; margin: 20px 0;" />
+				<p style="color: #a1a1aa; font-size: 11px; margin: 0;">screwnet Technical Fasteners &bull; Udaipur, Rajasthan, India &bull; <a href="https://screwnet.in" style="color: #000000;">screwnet.in</a></p>
+			</div>';
+
+			$headers = array(
+				'Content-Type: text/html; charset=UTF-8',
+				'From: Screwnet <aves.designsolutions@gmail.com>',
+				'Reply-To: aves.designsolutions@gmail.com',
+			);
+
+			$sent = wp_mail( $email, $subject, $body, $headers );
+
+			// Also notify admin at aves.designsolutions@gmail.com
+			$admin_subject = '[Catalogue Lead] ' . ( $name ?: $email ) . ' requested ' . $catalogue_title;
+			$admin_body    = "New Catalogue Request:\n\nName: $name\nEmail: $email\nPhone: $phone\nCompany: $company\nCatalogue: $catalogue_title\nTimestamp: " . current_time( 'mysql' );
+			wp_mail( 'aves.designsolutions@gmail.com', $admin_subject, $admin_body );
+
+			return rest_ensure_response( array(
+				'success' => true,
+				'message' => 'Catalogue download link has been dispatched to your email successfully.',
+			) );
+		},
+	) );
+
 } );
+
+// =========================================================================
+// UNIVERSAL OUTGOING EMAIL FILTERS - ENFORCES aves.designsolutions@gmail.com
+// =========================================================================
+add_filter( 'wp_mail_from', function ( $original_email ) {
+	return 'aves.designsolutions@gmail.com';
+}, 999 );
+
+add_filter( 'wp_mail_from_name', function ( $original_name ) {
+	return 'Screwnet';
+}, 999 );
 
 // =========================================================================
 // HELPER: SEND PROFESSIONAL HTML VERIFICATION CODE EMAIL
@@ -1024,7 +1216,8 @@ function screwnet_send_email_verification_code( $email, $code, $first_name = '' 
 
 	$headers = array(
 		'Content-Type: text/html; charset=UTF-8',
-		'From: screwnet <sales@screwnet.in>',
+		'From: Screwnet <aves.designsolutions@gmail.com>',
+		'Reply-To: aves.designsolutions@gmail.com',
 	);
 
 	return wp_mail( $email, $subject, $body, $headers );

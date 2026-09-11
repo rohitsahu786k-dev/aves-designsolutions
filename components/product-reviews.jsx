@@ -11,8 +11,8 @@ function StarDisplay({ rating, size = 14 }) {
           key={s}
           size={size}
           style={{
-            fill: s <= Math.round(Number(rating)) ? "#fbbf24" : "none",
-            color: s <= Math.round(Number(rating)) ? "#fbbf24" : "#cbd5e1",
+            fill: s <= Math.round(Number(rating)) ? "#000000" : "none",
+            color: s <= Math.round(Number(rating)) ? "#000000" : "#d4d4d8",
           }}
         />
       ))}
@@ -37,8 +37,8 @@ function StarPicker({ value, onChange }) {
           <Star
             size={26}
             style={{
-              fill: s <= (hover || value) ? "#fbbf24" : "none",
-              color: s <= (hover || value) ? "#fbbf24" : "#cbd5e1",
+              fill: s <= (hover || value) ? "#000000" : "none",
+              color: s <= (hover || value) ? "#000000" : "#d4d4d8",
               transition: "all 120ms",
             }}
           />

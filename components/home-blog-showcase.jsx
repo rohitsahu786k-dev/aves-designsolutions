@@ -22,17 +22,17 @@ export function HomeBlogShowcase({ posts = [] }) {
       <div className="container">
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "2.5rem", gap: "1rem" }}>
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.25rem 0.75rem", borderRadius: "99px", backgroundColor: "#fff7ed", border: "1px solid #ffedd5", marginBottom: "0.6rem" }}>
-              <BookOpen size={13} style={{ color: "#ea580c" }} />
-              <span style={{ color: "#ea580c", fontSize: "0.78rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.25rem 0.75rem", borderRadius: "99px", backgroundColor: "#f4f4f5", border: "1px solid #e4e4e7", marginBottom: "0.6rem" }}>
+              <BookOpen size={13} style={{ color: "#000000" }} />
+              <span style={{ color: "#000000", fontSize: "0.78rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.06em" }}>
                 Fastener Knowledge Base
               </span>
             </div>
-            <h2 style={{ fontSize: "2rem", fontWeight: "800", color: "#0f172a", margin: "0.2rem 0 0", letterSpacing: "-0.02em" }}>
+            <h2 style={{ fontSize: "2rem", fontWeight: "800", color: "#000000", margin: "0.2rem 0 0", letterSpacing: "-0.02em" }}>
               Fastener Technical Guides & Engineering Articles
             </h2>
           </div>
-          <Link href="/blog" className="button secondary" style={{ fontSize: "0.88rem", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "0.45rem", padding: "0.6rem 1.25rem", borderRadius: "8px", backgroundColor: "#0f172a", color: "#ffffff", border: "none" }}>
+          <Link href="/blog" className="button secondary" style={{ fontSize: "0.88rem", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "0.45rem", padding: "0.6rem 1.25rem", borderRadius: "8px", backgroundColor: "#000000", color: "#ffffff", border: "none" }}>
             Explore All Articles <ArrowRight size={15} />
           </Link>
         </div>
@@ -53,40 +53,40 @@ export function HomeBlogShowcase({ posts = [] }) {
                 style={{
                   borderRadius: "14px",
                   overflow: "hidden",
-                  border: "1px solid #e2e8f0",
+                  border: "1px solid #e4e4e7",
                   display: "flex",
                   flexDirection: "column",
                   backgroundColor: "#ffffff",
-                  boxShadow: "0 4px 16px rgba(15, 23, 42, 0.04)",
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.04)",
                   transition: "all 0.25s cubic-bezier(0.22, 1, 0.36, 1)",
                 }}
                 className="wp-blog-card"
               >
                 <Link href={`/blog/${post.slug}`} style={{ textDecoration: "none", color: "inherit", display: "flex", flexDirection: "column", height: "100%" }}>
-                  <div style={{ height: "190px", overflow: "hidden", backgroundColor: "#0f172a", position: "relative" }}>
+                  <div style={{ height: "190px", overflow: "hidden", backgroundColor: "#000000", position: "relative" }}>
                     <img
                       src={image}
                       alt={decodeHtml(title)}
                       style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.4s ease" }}
                       className="wp-blog-thumb"
                     />
-                    <div style={{ position: "absolute", top: "12px", left: "12px", backgroundColor: "#111111", backdropFilter: "blur(6px)", padding: "0.25rem 0.65rem", borderRadius: "6px", color: "#ffffff", fontSize: "0.72rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.05em", border: "1px solid rgba(255,255,255,0.2)" }}>
+                    <div style={{ position: "absolute", top: "12px", left: "12px", backgroundColor: "#000000", backdropFilter: "blur(6px)", padding: "0.25rem 0.65rem", borderRadius: "6px", color: "#ffffff", fontSize: "0.72rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.05em", border: "1px solid rgba(255,255,255,0.2)" }}>
                       {categoryName}
                     </div>
                   </div>
                   <div style={{ padding: "1.35rem", display: "flex", flexDirection: "column", flexGrow: 1 }}>
-                    <h3 style={{ fontSize: "1.1rem", fontWeight: "700", lineHeight: "1.4", margin: "0 0 0.6rem", color: "#0f172a" }}>
+                    <h3 style={{ fontSize: "1.1rem", fontWeight: "700", lineHeight: "1.4", margin: "0 0 0.6rem", color: "#000000" }}>
                       {decodeHtml(title)}
                     </h3>
-                    <p style={{ fontSize: "0.875rem", color: "#64748b", lineHeight: "1.6", margin: "0 0 1.25rem", flexGrow: 1 }}>
+                    <p style={{ fontSize: "0.875rem", color: "#52525b", lineHeight: "1.6", margin: "0 0 1.25rem", flexGrow: 1 }}>
                       {cleanExcerpt}...
                     </p>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.78rem", color: "#94a3b8", borderTop: "1px solid #f1f5f9", paddingTop: "0.85rem", marginTop: "auto" }}>
-                      <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", color: "#64748b" }}>
-                        <CalendarDays size={14} style={{ color: "#ea580c" }} /> {published}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.78rem", color: "#71717a", borderTop: "1px solid #f4f4f5", paddingTop: "0.85rem", marginTop: "auto" }}>
+                      <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", color: "#71717a" }}>
+                        <CalendarDays size={14} style={{ color: "#000000" }} /> {published}
                       </span>
-                      <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", color: "#64748b" }}>
-                        <Clock size={14} style={{ color: "#0284c7" }} /> {readTime}
+                      <span style={{ display: "flex", alignItems: "center", gap: "0.3rem", color: "#71717a" }}>
+                        <Clock size={14} style={{ color: "#000000" }} /> {readTime}
                       </span>
                     </div>
                   </div>

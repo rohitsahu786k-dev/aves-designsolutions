@@ -78,13 +78,13 @@ function TrackOrderContent() {
     {
       step: 1,
       title: "Order Confirmed",
-      desc: "Order received & payment verified",
+      desc: "Order received & verified",
       icon: CheckCircle2,
     },
     {
       step: 2,
       title: "Packaging & QA",
-      desc: "Fasteners picked & quality-checked",
+      desc: "Fasteners picked & verified",
       icon: Clock,
     },
     {
@@ -104,12 +104,69 @@ function TrackOrderContent() {
   const currentStep = trackingData?.current_step || 1;
 
   return (
-    <div className="track-order-page-wrapper" style={{ maxWidth: "1000px", margin: "32px auto 72px", padding: "0 16px" }}>
+    <div className="track-order-page-wrapper">
+      <style jsx>{`
+        .track-order-page-wrapper {
+          max-width: 1000px;
+          margin: 32px auto 72px;
+          padding: 0 16px;
+          box-sizing: border-box;
+        }
+        .track-search-form {
+          display: grid;
+          grid-template-columns: 1fr 1fr auto;
+          gap: 16px;
+          align-items: flex-end;
+        }
+        .track-milestones-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 12px;
+          position: relative;
+        }
+        .track-two-col {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+        @media (max-width: 768px) {
+          .track-order-page-wrapper {
+            margin: 16px auto 48px;
+            padding: 0 12px;
+          }
+          .track-search-form {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+          .track-search-btn {
+            width: 100%;
+            justify-content: center;
+          }
+          .track-milestones-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+          }
+          .track-two-col {
+            grid-template-columns: 1fr;
+            gap: 14px;
+          }
+          .track-header-banner {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 12px !important;
+            padding: 20px 16px !important;
+          }
+          .track-status-update {
+            text-align: left !important;
+          }
+        }
+      `}</style>
+
       {/* Breadcrumb */}
-      <div style={{ fontSize: "13px", color: "#64748b", marginBottom: "20px", display: "flex", alignItems: "center", gap: "6px" }}>
-        <Link href="/" style={{ color: "#64748b", textDecoration: "none" }}>Home</Link>
+      <div style={{ fontSize: "13px", color: "#71717a", marginBottom: "20px", display: "flex", alignItems: "center", gap: "6px" }}>
+        <Link href="/" style={{ color: "#71717a", textDecoration: "none" }}>Home</Link>
         <span>/</span>
-        <span style={{ color: "#0f172a", fontWeight: "600" }}>Track Order</span>
+        <span style={{ color: "#000000", fontWeight: "700" }}>Track Order</span>
       </div>
 
       {/* Page Header */}
@@ -118,22 +175,23 @@ function TrackOrderContent() {
           display: "inline-flex",
           alignItems: "center",
           gap: "8px",
-          background: "rgba(249, 115, 22, 0.1)",
-          color: "#ea580c",
+          background: "#f4f4f5",
+          color: "#000000",
+          border: "1px solid #d4d4d8",
           padding: "6px 14px",
           borderRadius: "999px",
           fontSize: "12px",
-          fontWeight: "700",
+          fontWeight: "800",
           textTransform: "uppercase",
           letterSpacing: "0.5px",
           marginBottom: "12px"
         }}>
           <Truck size={14} /> Live Shipment Tracking
         </div>
-        <h1 style={{ fontSize: "32px", fontWeight: "900", color: "#0f172a", margin: "0 0 10px", letterSpacing: "-0.03em" }}>
+        <h1 style={{ fontSize: "32px", fontWeight: "900", color: "#000000", margin: "0 0 10px", letterSpacing: "-0.03em" }}>
           Track Your Fastener Order
         </h1>
-        <p style={{ fontSize: "15px", color: "#64748b", maxWidth: "560px", margin: "0 auto" }}>
+        <p style={{ fontSize: "15px", color: "#71717a", maxWidth: "560px", margin: "0 auto" }}>
           Check real-time dispatch progress, courier tracking details, and estimated delivery status.
         </p>
       </div>
@@ -141,19 +199,20 @@ function TrackOrderContent() {
       {/* Search Card */}
       <div style={{
         background: "#ffffff",
-        border: "1px solid #e2e8f0",
+        border: "1px solid #e4e4e7",
         borderRadius: "16px",
         padding: "28px 32px",
-        boxShadow: "0 10px 30px rgba(15, 23, 42, 0.04)",
+        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.04)",
         marginBottom: "32px",
+        boxSizing: "border-box",
       }}>
-        <form onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: "16px", alignItems: "flex-end" }}>
+        <form onSubmit={handleSubmit} className="track-search-form">
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            <label htmlFor="track-order-num" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.5px", color: "#334155" }}>
+            <label htmlFor="track-order-num" style={{ fontSize: "12px", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.5px", color: "#000000" }}>
               Order Number
             </label>
             <div style={{ position: "relative" }}>
-              <Package size={17} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
+              <Package size={17} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#71717a" }} />
               <input
                 id="track-order-num"
                 type="text"
@@ -164,11 +223,12 @@ function TrackOrderContent() {
                   width: "100%",
                   height: "46px",
                   padding: "0 14px 0 42px",
-                  border: "1px solid #cbd5e1",
+                  border: "1px solid #d4d4d8",
                   borderRadius: "8px",
                   fontSize: "14px",
                   outline: "none",
                   boxSizing: "border-box",
+                  color: "#000000",
                 }}
                 required
               />
@@ -176,11 +236,11 @@ function TrackOrderContent() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            <label htmlFor="track-ident" style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.5px", color: "#334155" }}>
+            <label htmlFor="track-ident" style={{ fontSize: "12px", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.5px", color: "#000000" }}>
               Billing Email or Phone
             </label>
             <div style={{ position: "relative" }}>
-              <Mail size={17} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
+              <Mail size={17} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#71717a" }} />
               <input
                 id="track-ident"
                 type="text"
@@ -191,11 +251,12 @@ function TrackOrderContent() {
                   width: "100%",
                   height: "46px",
                   padding: "0 14px 0 42px",
-                  border: "1px solid #cbd5e1",
+                  border: "1px solid #d4d4d8",
                   borderRadius: "8px",
                   fontSize: "14px",
                   outline: "none",
                   boxSizing: "border-box",
+                  color: "#000000",
                 }}
                 required
               />
@@ -205,12 +266,13 @@ function TrackOrderContent() {
           <button
             type="submit"
             disabled={loading}
+            className="track-search-btn"
             style={{
               height: "46px",
               padding: "0 28px",
-              background: "#0f172a",
+              background: "#000000",
               color: "#ffffff",
-              border: "none",
+              border: "1px solid #000000",
               borderRadius: "8px",
               fontWeight: "700",
               fontSize: "14px",
@@ -231,16 +293,16 @@ function TrackOrderContent() {
           <div style={{
             marginTop: "20px",
             padding: "14px 18px",
-            background: "#fef2f2",
-            border: "1px solid #fecaca",
+            background: "#18181b",
+            border: "1px solid #27272a",
             borderRadius: "10px",
-            color: "#991b1b",
+            color: "#ffffff",
             fontSize: "13px",
             display: "flex",
             alignItems: "center",
             gap: "10px",
           }}>
-            <AlertCircle size={18} style={{ flexShrink: 0 }} />
+            <AlertCircle size={18} style={{ flexShrink: 0, color: "#ffffff" }} />
             <span>{error}</span>
           </div>
         )}
@@ -250,8 +312,8 @@ function TrackOrderContent() {
       {trackingData && (
         <div className="fade-in" style={{ display: "grid", gap: "24px" }}>
           {/* Order Header Card */}
-          <div style={{
-            background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+          <div className="track-header-banner" style={{
+            background: "#000000",
             color: "#ffffff",
             borderRadius: "16px",
             padding: "24px 30px",
@@ -260,13 +322,14 @@ function TrackOrderContent() {
             justifyContent: "space-between",
             flexWrap: "wrap",
             gap: "16px",
-            boxShadow: "0 10px 25px rgba(15, 23, 42, 0.15)",
+            boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
+            border: "1px solid #27272a",
           }}>
-            <div>
-              <div style={{ fontSize: "12px", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "700" }}>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: "12px", color: "#a1a1aa", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "700" }}>
                 Order Summary
               </div>
-              <div style={{ fontSize: "24px", fontWeight: "900", marginTop: "2px", display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ fontSize: "24px", fontWeight: "900", marginTop: "2px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                 #{trackingData.order_number}
                 <span style={{
                   fontSize: "12px",
@@ -274,23 +337,23 @@ function TrackOrderContent() {
                   padding: "4px 12px",
                   borderRadius: "999px",
                   textTransform: "uppercase",
-                  background: currentStep === 4 ? "rgba(16, 185, 129, 0.2)" : "rgba(249, 115, 22, 0.2)",
-                  color: currentStep === 4 ? "#34d399" : "#fb923c",
-                  border: `1px solid ${currentStep === 4 ? "rgba(16, 185, 129, 0.4)" : "rgba(249, 115, 22, 0.4)"}`,
+                  background: "#18181b",
+                  color: "#ffffff",
+                  border: "1px solid #3f3f46",
                 }}>
                   {trackingData.status_name || trackingData.status}
                 </span>
               </div>
-              <div style={{ fontSize: "13px", color: "#cbd5e1", marginTop: "4px" }}>
+              <div style={{ fontSize: "13px", color: "#d4d4d8", marginTop: "4px", wordBreak: "break-word" }}>
                 Placed on {trackingData.date_created} &bull; Total: <strong>₹{Number(trackingData.total).toFixed(2)}</strong> ({trackingData.payment_method})
               </div>
             </div>
 
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "12px", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                Status Update
+            <div className="track-status-update" style={{ textAlign: "right" }}>
+              <div style={{ fontSize: "12px", color: "#a1a1aa", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: "700" }}>
+                Current Status
               </div>
-              <div style={{ fontSize: "14px", fontWeight: "700", color: "#f8fafc", maxWidth: "340px", marginTop: "2px" }}>
+              <div style={{ fontSize: "14px", fontWeight: "700", color: "#ffffff", maxWidth: "340px", marginTop: "2px" }}>
                 {trackingData.status_message}
               </div>
             </div>
@@ -299,21 +362,17 @@ function TrackOrderContent() {
           {/* Visual Milestone Progress Tracker */}
           <div style={{
             background: "#ffffff",
-            border: "1px solid #e2e8f0",
+            border: "1px solid #e4e4e7",
             borderRadius: "16px",
             padding: "32px",
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.02)",
+            boxSizing: "border-box",
           }}>
-            <h3 style={{ fontSize: "16px", fontWeight: "800", color: "#0f172a", margin: "0 0 28px" }}>
-              Live Fulfillment Progress
+            <h3 style={{ fontSize: "16px", fontWeight: "800", color: "#000000", margin: "0 0 28px" }}>
+              Fulfillment Progress
             </h3>
 
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              position: "relative",
-              gap: "12px",
-            }}>
+            <div className="track-milestones-grid">
               {milestones.map((m) => {
                 const isPassed = currentStep >= m.step && currentStep !== -1;
                 const isCurrent = currentStep === m.step;
@@ -330,22 +389,20 @@ function TrackOrderContent() {
                       alignItems: "center",
                       justifyContent: "center",
                       background: isPassed
-                        ? isCurrent
-                          ? "#f97316"
-                          : "#059669"
-                        : "#f1f5f9",
-                      color: isPassed ? "#ffffff" : "#94a3b8",
-                      boxShadow: isCurrent ? "0 4px 14px rgba(249, 115, 22, 0.4)" : "none",
-                      border: `2px solid ${isPassed ? "transparent" : "#e2e8f0"}`,
+                        ? "#000000"
+                        : "#f4f4f5",
+                      color: isPassed ? "#ffffff" : "#a1a1aa",
+                      boxShadow: isCurrent ? "0 4px 14px rgba(0, 0, 0, 0.25)" : "none",
+                      border: `2px solid ${isPassed ? "#000000" : "#e4e4e7"}`,
                       transition: "all 200ms ease",
                     }}>
                       <Icon size={22} />
                     </div>
 
-                    <div style={{ fontSize: "14px", fontWeight: isCurrent ? "800" : "700", color: isPassed ? "#0f172a" : "#94a3b8" }}>
+                    <div style={{ fontSize: "14px", fontWeight: isCurrent ? "900" : "700", color: isPassed ? "#000000" : "#a1a1aa" }}>
                       {m.title}
                     </div>
-                    <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>
+                    <div style={{ fontSize: "11px", color: "#71717a", marginTop: "2px" }}>
                       {m.desc}
                     </div>
                   </div>
@@ -357,13 +414,14 @@ function TrackOrderContent() {
           {/* Courier & Tracking Details Card (AST) */}
           <div style={{
             background: "#ffffff",
-            border: "1px solid #e2e8f0",
+            border: "1px solid #e4e4e7",
             borderRadius: "16px",
             padding: "28px 32px",
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.02)",
+            boxSizing: "border-box",
           }}>
-            <h3 style={{ fontSize: "16px", fontWeight: "800", color: "#0f172a", margin: "0 0 16px", display: "flex", alignItems: "center", gap: "8px" }}>
-              <Truck size={18} color="#f97316" /> Courier Dispatch Details
+            <h3 style={{ fontSize: "16px", fontWeight: "800", color: "#000000", margin: "0 0 16px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <Truck size={18} color="#000000" /> Courier Dispatch Details
             </h3>
 
             {trackingData.tracking_items && trackingData.tracking_items.length > 0 ? (
@@ -372,8 +430,8 @@ function TrackOrderContent() {
                   <div
                     key={idx}
                     style={{
-                      background: "#f8fafc",
-                      border: "1px solid #e2e8f0",
+                      background: "#fafafa",
+                      border: "1px solid #e4e4e7",
                       borderRadius: "12px",
                       padding: "20px 24px",
                       display: "flex",
@@ -384,14 +442,14 @@ function TrackOrderContent() {
                     }}
                   >
                     <div>
-                      <div style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "#64748b" }}>
+                      <div style={{ fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "#71717a" }}>
                         Courier Partner
                       </div>
-                      <div style={{ fontSize: "18px", fontWeight: "800", color: "#0f172a", marginTop: "2px" }}>
+                      <div style={{ fontSize: "18px", fontWeight: "900", color: "#000000", marginTop: "2px" }}>
                         {item.provider}
                       </div>
                       {item.date_shipped && (
-                        <div style={{ fontSize: "12px", color: "#64748b", marginTop: "2px" }}>
+                        <div style={{ fontSize: "12px", color: "#71717a", marginTop: "2px" }}>
                           Shipped on: {item.date_shipped}
                         </div>
                       )}
@@ -399,18 +457,18 @@ function TrackOrderContent() {
 
                     <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                       {item.tracking_number && (
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#ffffff", padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
-                          <span style={{ fontSize: "12px", color: "#64748b" }}>AWB:</span>
-                          <strong style={{ fontSize: "14px", color: "#0f172a", fontFamily: "Consolas, Monaco, monospace" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#ffffff", padding: "8px 14px", borderRadius: "8px", border: "1px solid #d4d4d8" }}>
+                          <span style={{ fontSize: "12px", color: "#71717a" }}>AWB:</span>
+                          <strong style={{ fontSize: "14px", color: "#000000", fontFamily: "Consolas, Monaco, monospace" }}>
                             {item.tracking_number}
                           </strong>
                           <button
                             type="button"
                             onClick={() => handleCopy(item.tracking_number)}
                             title="Copy AWB Number"
-                            style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: "2px", display: "flex" }}
+                            style={{ background: "none", border: "none", cursor: "pointer", color: "#000000", padding: "2px", display: "flex" }}
                           >
-                            {copiedAwb ? <Check size={15} color="#059669" /> : <Copy size={15} />}
+                            {copiedAwb ? <Check size={15} color="#000000" /> : <Copy size={15} />}
                           </button>
                         </div>
                       )}
@@ -424,14 +482,14 @@ function TrackOrderContent() {
                             display: "inline-flex",
                             alignItems: "center",
                             gap: "6px",
-                            background: "#ea580c",
+                            background: "#000000",
                             color: "#ffffff",
-                            padding: "9px 18px",
+                            padding: "10px 18px",
                             borderRadius: "8px",
                             fontSize: "13px",
                             fontWeight: "700",
                             textDecoration: "none",
-                            boxShadow: "0 4px 12px rgba(234, 88, 12, 0.25)",
+                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
                           }}
                         >
                           <span>Track on {item.provider}</span>
@@ -444,11 +502,11 @@ function TrackOrderContent() {
               </div>
             ) : (
               <div style={{
-                background: "#f8fafc",
-                border: "1px dashed #cbd5e1",
+                background: "#fafafa",
+                border: "1px dashed #d4d4d8",
                 borderRadius: "12px",
                 padding: "20px 24px",
-                color: "#475569",
+                color: "#27272a",
                 fontSize: "13px",
                 lineHeight: "1.6",
               }}>
@@ -457,19 +515,20 @@ function TrackOrderContent() {
             )}
           </div>
 
-          {/* Shipping Address & Purchased Items Grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+          {/* Shipping Address & Support Grid */}
+          <div className="track-two-col">
             {/* Delivery Destination */}
             <div style={{
               background: "#ffffff",
-              border: "1px solid #e2e8f0",
+              border: "1px solid #e4e4e7",
               borderRadius: "16px",
               padding: "24px",
+              boxSizing: "border-box",
             }}>
-              <h4 style={{ fontSize: "14px", fontWeight: "800", color: "#0f172a", margin: "0 0 12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                <MapPin size={16} color="#0284c7" /> Delivery Destination
+              <h4 style={{ fontSize: "14px", fontWeight: "800", color: "#000000", margin: "0 0 12px", display: "flex", alignItems: "center", gap: "6px" }}>
+                <MapPin size={16} color="#000000" /> Delivery Destination
               </h4>
-              <div style={{ fontSize: "13px", color: "#334155", lineHeight: "1.7" }}>
+              <div style={{ fontSize: "13px", color: "#27272a", lineHeight: "1.7", wordBreak: "break-word" }}>
                 <strong>{trackingData.shipping_address?.name}</strong><br />
                 {trackingData.shipping_address?.address}<br />
                 {trackingData.shipping_address?.city}, {trackingData.shipping_address?.state} {trackingData.shipping_address?.postcode}<br />
@@ -480,21 +539,22 @@ function TrackOrderContent() {
             {/* Support Box */}
             <div style={{
               background: "#ffffff",
-              border: "1px solid #e2e8f0",
+              border: "1px solid #e4e4e7",
               borderRadius: "16px",
               padding: "24px",
+              boxSizing: "border-box",
             }}>
-              <h4 style={{ fontSize: "14px", fontWeight: "800", color: "#0f172a", margin: "0 0 12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                <Phone size={16} color="#059669" /> Need Assistance?
+              <h4 style={{ fontSize: "14px", fontWeight: "800", color: "#000000", margin: "0 0 12px", display: "flex", alignItems: "center", gap: "6px" }}>
+                <Phone size={16} color="#000000" /> Need Assistance?
               </h4>
-              <p style={{ fontSize: "13px", color: "#64748b", margin: "0 0 12px", lineHeight: "1.6" }}>
-                If you have urgent queries regarding delivery timelines or bulk transport dispatch:
+              <p style={{ fontSize: "13px", color: "#71717a", margin: "0 0 12px", lineHeight: "1.6" }}>
+                For questions regarding delivery timelines or bulk transport dispatch:
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: "6px", fontSize: "13px" }}>
-                <a href="tel:+919251859361" style={{ color: "#0f172a", textDecoration: "none", fontWeight: "700" }}>
+                <a href="tel:+919251859361" style={{ color: "#000000", textDecoration: "none", fontWeight: "800" }}>
                   📞 +91 9251859361
                 </a>
-                <a href="mailto:sales@screwnet.in" style={{ color: "#0f172a", textDecoration: "none", fontWeight: "700" }}>
+                <a href="mailto:sales@screwnet.in" style={{ color: "#000000", textDecoration: "none", fontWeight: "800" }}>
                   ✉️ sales@screwnet.in
                 </a>
               </div>
@@ -505,30 +565,31 @@ function TrackOrderContent() {
           {trackingData.items && trackingData.items.length > 0 && (
             <div style={{
               background: "#ffffff",
-              border: "1px solid #e2e8f0",
+              border: "1px solid #e4e4e7",
               borderRadius: "16px",
               padding: "24px 32px",
+              boxSizing: "border-box",
             }}>
-              <h4 style={{ fontSize: "15px", fontWeight: "800", color: "#0f172a", margin: "0 0 16px" }}>
+              <h4 style={{ fontSize: "15px", fontWeight: "800", color: "#000000", margin: "0 0 16px" }}>
                 Items in This Shipment ({trackingData.items.length})
               </h4>
               <div style={{ display: "grid", gap: "12px" }}>
                 {trackingData.items.map((item, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px dashed #e2e8f0" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px dashed #e4e4e7", gap: "12px", flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0, flex: 1 }}>
                       {item.image ? (
-                        <img src={item.image} alt={item.name} style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e2e8f0" }} />
+                        <img src={item.image} alt={item.name} style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e4e4e7", flexShrink: 0 }} />
                       ) : (
-                        <div style={{ width: "40px", height: "40px", borderRadius: "6px", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <Package size={16} color="#94a3b8" />
+                        <div style={{ width: "40px", height: "40px", borderRadius: "6px", background: "#f4f4f5", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                          <Package size={16} color="#000000" />
                         </div>
                       )}
-                      <div>
-                        <div style={{ fontSize: "13px", fontWeight: "700", color: "#1e293b" }}>{item.name}</div>
-                        <div style={{ fontSize: "12px", color: "#64748b" }}>Quantity: <b>{item.quantity}</b></div>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: "13px", fontWeight: "700", color: "#000000", wordBreak: "break-word" }}>{item.name}</div>
+                        <div style={{ fontSize: "12px", color: "#71717a" }}>Quantity: <b>{item.quantity}</b></div>
                       </div>
                     </div>
-                    <div style={{ fontSize: "14px", fontWeight: "800", color: "#0f172a" }}>
+                    <div style={{ fontSize: "14px", fontWeight: "800", color: "#000000", whiteSpace: "nowrap" }}>
                       ₹{Number(item.total).toFixed(2)}
                     </div>
                   </div>
@@ -540,8 +601,8 @@ function TrackOrderContent() {
       )}
 
       {/* Trust Badge Footer */}
-      <div style={{ marginTop: "40px", textAlign: "center", fontSize: "12px", color: "#94a3b8", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-        <ShieldCheck size={16} />
+      <div style={{ marginTop: "40px", textAlign: "center", fontSize: "12px", color: "#71717a", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+        <ShieldCheck size={16} color="#000000" />
         <span>screwnet Quality Guaranteed &bull; Fasteners Shipped Directly from Udaipur, Rajasthan</span>
       </div>
     </div>
@@ -551,7 +612,7 @@ function TrackOrderContent() {
 export default function TrackOrderPage() {
   return (
     <Suspense fallback={
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px", color: "#64748b", gap: "12px" }}>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px", color: "#71717a", gap: "12px" }}>
         <RefreshCw className="animate-spin" size={20} />
         <span>Loading order tracker...</span>
       </div>

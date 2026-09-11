@@ -386,6 +386,8 @@ export function AccountPortalView() {
   // =========================================================================
   if (token && user) {
     const initials = (user.first_name?.[0] || user.display_name?.[0] || user.email?.[0] || "U").toUpperCase();
+    const cleanLastName = (user.last_name && !user.last_name.includes("@") && user.last_name !== user.email) ? user.last_name : "";
+    const greetingName = user.first_name ? `${user.first_name}${cleanLastName ? " " + cleanLastName : ""}` : (user.display_name && !user.display_name.includes("@") ? user.display_name : "Customer");
 
     return (
       <div className="account-portal-wrapper">
@@ -395,10 +397,10 @@ export function AccountPortalView() {
             <div className="account-avatar">{initials}</div>
             <div className="account-user-names">
               <h1>
-                Hello, {user.first_name ? `${user.first_name} ${user.last_name || ""}` : user.display_name}
+                Hello, {greetingName}
                 <span className="account-role-badge">Verified Customer</span>
               </h1>
-              <p>{user.email}</p>
+              <p className="account-user-email">{user.email}</p>
             </div>
           </div>
           <button type="button" onClick={handleLogout} className="account-logout-btn">
@@ -538,7 +540,7 @@ export function AccountPortalView() {
                         <Link
                           href={`/track-order?order=${order.number}&identifier=${encodeURIComponent(user?.email || "")}`}
                           className="order-view-btn"
-                          style={{ textDecoration: "none", color: "#f97316", background: "rgba(249, 115, 22, 0.1)", border: "1px solid rgba(249, 115, 22, 0.2)" }}
+                          style={{ textDecoration: "none", color: "#000000", background: "#f4f4f5", border: "1px solid #d4d4d8" }}
                         >
                           <PackageCheck size={13} /> Track
                         </Link>
@@ -579,9 +581,9 @@ export function AccountPortalView() {
             </div>
 
             {ordersLoading ? (
-              <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>
-                <RefreshCw className="animate-spin" size={20} style={{ display: "inline-block", marginRight: "8px" }} />
-                Loading your orders...
+              <div style={{ padding: "48px 0", textAlign: "center", color: "#64748b" }}>
+                <RefreshCw className="animate-spin" size={24} style={{ margin: "0 auto 12px" }} />
+                <div>Fetching your orders...</div>
               </div>
             ) : orders.length > 0 ? (
               <div className="orders-list-grid">
@@ -589,8 +591,11 @@ export function AccountPortalView() {
                   <div key={order.id} className="order-card">
                     <div className="order-card-header">
                       <div className="order-id-group">
-                        <span className="order-id-text">Order #{order.number}</span>
-                        <span className="order-date-text">{order.date?.split(" ")[0]}</span>
+                        <Package size={18} color="#000000" />
+                        <div>
+                          <div className="order-id-text">Order #{order.number}</div>
+                          <div className="order-date-text">{order.date}</div>
+                        </div>
                       </div>
                       <span className={`order-status-pill status-${order.status}`}>
                         {order.status_name || order.status}
@@ -604,7 +609,7 @@ export function AccountPortalView() {
                             <img src={item.image} alt={item.name} className="order-item-thumb" />
                           ) : (
                             <div className="order-item-thumb" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              <Package size={18} color="#94a3b8" />
+                              <Package size={18} color="#000000" />
                             </div>
                           )}
                           <div className="order-item-title">
@@ -625,7 +630,7 @@ export function AccountPortalView() {
                         <Link
                           href={`/track-order?order=${order.number}&identifier=${encodeURIComponent(user?.email || "")}`}
                           className="order-view-btn"
-                          style={{ textDecoration: "none", color: "#f97316", background: "rgba(249, 115, 22, 0.1)", border: "1px solid rgba(249, 115, 22, 0.2)" }}
+                          style={{ textDecoration: "none", color: "#000000", background: "#f4f4f5", border: "1px solid #d4d4d8" }}
                         >
                           <PackageCheck size={13} /> Track
                         </Link>
@@ -679,7 +684,7 @@ export function AccountPortalView() {
                 <div>
                   <div className="address-card-header">
                     <h3>
-                      <CreditCard size={18} color="#f97316" /> Billing Address
+                      <CreditCard size={18} color="#000000" /> Billing Address
                     </h3>
                     <button type="button" onClick={() => startEditAddress("billing")} className="address-edit-link">
                       <Edit2 size={13} /> Edit
@@ -807,7 +812,7 @@ export function AccountPortalView() {
                 <div>
                   <div className="address-card-header">
                     <h3>
-                      <MapPin size={18} color="#0284c7" /> Shipping Address
+                      <MapPin size={18} color="#000000" /> Shipping Address
                     </h3>
                     <button type="button" onClick={() => startEditAddress("shipping")} className="address-edit-link">
                       <Edit2 size={13} /> Edit
@@ -986,7 +991,7 @@ export function AccountPortalView() {
 
               <div className="password-change-box">
                 <h3>
-                  <Lock size={16} color="#f97316" /> Password Change (Leave blank to keep unchanged)
+                  <Lock size={16} color="#000000" /> Password Change (Leave blank to keep unchanged)
                 </h3>
 
                 <div className="account-input-group">
@@ -1218,7 +1223,7 @@ export function AccountPortalView() {
           ) : isVerifyingOtp ? (
             <div className="fade-in">
               <div className="account-form-header">
-                <div className="form-icon" style={{ background: "rgba(16, 185, 129, 0.12)", color: "#059669" }}>
+                <div className="form-icon" style={{ background: "#f4f4f5", color: "#000000" }}>
                   <ShieldCheck size={28} />
                 </div>
                 <h2>Verify Your Email</h2>
@@ -1250,16 +1255,16 @@ export function AccountPortalView() {
                         fontWeight: "800",
                         letterSpacing: "8px",
                         borderRadius: "12px",
-                        border: "2px solid #0f172a",
-                        color: "#0f172a",
-                        background: "#f8fafc",
+                        border: "2px solid #000000",
+                        color: "#000000",
+                        background: "#f4f4f5",
                         padding: "0 12px",
                       }}
                       required
                       autoFocus
                     />
                   </div>
-                  <p style={{ margin: "10px 0 0", fontSize: "12px", color: "#64748b" }}>
+                  <p style={{ margin: "10px 0 0", fontSize: "12px", color: "#71717a" }}>
                     Code valid for 15 minutes. Check spam folder if not received.
                   </p>
                 </div>
@@ -1268,7 +1273,7 @@ export function AccountPortalView() {
                   className="button account-submit-btn"
                   type="submit"
                   disabled={authLoading || otpCode.length < 6}
-                  style={{ background: "#059669" }}
+                  style={{ background: "#000000", color: "#ffffff" }}
                 >
                   {authLoading ? "Activating..." : "Verify & Activate Account"}
                 </button>
@@ -1281,21 +1286,21 @@ export function AccountPortalView() {
                       setOtpCode("");
                       setAuthError("");
                     }}
-                    style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", textDecoration: "underline", padding: 0, fontSize: "12px" }}
+                    style={{ background: "none", border: "none", color: "#71717a", cursor: "pointer", textDecoration: "underline", padding: 0, fontSize: "12px" }}
                   >
                     &larr; Change Email
                   </button>
 
                   {resendCountdown > 0 ? (
-                    <span style={{ color: "#94a3b8", fontSize: "12px" }}>
-                      Resend code in <strong style={{ color: "#0f172a" }}>{resendCountdown}s</strong>
+                    <span style={{ color: "#a1a1aa", fontSize: "12px" }}>
+                      Resend code in <strong style={{ color: "#000000" }}>{resendCountdown}s</strong>
                     </span>
                   ) : (
                     <button
                       type="button"
                       onClick={handleResendCode}
                       disabled={resendLoading}
-                      style={{ background: "none", border: "none", color: "#f97316", fontWeight: "700", cursor: "pointer", padding: 0, fontSize: "12px" }}
+                      style={{ background: "none", border: "none", color: "#000000", fontWeight: "700", cursor: "pointer", padding: 0, fontSize: "12px" }}
                     >
                       {resendLoading ? "Sending..." : "Resend Code"}
                     </button>

@@ -77,7 +77,7 @@ export async function Footer() {
           <div className="footer-column">
             <h4>Information</h4>
             <Link href="/about">About Us</Link>
-            <Link href="/shop">Quality Catalog</Link>
+            <Link href="/download-catalogue">Download Fastener Catalogue</Link>
             <Link href="/blog">Resources</Link>
             <Link href="/blog">Blog</Link>
             <Link href="/contact">Careers</Link>

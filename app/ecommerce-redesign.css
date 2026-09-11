@@ -2070,7 +2070,7 @@ footer.site-footer.white-theme-footer.pro-site-footer {
     display: flex !important;
     gap: 3px !important;
     margin-bottom: 8px !important;
-    color: #f59e0b !important;
+    color: #000000 !important;
   }
 
   .wooden-review-quote {
@@ -2126,6 +2126,6 @@ footer.site-footer.white-theme-footer.pro-site-footer {
     gap: 3px !important;
     font-size: 10px !important;
     font-weight: 700 !important;
-    color: #16a34a !important;
+    color: #000000 !important;
   }
 }

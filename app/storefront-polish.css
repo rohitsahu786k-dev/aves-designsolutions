@@ -3469,7 +3469,7 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #059669 !important;
+  color: #000000 !important;
   font-size: 11px !important;
   font-weight: 600;
 }
@@ -3498,7 +3498,7 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 }
 
 .developer-credit a:hover {
-  color: #2563eb;
+  color: #000000;
 }
 
 /* Mobile Sticky Navigation & Badges */
@@ -3538,7 +3538,7 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 }
 
 .bottom-nav-item.mobile-whatsapp {
-  color: #16a34a;
+  color: #000000;
 }
 
 .nav-icon-wrapper {
@@ -3668,7 +3668,8 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 
 .forgot-password-link {
   font-size: 11px;
-  color: #2563eb;
+  color: #000000;
+  text-decoration: underline;
 }
 
 .input-with-icon {
@@ -4047,7 +4048,7 @@ html, body, main {
 }
 
 .marquee-separator {
-  color: #f59e0b;
+  color: rgba(255, 255, 255, 0.4);
   font-size: 10px;
 }
 
