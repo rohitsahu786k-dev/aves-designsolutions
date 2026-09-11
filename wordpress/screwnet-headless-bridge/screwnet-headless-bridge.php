@@ -189,3 +189,123 @@ add_action( 'rest_api_init', function () {
 		},
 	) );
 } );
+
+// =========================================================================
+// 3. FRONTEND REDIRECT TO WP-LOGIN (No public storefront on wp.screwnet.in)
+// =========================================================================
+add_action( 'template_redirect', function () {
+	// Skip if running in WP admin, AJAX, CRON, or REST API
+	if ( is_admin() || wp_doing_ajax() || wp_doing_cron() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+		return;
+	}
+
+	$request_uri = $_SERVER['REQUEST_URI'] ?? '';
+	if ( false !== strpos( $request_uri, '/wp-json' ) || false !== strpos( $request_uri, 'rest_route' ) ) {
+		return;
+	}
+
+	// Skip if cart handoff parameter is present
+	if ( ! empty( $_GET['screwnet_cart_handoff'] ) ) {
+		return;
+	}
+
+	// If logged in, redirect to admin dashboard
+	if ( is_user_logged_in() ) {
+		wp_safe_redirect( admin_url() );
+		exit;
+	}
+
+	// Otherwise, redirect frontend visitors directly to WordPress Login
+	wp_safe_redirect( wp_login_url() );
+	exit;
+}, 1 );
+
+// =========================================================================
+// 4. CUSTOM SCREWNET BRANDING ON LOGIN PAGE & ADMIN BAR
+// =========================================================================
+
+// A. Replace WordPress Logo with Screwnet Brand Logo on wp-login.php
+add_action( 'login_enqueue_scripts', function () {
+	?>
+	<style type="text/css">
+		body.login {
+			background-color: #0f172a !important;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+		}
+		#login {
+			padding-top: 5% !important;
+		}
+		#login h1 a, .login h1 a {
+			background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 70"><rect width="320" height="70" rx="8" fill="%230f172a"/><g transform="translate(15, 12)"><circle cx="23" cy="23" r="21" fill="%23f97316"/><path d="M14 23h18M23 14v18" stroke="%23ffffff" stroke-width="4" stroke-linecap="round"/><circle cx="23" cy="23" r="12" fill="none" stroke="%230f172a" stroke-width="2.5"/></g><text x="75" y="44" font-family="Montserrat, -apple-system, sans-serif" font-weight="900" font-size="32" fill="%23ffffff" letter-spacing="-0.5">screw<tspan fill="%23f97316">net</tspan><tspan font-size="18" fill="%2394a3b8">.in</tspan></text></svg>') !important;
+			height: 70px !important;
+			width: 320px !important;
+			background-size: contain !important;
+			background-repeat: no-repeat !important;
+			background-position: center !important;
+			margin-bottom: 25px !important;
+		}
+		.login form {
+			background: #ffffff !important;
+			border: 1px solid #e2e8f0 !important;
+			border-radius: 12px !important;
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25) !important;
+			padding: 28px 24px !important;
+		}
+		.login label {
+			font-weight: 600 !important;
+			color: #334155 !important;
+		}
+		.login input[type="text"],
+		.login input[type="password"] {
+			border: 1px solid #cbd5e1 !important;
+			border-radius: 6px !important;
+			padding: 8px 12px !important;
+		}
+		.login input[type="text"]:focus,
+		.login input[type="password"]:focus {
+			border-color: #f97316 !important;
+			box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important;
+		}
+		.wp-core-ui .button-primary {
+			background: #f97316 !important;
+			border-color: #ea580c !important;
+			color: #ffffff !important;
+			text-shadow: none !important;
+			box-shadow: none !important;
+			border-radius: 6px !important;
+			font-weight: 700 !important;
+			padding: 4px 18px !important;
+		}
+		.wp-core-ui .button-primary:hover {
+			background: #ea580c !important;
+		}
+		.login #nav a, .login #backtoblog a {
+			color: #94a3b8 !important;
+		}
+		.login #nav a:hover, .login #backtoblog a:hover {
+			color: #f97316 !important;
+		}
+	</style>
+	<?php
+} );
+
+// B. Link login logo to main storefront screwnet.in
+add_filter( 'login_headerurl', function () {
+	return 'https://screwnet.in';
+} );
+
+// C. Change logo hover title text
+add_filter( 'login_headertext', function () {
+	return 'screwnet | Industrial Fasteners & Screws';
+} );
+
+// D. Remove WordPress logo node from top admin bar
+add_action( 'admin_bar_menu', function ( $wp_admin_bar ) {
+	$wp_admin_bar->remove_node( 'wp-logo' );
+}, 999 );
+
+// E. Custom admin footer note
+add_filter( 'admin_footer_text', function () {
+	return '<span id="footer-thankyou">screwnet Store Backend &bull; <a href="https://screwnet.in" target="_blank" rel="noopener noreferrer">View Live Storefront (screwnet.in)</a></span>';
+} );
+
