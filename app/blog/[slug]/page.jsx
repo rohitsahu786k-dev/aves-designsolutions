@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { ArrowLeft, CalendarDays, Clock, Share2, User, Wrench } from "lucide-react";
-import { getFeaturedImage, getPost } from "@/lib/wp";
+import { getFeaturedImage, getPost, getPostCategoryName } from "@/lib/wp";
 import { decodeHtml, stripHtml, yoastToMetadata } from "@/lib/utils";
 
-export const revalidate = 1800;
+export const revalidate = 15;
 
 export async function generateStaticParams() {
   return [];
@@ -23,7 +23,7 @@ export default async function BlogDetailPage({ params }) {
   const post = await getPost(slug);
   if (!post)
     return (
-      <div className="container page-hero">
+      <div className="container page-hero" style={{ paddingTop: "3rem" }}>
         <h1>Article Not Found</h1>
         <Link href="/blog">Back to All Guides</Link>
       </div>
@@ -40,12 +40,12 @@ export default async function BlogDetailPage({ params }) {
   const whatsappShare = `https://wa.me/?text=${encodeURIComponent(`Read "${title}" on screwnet: ${postUrl}`)}`;
 
   return (
-    <article className="blog-article professional-blog-view">
+    <article className="blog-article professional-blog-view" style={{ paddingTop: "2.5rem" }}>
       <div className="container blog-article-header">
         <Link className="blog-back-btn" href="/blog">
           <ArrowLeft size={15} /> Back to Guides
         </Link>
-        <span className="eyebrow">{post.category || "Fastener Engineering & Standards"}</span>
+        <span className="eyebrow">{getPostCategoryName(post)}</span>
         <h1>{title}</h1>
         {excerpt ? <p className="blog-subtitle">{excerpt}</p> : null}
 

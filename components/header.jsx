@@ -36,7 +36,7 @@ export async function Header() {
   const topLevelItems = menu.filter((item) => !item.parent);
   const phoneDisplay = contact.phonePrimary || "+91 81077 53647";
   const phoneRaw = phoneDisplay.replace(/[^0-9+]/g, "");
-  const salesEmail = contact.salesEmail || "sales@screwnet.in";
+  const salesEmail = contact.salesEmail || "aves.designsolutions@gmail.com";
 
   return (
     <header className="site-header pro-site-header">

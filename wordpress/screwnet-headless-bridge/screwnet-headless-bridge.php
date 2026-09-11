@@ -1108,6 +1108,51 @@ add_action( 'rest_api_init', function () {
 		},
 	) );
 
+	// N. Global Storefront Site Settings & Banners (ACF options + fallback)
+	register_rest_route( 'screwnet/v1', '/site-settings', array(
+		'methods'             => 'GET',
+		'permission_callback' => '__return_true',
+		'callback'            => function () {
+			$options = function_exists( 'get_fields' ) ? ( get_fields( 'options' ) ?: array() ) : array();
+
+			// Also check front page ACF fields
+			$front_page = get_page_by_path( 'home' ) ?: ( get_option( 'page_on_front' ) ? get_post( get_option( 'page_on_front' ) ) : null );
+			$front_acf  = ( $front_page && function_exists( 'get_fields' ) ) ? ( get_fields( $front_page->ID ) ?: array() ) : array();
+
+			return rest_ensure_response( array(
+				'contact' => array(
+					'email'           => $options['contact_email'] ?? $front_acf['contact_email'] ?? 'aves.designsolutions@gmail.com',
+					'phone'           => $options['contact_phone'] ?? $front_acf['contact_phone'] ?? '+91 81077 53647',
+					'whatsapp_number' => $options['contact_whatsapp'] ?? $front_acf['contact_whatsapp'] ?? '918107753647',
+					'address'         => $options['contact_address'] ?? $front_acf['contact_address'] ?? '2, Paneri Belda Road, Udaipur, Rajasthan, India',
+					'working_hours'   => $options['working_hours'] ?? $front_acf['working_hours'] ?? 'Monday – Saturday: 9:00 AM – 6:30 PM',
+				),
+				'banners' => array(
+					'hero_desktop'  => $options['banner_hero_desktop'] ?? $front_acf['banner_desktop'] ?? '',
+					'hero_mobile'   => $options['banner_hero_mobile'] ?? $front_acf['banner_mobile'] ?? '',
+					'promo_desktop' => $options['banner_promo_desktop'] ?? '',
+					'promo_mobile'  => $options['banner_promo_mobile'] ?? '',
+				),
+				'announcement' => $options['top_announcement'] ?? $front_acf['top_announcement'] ?? 'Fast Pan-India Delivery • ISO & DIN Certified High-Tensile Fasteners • Instant GST Invoicing',
+			) );
+		},
+	) );
+
+} );
+
+// Register ACF Options Page for Storefront Site Settings
+add_action( 'acf/init', function () {
+	if ( function_exists( 'acf_add_options_page' ) ) {
+		acf_add_options_page( array(
+			'page_title' => 'Screwnet Storefront Settings & Banners',
+			'menu_title' => 'Storefront ACF',
+			'menu_slug'  => 'screwnet-storefront-settings',
+			'capability' => 'manage_options',
+			'redirect'   => false,
+			'icon_url'   => 'dashicons-admin-generic',
+			'position'   => 59,
+		) );
+	}
 } );
 
 // =========================================================================
