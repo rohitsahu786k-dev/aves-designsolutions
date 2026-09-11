@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <defs>
+    <linearGradient id="appleSnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <linearGradient id="appleRedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#c40012"/>
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="40" fill="url(#appleSnGrad)"/>
+  <rect x="2" y="2" width="176" height="176" rx="38" fill="none" stroke="#27272a" stroke-width="3"/>
+  <polygon points="90,30 140,58 140,118 90,146 40,118 40,58" fill="#ffffff"/>
+  <polygon points="90,44 126,64 126,112 90,132 54,112 54,64" fill="#09090b"/>
+  <rect x="85" y="58" width="10" height="60" rx="4" fill="#ffffff"/>
+  <path d="M60 83h30v10H60a4 4 0 0 1-4-4v-2a4 4 0 0 1 4-4z" fill="#ffffff"/>
+  <path d="M90 83h30a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4H90V83z" fill="url(#appleRedGrad)"/>
+  <circle cx="90" cy="88" r="4" fill="#ffffff"/>
+</svg>

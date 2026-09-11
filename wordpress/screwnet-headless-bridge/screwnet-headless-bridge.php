@@ -1356,6 +1356,74 @@ add_action( 'rest_api_init', function () {
 		},
 	) );
 
+	// R. Update Hero Banners with New Images & Content
+	register_rest_route( 'screwnet/v1', '/update-hero-banners', array(
+		'methods'             => array( 'POST', 'GET' ),
+		'permission_callback' => '__return_true',
+		'callback'            => function () {
+			$banners = array(
+				530 => array(
+					'title'   => 'Precision Industrial Fasteners | SS304 & SS316',
+					'desktop' => 'https://wp.screwnet.in/wp-content/uploads/2026/09/screwnet-hero-banner-1.jpg',
+					'mobile'  => 'https://wp.screwnet.in/wp-content/uploads/2026/09/screwnet-hero-banner-1.jpg',
+					'cta_url' => '/shop?search=SS304',
+				),
+				531 => array(
+					'title'   => 'High Tensile Grade 10.9 & 12.9 Structural Fasteners',
+					'desktop' => 'https://wp.screwnet.in/wp-content/uploads/2026/09/screwnet-hero-banner-2.jpg',
+					'mobile'  => 'https://wp.screwnet.in/wp-content/uploads/2026/09/screwnet-hero-banner-2.jpg',
+					'cta_url' => '/category/allen-socket-head',
+				),
+				532 => array(
+					'title'   => 'Precision Industrial Distribution & Pan-India Dispatch',
+					'desktop' => 'https://wp.screwnet.in/wp-content/uploads/2026/09/screwnet-hero-banner-3.jpg',
+					'mobile'  => 'https://wp.screwnet.in/wp-content/uploads/2026/09/screwnet-hero-banner-3.jpg',
+					'cta_url' => '/shop',
+				),
+			);
+
+			$updated = array();
+
+			foreach ( $banners as $id => $data ) {
+				wp_update_post( array(
+					'ID'         => $id,
+					'post_title' => $data['title'],
+				) );
+
+				$fields = array(
+					'desktop_image'  => $data['desktop'],
+					'mobile_image'   => $data['mobile'],
+					'tablet_image'   => $data['desktop'],
+					'fallback_image' => $data['desktop'],
+					'cta_url'        => $data['cta_url'],
+					'is_active'      => 1,
+					'placement'      => 'home_hero',
+				);
+
+				foreach ( $fields as $k => $v ) {
+					if ( function_exists( 'update_field' ) ) {
+						update_field( $k, $v, $id );
+					}
+					update_post_meta( $id, $k, $v );
+				}
+
+				$updated[] = "Banner $id updated with " . $data['title'];
+			}
+
+			// Trigger Next.js revalidation
+			wp_remote_get( 'https://screwnet.in/api/revalidate?secret=screwnet_revalidate_secret_2026&path=/', array(
+				'timeout'   => 3,
+				'blocking'  => false,
+				'sslverify' => false,
+			) );
+
+			return rest_ensure_response( array(
+				'success' => true,
+				'updated' => $updated,
+			) );
+		},
+	) );
+
 	// Q. Resolve ACF Image IDs to Full URLs in REST API for site_banner & site_contact
 	add_filter( 'rest_prepare_site_banner', function ( $response, $post, $request ) {
 		$data = $response->get_data();

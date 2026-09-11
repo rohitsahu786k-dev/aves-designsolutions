@@ -1,5 +1,4 @@
-export function GET() {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
     <linearGradient id="snGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#18181b"/>
@@ -18,12 +17,4 @@ export function GET() {
   <path d="M22 29h10v4H22a1.5 1.5 0 0 1-1.5-1.5v-1a1.5 1.5 0 0 1 1.5-1.5z" fill="#ffffff"/>
   <path d="M32 29h10a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5H32v-4z" fill="url(#redGrad)"/>
   <circle cx="32" cy="31" r="1.5" fill="#ffffff"/>
-</svg>`;
-
-  return new Response(svg, {
-    headers: {
-      "Content-Type": "image/svg+xml",
-      "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
-    },
-  });
-}
+</svg>

@@ -35,6 +35,14 @@ export const metadata = {
     title: "screwnet | Industrial Fasteners & Screws Store",
     description: "Premium industrial fasteners, drywall screws, self-drilling screws, bolts and hardware with live inventory and fast shipping.",
   },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/apple-icon.svg",
+  },
 };
 
 export default async function RootLayout({ children }) {
