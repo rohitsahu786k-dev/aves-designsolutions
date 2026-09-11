@@ -86,7 +86,7 @@ export async function Footer() {
           <div className="footer-column">
             <h4>Customer Service</h4>
             <Link href="/contact">Contact Us</Link>
-            <Link href="/account">Track Order</Link>
+            <Link href="/track-order">Track Order</Link>
             <FooterPolicyLinks />
           </div>
 

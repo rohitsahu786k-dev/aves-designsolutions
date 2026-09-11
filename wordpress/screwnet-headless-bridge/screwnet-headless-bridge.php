@@ -650,7 +650,6 @@ add_action( 'rest_api_init', function () {
 		'callback'            => function ( WP_REST_Request $request ) {
 			$email = sanitize_email( $request->get_param( 'email' ) );
 			if ( ! is_email( $email ) || ! email_exists( $email ) ) {
-				// Don't leak if email exists or not, but return clean message
 				return rest_ensure_response( array(
 					'success' => true,
 					'message' => 'If an account exists with this email, a reset link has been dispatched.',
@@ -667,7 +666,426 @@ add_action( 'rest_api_init', function () {
 		},
 	) );
 
+	// H. Email Verification: Send 6-Digit Code
+	register_rest_route( 'screwnet/v1', '/auth/send-verification-code', array(
+		'methods'             => 'POST',
+		'permission_callback' => '__return_true',
+		'callback'            => function ( WP_REST_Request $request ) {
+			$email      = sanitize_email( $request->get_param( 'email' ) );
+			$first_name = sanitize_text_field( $request->get_param( 'first_name' ) );
+
+			if ( ! is_email( $email ) ) {
+				return new WP_Error( 'invalid_email', 'Please enter a valid email address.', array( 'status' => 400 ) );
+			}
+
+			if ( email_exists( $email ) ) {
+				return new WP_Error( 'email_exists', 'An account is already registered with this email. Please sign in instead.', array( 'status' => 400 ) );
+			}
+
+			// Generate 6-digit numeric OTP
+			$otp = str_pad( (string) wp_rand( 100000, 999999 ), 6, '0', STR_PAD_LEFT );
+
+			// Store in transient for 15 minutes (900 seconds)
+			$transient_key = 'screwnet_email_otp_' . md5( strtolower( $email ) );
+			set_transient( $transient_key, $otp, 15 * MINUTE_IN_SECONDS );
+
+			// Send professional HTML branded email
+			$sent = screwnet_send_email_verification_code( $email, $otp, $first_name );
+
+			if ( ! $sent ) {
+				// Retry with basic fallback headers if custom headers failed
+				$sent = wp_mail( $email, 'Your screwnet Verification Code: ' . $otp, "Your verification code is: $otp\nThis code expires in 15 minutes." );
+			}
+
+			return rest_ensure_response( array(
+				'success' => true,
+				'message' => 'A 6-digit verification code has been sent to ' . $email . '.',
+			) );
+		},
+	) );
+
+	// I. Email Verification: Verify Code and Create Verified Customer
+	register_rest_route( 'screwnet/v1', '/auth/verify-code', array(
+		'methods'             => 'POST',
+		'permission_callback' => '__return_true',
+		'callback'            => function ( WP_REST_Request $request ) {
+			$email      = sanitize_email( $request->get_param( 'email' ) );
+			$code       = trim( sanitize_text_field( $request->get_param( 'code' ) ) );
+			$password   = (string) $request->get_param( 'password' );
+			$first_name = sanitize_text_field( $request->get_param( 'first_name' ) );
+			$last_name  = sanitize_text_field( $request->get_param( 'last_name' ) );
+			$phone      = sanitize_text_field( $request->get_param( 'phone' ) );
+
+			if ( ! is_email( $email ) || empty( $code ) ) {
+				return new WP_Error( 'missing_fields', 'Email and verification code are required.', array( 'status' => 400 ) );
+			}
+
+			// Validate OTP transient
+			$transient_key = 'screwnet_email_otp_' . md5( strtolower( $email ) );
+			$expected_otp  = get_transient( $transient_key );
+
+			if ( empty( $expected_otp ) || (string) $expected_otp !== (string) $code ) {
+				return new WP_Error( 'invalid_otp', 'The verification code entered is invalid or has expired. Please request a new code.', array( 'status' => 400 ) );
+			}
+
+			// Consume OTP
+			delete_transient( $transient_key );
+
+			// Check if already created in the meantime
+			if ( email_exists( $email ) ) {
+				$existing_user = get_user_by( 'email', $email );
+				$token         = screwnet_generate_customer_token( $existing_user->ID );
+				return rest_ensure_response( array(
+					'success' => true,
+					'token'   => $token,
+					'user'    => screwnet_format_customer_data( $existing_user ),
+				) );
+			}
+
+			if ( strlen( $password ) < 6 ) {
+				return new WP_Error( 'weak_password', 'Password must be at least 6 characters long.', array( 'status' => 400 ) );
+			}
+
+			// Create customer in WooCommerce
+			$extra = array(
+				'first_name' => $first_name,
+				'last_name'  => $last_name,
+				'role'       => 'customer',
+			);
+
+			if ( function_exists( 'wc_create_new_customer' ) ) {
+				$customer_id = wc_create_new_customer( $email, '', $password, $extra );
+			} else {
+				$customer_id = wp_create_user( $email, $password, $email );
+				if ( ! is_wp_error( $customer_id ) ) {
+					wp_update_user( array(
+						'ID'         => $customer_id,
+						'first_name' => $first_name,
+						'last_name'  => $last_name,
+						'role'       => 'customer',
+					) );
+				}
+			}
+
+			if ( is_wp_error( $customer_id ) ) {
+				return new WP_Error( 'registration_failed', $customer_id->get_error_message(), array( 'status' => 400 ) );
+			}
+
+			// Mark customer as verified across WooCommerce and email verification plugins
+			update_user_meta( $customer_id, '_customer_email_verified', 'yes' );
+			update_user_meta( $customer_id, 'wc_email_verified', 'true' );
+			update_user_meta( $customer_id, 'alg_wc_ev_is_activated', '1' );
+			update_user_meta( $customer_id, 'email_verified_at', current_time( 'mysql' ) );
+
+			if ( $phone ) {
+				update_user_meta( $customer_id, 'billing_phone', $phone );
+			}
+			if ( $first_name ) {
+				update_user_meta( $customer_id, 'billing_first_name', $first_name );
+			}
+			if ( $last_name ) {
+				update_user_meta( $customer_id, 'billing_last_name', $last_name );
+			}
+
+			$user  = get_user_by( 'id', $customer_id );
+			$token = screwnet_generate_customer_token( $customer_id );
+
+			return rest_ensure_response( array(
+				'success' => true,
+				'token'   => $token,
+				'user'    => screwnet_format_customer_data( $user ),
+				'message' => 'Email verified and account activated successfully!',
+			) );
+		},
+	) );
+
+	// J. Track Order Endpoint (Reads Advanced Shipment Tracking AST metadata)
+	register_rest_route( 'screwnet/v1', '/track-order', array(
+		'methods'             => 'POST',
+		'permission_callback' => '__return_true',
+		'callback'            => function ( WP_REST_Request $request ) {
+			$order_input = sanitize_text_field( $request->get_param( 'order_id' ) ?: $request->get_param( 'order_number' ) );
+			$identifier  = sanitize_text_field( $request->get_param( 'identifier' ) ?: $request->get_param( 'email' ) ?: $request->get_param( 'phone' ) );
+
+			if ( empty( $order_input ) || empty( $identifier ) ) {
+				return new WP_Error( 'missing_params', 'Order number and billing email or phone are required.', array( 'status' => 400 ) );
+			}
+
+			// Clean order number (#1042 -> 1042)
+			$clean_id = absint( preg_replace( '/[^0-9]/', '', $order_input ) );
+			$order    = null;
+
+			if ( $clean_id && function_exists( 'wc_get_order' ) ) {
+				$order = wc_get_order( $clean_id );
+			}
+
+			// Fallback: search by order_number meta if not found by primary ID
+			if ( ! $order && function_exists( 'wc_get_orders' ) ) {
+				$found = wc_get_orders( array(
+					'limit' => 1,
+					'meta_query' => array(
+						array(
+							'key'     => '_order_number',
+							'value'   => $order_input,
+							'compare' => '=',
+						),
+					),
+				) );
+				if ( ! empty( $found ) ) {
+					$order = $found[0];
+				}
+			}
+
+			if ( ! $order || ! is_a( $order, 'WC_Order' ) ) {
+				return new WP_Error( 'order_not_found', 'No order found matching order number #' . esc_html( $order_input ) . '. Please verify and try again.', array( 'status' => 404 ) );
+			}
+
+			// Verify that identifier matches billing email or billing phone
+			$billing_email = strtolower( trim( $order->get_billing_email() ) );
+			$billing_phone = preg_replace( '/[^0-9]/', '', (string) $order->get_billing_phone() );
+			$clean_ident   = strtolower( trim( $identifier ) );
+			$clean_ident_num = preg_replace( '/[^0-9]/', '', $identifier );
+
+			$matches_email = ( $clean_ident === $billing_email );
+			$matches_phone = ( strlen( $clean_ident_num ) >= 8 && substr( $billing_phone, -10 ) === substr( $clean_ident_num, -10 ) );
+
+			if ( ! $matches_email && ! $matches_phone ) {
+				return new WP_Error( 'verification_failed', 'The email or phone number provided does not match the records for order #' . $order->get_order_number() . '.', array( 'status' => 403 ) );
+			}
+
+			// Retrieve tracking items from Advanced Shipment Tracking (AST)
+			$tracking_items = screwnet_get_order_shipment_tracking( $order );
+			$has_tracking   = ! empty( $tracking_items );
+			$order_status   = $order->get_status();
+
+			// Determine current milestone step:
+			// 1: Order Confirmed
+			// 2: Processing & Packaging
+			// 3: Dispatched & In Transit
+			// 4: Delivered
+			// -1: Cancelled/Refunded
+			$step = 1;
+			if ( in_array( $order_status, array( 'cancelled', 'failed', 'refunded' ), true ) ) {
+				$step = -1;
+			} elseif ( 'completed' === $order_status ) {
+				$step = 4;
+			} elseif ( $has_tracking ) {
+				$step = 3;
+			} elseif ( in_array( $order_status, array( 'processing' ), true ) ) {
+				$step = 2;
+			} else {
+				$step = 1;
+			}
+
+			// Status text description
+			$status_messages = array(
+				1  => 'Your order has been received and confirmed by screwnet.',
+				2  => 'Your fasteners are being picked, packaged, and prepared for dispatch at our warehouse.',
+				3  => 'Your shipment has been handed over to our courier partner and is on its way.',
+				4  => 'Your order has been successfully delivered.',
+				-1 => 'This order was cancelled or refunded.',
+			);
+
+			// Format items summary
+			$items_summary = array();
+			foreach ( $order->get_items() as $item ) {
+				$product   = $item->get_product();
+				$image_url = '';
+				if ( $product && $product->get_image_id() ) {
+					$image_url = wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) ?: '';
+				}
+				$items_summary[] = array(
+					'name'     => $item->get_name(),
+					'quantity' => $item->get_quantity(),
+					'total'    => (float) $item->get_total(),
+					'image'    => $image_url,
+				);
+			}
+
+			return rest_ensure_response( array(
+				'success'           => true,
+				'order_id'          => $order->get_id(),
+				'order_number'      => $order->get_order_number(),
+				'status'            => $order_status,
+				'status_name'       => function_exists( 'wc_get_order_status_name' ) ? wc_get_order_status_name( $order_status ) : ucfirst( $order_status ),
+				'current_step'      => $step,
+				'status_message'    => $status_messages[ $step ] ?? '',
+				'date_created'      => $order->get_date_created() ? $order->get_date_created()->date( 'd M Y, h:i A' ) : '',
+				'total'             => (float) $order->get_total(),
+				'currency'          => $order->get_currency(),
+				'payment_method'    => $order->get_payment_method_title(),
+				'shipping_address'  => array(
+					'name'     => trim( $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name() ) ?: trim( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ),
+					'address'  => trim( $order->get_shipping_address_1() . ' ' . $order->get_shipping_address_2() ) ?: trim( $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ),
+					'city'     => $order->get_shipping_city() ?: $order->get_billing_city(),
+					'state'    => $order->get_shipping_state() ?: $order->get_billing_state(),
+					'postcode' => $order->get_shipping_postcode() ?: $order->get_billing_postcode(),
+				),
+				'tracking_items'    => $tracking_items,
+				'items'             => $items_summary,
+			) );
+		},
+	) );
+
 } );
+
+// =========================================================================
+// HELPER: SEND PROFESSIONAL HTML VERIFICATION CODE EMAIL
+// =========================================================================
+function screwnet_send_email_verification_code( $email, $code, $first_name = '' ) {
+	$subject  = 'Your screwnet Verification Code: ' . $code;
+	$greeting = ! empty( $first_name ) ? 'Hello ' . esc_html( $first_name ) . ',' : 'Hello,';
+
+	$body = '<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>screwnet Email Verification</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;color:#0f172a;">
+	<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:40px 16px;">
+		<tr>
+			<td align="center">
+				<table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,42,0.06);border:1px solid #e2e8f0;">
+					<!-- Header -->
+					<tr>
+						<td style="background:#0f172a;padding:32px 28px;text-align:center;">
+							<div style="font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-0.03em;">
+								screw<span style="color:#ef4444;">net</span><span style="font-size:16px;color:#94a3b8;font-weight:700;">.in</span>
+							</div>
+							<div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:3px;margin-top:4px;">
+								INDUSTRIAL FASTENERS &amp; HARDWARE
+							</div>
+						</td>
+					</tr>
+					<!-- Body -->
+					<tr>
+						<td style="padding:36px 32px 28px;">
+							<h1 style="margin:0 0 12px;font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-0.02em;">
+								Verify Your Email Address
+							</h1>
+							<p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#475569;">
+								' . $greeting . '<br>
+								Thank you for creating an account with <strong>screwnet</strong>. Please use the 6-digit verification code below to confirm your email and complete your registration:
+							</p>
+							<!-- OTP Box -->
+							<table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;">
+								<tr>
+									<td align="center">
+										<div style="display:inline-block;background:#f8fafc;border:2px dashed #0f172a;border-radius:12px;padding:16px 36px;text-align:center;">
+											<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#64748b;letter-spacing:1px;margin-bottom:6px;">
+												One-Time Verification Code
+											</div>
+											<div style="font-size:36px;font-weight:900;letter-spacing:10px;color:#0f172a;font-family:Consolas,Monaco,monospace;margin-left:10px;">
+												' . esc_html( $code ) . '
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+							<p style="margin:20px 0 0;font-size:13px;line-height:1.6;color:#64748b;">
+								&bull; This code is valid for <strong>15 minutes</strong>.<br>
+								&bull; For your security, never share this code with anyone.<br>
+								&bull; If you did not request this verification, please disregard this email.
+							</p>
+						</td>
+					</tr>
+					<!-- Divider -->
+					<tr>
+						<td style="padding:0 32px;"><hr style="border:none;border-top:1px solid #f1f5f9;margin:0;"></td>
+					</tr>
+					<!-- Benefits -->
+					<tr>
+						<td style="padding:20px 32px;background:#fafaf9;">
+							<div style="font-size:12px;font-weight:700;color:#0f172a;margin-bottom:8px;">
+								With your verified screwnet account:
+							</div>
+							<div style="font-size:12px;color:#64748b;line-height:1.6;">
+								&check; Instant GST tax invoicing on all fastener orders<br>
+								&check; Live shipment tracking with partner couriers<br>
+								&check; Faster checkout &amp; saved shipping addresses
+							</div>
+						</td>
+					</tr>
+					<!-- Footer -->
+					<tr>
+						<td style="background:#f1f5f9;padding:24px 32px;text-align:center;font-size:12px;color:#94a3b8;border-top:1px solid #e2e8f0;">
+							<p style="margin:0 0 6px;color:#64748b;font-weight:600;">screwnet &bull; Premium Industrial Fasteners, Screws &amp; Hardware</p>
+							<p style="margin:0;">Udaipur, Rajasthan, India &bull; <a href="https://screwnet.in" style="color:#0f172a;text-decoration:none;font-weight:600;">screwnet.in</a></p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>';
+
+	$headers = array(
+		'Content-Type: text/html; charset=UTF-8',
+		'From: screwnet <sales@screwnet.in>',
+	);
+
+	return wp_mail( $email, $subject, $body, $headers );
+}
+
+// =========================================================================
+// HELPER: EXTRACT AST SHIPMENT TRACKING DETAILS
+// =========================================================================
+function screwnet_get_order_shipment_tracking( $order ) {
+	$order_id       = $order->get_id();
+	$tracking_items = array();
+
+	// 1. Check if AST (Advanced Shipment Tracking) helper function exists
+	if ( function_exists( 'ast_get_tracking_items' ) ) {
+		$tracking_items = ast_get_tracking_items( $order_id );
+	}
+
+	// 2. Fallback to WooCommerce postmeta _wc_shipment_tracking_items
+	if ( empty( $tracking_items ) ) {
+		$meta = $order->get_meta( '_wc_shipment_tracking_items', true );
+		if ( ! empty( $meta ) && is_array( $meta ) ) {
+			$tracking_items = $meta;
+		}
+	}
+
+	$cleaned = array();
+	if ( ! empty( $tracking_items ) && is_array( $tracking_items ) ) {
+		foreach ( $tracking_items as $item ) {
+			$provider = $item['tracking_provider'] ?? $item['custom_tracking_provider'] ?? $item['formatted_tracking_provider'] ?? 'Courier';
+			$number   = $item['tracking_number'] ?? '';
+			$link     = $item['formatted_tracking_link'] ?? $item['tracking_link'] ?? '';
+			$date     = $item['date_shipped'] ?? '';
+			if ( is_numeric( $date ) ) {
+				$date = date( 'd M Y', (int) $date );
+			}
+
+			// Generate courier track URL if tracking link is not populated
+			if ( empty( $link ) && ! empty( $number ) ) {
+				$prov_lower = strtolower( $provider );
+				if ( false !== strpos( $prov_lower, 'delhivery' ) ) {
+					$link = 'https://www.delhivery.com/track/package/' . urlencode( $number );
+				} elseif ( false !== strpos( $prov_lower, 'bluedart' ) ) {
+					$link = 'https://www.bluedart.com/tracking?numbers=' . urlencode( $number );
+				} elseif ( false !== strpos( $prov_lower, 'dtdc' ) ) {
+					$link = 'https://www.dtdc.in/tracking/shipment-tracking.asp';
+				} elseif ( false !== strpos( $prov_lower, 'india post' ) || false !== strpos( $prov_lower, 'speed post' ) ) {
+					$link = 'https://www.indiapost.gov.in/_layouts/15/dpt.ptc.tracktrace/tracktrace.aspx';
+				}
+			}
+
+			$cleaned[] = array(
+				'provider'        => $provider,
+				'tracking_number' => $number,
+				'tracking_link'   => $link,
+				'date_shipped'    => $date,
+			);
+		}
+	}
+
+	return $cleaned;
+}
 
 
 // =========================================================================

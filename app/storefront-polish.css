@@ -3678,19 +3678,24 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 }
 
 .field-icon {
-  position: absolute;
-  left: 14px;
-  color: #94a3b8;
+  position: absolute !important;
+  left: 14px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  pointer-events: none !important;
+  color: #94a3b8 !important;
+  z-index: 2 !important;
 }
 
 .input-with-icon input {
-  width: 100%;
-  height: 46px;
-  padding: 0 42px 0 42px;
+  width: 100% !important;
+  height: 46px !important;
+  padding: 0 44px 0 44px !important;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   font-size: 14px;
   color: #0f172a;
+  box-sizing: border-box !important;
 }
 
 .input-with-icon input:focus {
@@ -3699,12 +3704,16 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 }
 
 .password-toggle {
-  position: absolute;
-  right: 12px;
-  background: transparent;
-  border: 0;
-  color: #64748b;
-  padding: 4px;
+  position: absolute !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: #64748b !important;
+  padding: 4px !important;
+  cursor: pointer !important;
+  z-index: 2 !important;
 }
 
 .account-submit-btn {

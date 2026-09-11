@@ -35,7 +35,9 @@ import {
   updateCustomerProfile,
   updateCustomerAddress,
   getCustomerOrders,
-  requestLostPassword
+  requestLostPassword,
+  sendVerificationCode,
+  verifyCodeAndRegister
 } from "@/lib/customer-auth";
 
 export function AccountPortalView() {
@@ -61,6 +63,23 @@ export function AccountPortalView() {
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
   const [regPhone, setRegPhone] = useState("");
+
+  // OTP Verification State
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [resendCountdown, setResendCountdown] = useState(60);
+  const [resendLoading, setResendLoading] = useState(false);
+
+  // Countdown timer for OTP resend
+  useEffect(() => {
+    let timer;
+    if (isVerifyingOtp && resendCountdown > 0) {
+      timer = setInterval(() => {
+        setResendCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isVerifyingOtp, resendCountdown]);
 
   // Lost Password Modal
   const [showLostPassword, setShowLostPassword] = useState(false);
@@ -184,7 +203,7 @@ export function AccountPortalView() {
     }
   }
 
-  // 4. Handle Registration
+  // 4. Handle Registration Initiation (Send OTP Code)
   async function handleRegister(e) {
     e.preventDefault();
     setAuthError("");
@@ -192,8 +211,33 @@ export function AccountPortalView() {
     setAuthLoading(true);
 
     try {
-      const res = await registerCustomer({
+      await sendVerificationCode(regEmail, regFirstName);
+      setIsVerifyingOtp(true);
+      setResendCountdown(60);
+      setAuthSuccess(`Verification code sent to ${regEmail}. Please enter it below to activate your account.`);
+    } catch (err) {
+      setAuthError(err.message || "Could not send verification code. Please check your information.");
+    } finally {
+      setAuthLoading(false);
+    }
+  }
+
+  // 4b. Handle OTP Verification & Account Activation
+  async function handleVerifyOtp(e) {
+    e.preventDefault();
+    if (!otpCode || otpCode.trim().length < 6) {
+      setAuthError("Please enter the complete 6-digit verification code.");
+      return;
+    }
+
+    setAuthError("");
+    setAuthSuccess("");
+    setAuthLoading(true);
+
+    try {
+      const res = await verifyCodeAndRegister({
         email: regEmail,
+        code: otpCode.trim(),
         password: regPassword,
         first_name: regFirstName,
         last_name: regLastName,
@@ -202,11 +246,28 @@ export function AccountPortalView() {
       setToken(res.token);
       setUser(res.user);
       initFormsFromUser(res.user);
-      setAuthSuccess("Account created successfully!");
+      setIsVerifyingOtp(false);
+      setAuthSuccess("Email verified and account created successfully!");
     } catch (err) {
-      setAuthError(err.message || "Registration failed. Please check your information.");
+      setAuthError(err.message || "Invalid or expired verification code. Please try again.");
     } finally {
       setAuthLoading(false);
+    }
+  }
+
+  // 4c. Handle OTP Resend
+  async function handleResendCode() {
+    if (resendCountdown > 0 || resendLoading) return;
+    setResendLoading(true);
+    setAuthError("");
+    try {
+      await sendVerificationCode(regEmail, regFirstName);
+      setResendCountdown(60);
+      setAuthSuccess("A fresh 6-digit verification code has been dispatched to your email.");
+    } catch (err) {
+      setAuthError(err.message || "Failed to resend verification code.");
+    } finally {
+      setResendLoading(false);
     }
   }
 
@@ -473,9 +534,18 @@ export function AccountPortalView() {
                         Total Amount:
                         <span className="order-total-val">₹{Number(order.total).toFixed(2)}</span>
                       </div>
-                      <button type="button" onClick={() => setSelectedOrder(order)} className="order-view-btn">
-                        View Details
-                      </button>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <Link
+                          href={`/track-order?order=${order.number}&identifier=${encodeURIComponent(user?.email || "")}`}
+                          className="order-view-btn"
+                          style={{ textDecoration: "none", color: "#f97316", background: "rgba(249, 115, 22, 0.1)", border: "1px solid rgba(249, 115, 22, 0.2)" }}
+                        >
+                          <PackageCheck size={13} /> Track
+                        </Link>
+                        <button type="button" onClick={() => setSelectedOrder(order)} className="order-view-btn">
+                          View Details
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -551,9 +621,18 @@ export function AccountPortalView() {
                         Payment: <b>{order.payment_method || "Online / COD"}</b> &bull; Total:
                         <span className="order-total-val">₹{Number(order.total).toFixed(2)}</span>
                       </div>
-                      <button type="button" onClick={() => setSelectedOrder(order)} className="order-view-btn">
-                        View Details
-                      </button>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <Link
+                          href={`/track-order?order=${order.number}&identifier=${encodeURIComponent(user?.email || "")}`}
+                          className="order-view-btn"
+                          style={{ textDecoration: "none", color: "#f97316", background: "rgba(249, 115, 22, 0.1)", border: "1px solid rgba(249, 115, 22, 0.2)" }}
+                        >
+                          <PackageCheck size={13} /> Track
+                        </Link>
+                        <button type="button" onClick={() => setSelectedOrder(order)} className="order-view-btn">
+                          View Details
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -1005,7 +1084,14 @@ export function AccountPortalView() {
                 </div>
               </div>
 
-              <div style={{ textAlign: "right" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Link
+                  href={`/track-order?order=${selectedOrder.number}&identifier=${encodeURIComponent(user?.email || "")}`}
+                  className="btn-primary-save"
+                  style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                >
+                  <PackageCheck size={15} /> Track Shipment
+                </Link>
                 <button type="button" onClick={() => setSelectedOrder(null)} className="btn-secondary-cancel">
                   Close Window
                 </button>
@@ -1030,6 +1116,7 @@ export function AccountPortalView() {
             onClick={() => {
               setAuthMode("login");
               setAuthError("");
+              setIsVerifyingOtp(false);
             }}
           >
             <UserCheck size={16} />
@@ -1128,6 +1215,94 @@ export function AccountPortalView() {
                 </button>
               </form>
             </div>
+          ) : isVerifyingOtp ? (
+            <div className="fade-in">
+              <div className="account-form-header">
+                <div className="form-icon" style={{ background: "rgba(16, 185, 129, 0.12)", color: "#059669" }}>
+                  <ShieldCheck size={28} />
+                </div>
+                <h2>Verify Your Email</h2>
+                <p>
+                  We sent a 6-digit verification code to <strong>{regEmail}</strong>.<br />
+                  Please enter the code below to activate your account.
+                </p>
+              </div>
+
+              <form onSubmit={handleVerifyOtp} className="account-form-grid">
+                <div className="form-field" style={{ textAlign: "center" }}>
+                  <label htmlFor="reg-otp-code-input" style={{ textAlign: "center", display: "block", marginBottom: "8px" }}>
+                    6-Digit Verification Code
+                  </label>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <input
+                      id="reg-otp-code-input"
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={6}
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                      placeholder="• • • • • •"
+                      style={{
+                        width: "240px",
+                        height: "54px",
+                        textAlign: "center",
+                        fontSize: "26px",
+                        fontWeight: "800",
+                        letterSpacing: "8px",
+                        borderRadius: "12px",
+                        border: "2px solid #0f172a",
+                        color: "#0f172a",
+                        background: "#f8fafc",
+                        padding: "0 12px",
+                      }}
+                      required
+                      autoFocus
+                    />
+                  </div>
+                  <p style={{ margin: "10px 0 0", fontSize: "12px", color: "#64748b" }}>
+                    Code valid for 15 minutes. Check spam folder if not received.
+                  </p>
+                </div>
+
+                <button
+                  className="button account-submit-btn"
+                  type="submit"
+                  disabled={authLoading || otpCode.length < 6}
+                  style={{ background: "#059669" }}
+                >
+                  {authLoading ? "Activating..." : "Verify & Activate Account"}
+                </button>
+
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "13px", marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #f1f5f9" }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsVerifyingOtp(false);
+                      setOtpCode("");
+                      setAuthError("");
+                    }}
+                    style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", textDecoration: "underline", padding: 0, fontSize: "12px" }}
+                  >
+                    &larr; Change Email
+                  </button>
+
+                  {resendCountdown > 0 ? (
+                    <span style={{ color: "#94a3b8", fontSize: "12px" }}>
+                      Resend code in <strong style={{ color: "#0f172a" }}>{resendCountdown}s</strong>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleResendCode}
+                      disabled={resendLoading}
+                      style={{ background: "none", border: "none", color: "#f97316", fontWeight: "700", cursor: "pointer", padding: 0, fontSize: "12px" }}
+                    >
+                      {resendLoading ? "Sending..." : "Resend Code"}
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
           ) : (
             <div className="fade-in">
               <div className="account-form-header">
@@ -1215,7 +1390,7 @@ export function AccountPortalView() {
                 </div>
 
                 <button className="button account-submit-btn" type="submit" disabled={authLoading}>
-                  {authLoading ? "Creating Account..." : "Create Account"}
+                  {authLoading ? "Sending Verification Code..." : "Verify Email & Create Account"}
                 </button>
               </form>
             </div>
