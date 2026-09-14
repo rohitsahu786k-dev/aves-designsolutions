@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronDown, FileText, Headphones, Mail, PackageCheck, Phone, ReceiptText, UserRound } from "lucide-react";
 import { getCategories } from "@/lib/wp";
 import { getPrimaryMenu } from "@/lib/wp-menus";
@@ -58,12 +59,15 @@ export async function Header() {
       <div className="container nav-row pro-header-main">
         <HeaderTools menu={menu} categories={featuredCategories} whatsappNumber={contact.whatsappNumber} />
 
-        <Link prefetch={false} className="brand screwnet-brand" href="/" aria-label="screwnet homepage">
-          <span className="brand-logo-text">
-            <span className="brand-logo-main">screw</span>
-            <span className="brand-logo-accent">net</span>
-          </span>
-          <span className="brand-logo-sub">.in</span>
+        <Link prefetch={false} className="brand screwnet-brand" href="/" aria-label="ScrewNet Homepage">
+          <Image
+            src="/images/screwnet-logo.png"
+            alt="ScrewNet"
+            width={240}
+            height={44}
+            priority
+            className="screwnet-brand-img"
+          />
         </Link>
 
         <nav className="main-nav" aria-label="Primary navigation">

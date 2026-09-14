@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronDown, ChevronRight, Heart, HelpCircle, LogIn, Menu, MessageCircle, Offer, Package, Search, ShoppingBag, Sparkles, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { decodeHtml } from "@/lib/utils";
@@ -246,7 +247,13 @@ export function HeaderTools({ menu = [], categories = [], whatsappNumber = proce
                 </nav>
 
                 <div className="myntra-footer-credit">
-                  <p>screwnet</p>
+                  <Image
+                    src="/images/screwnet-logo.png"
+                    alt="ScrewNet"
+                    width={150}
+                    height={27}
+                    className="screwnet-brand-img drawer-logo-img"
+                  />
                   <small>Industrial Screws & Fasteners</small>
                 </div>
               </div>

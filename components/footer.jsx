@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ClipboardCheck, Clock, Headphones, Mail, MapPin, MessageCircle, PackageCheck, Phone, ShieldCheck, Truck } from "lucide-react";
 import { FooterPolicyLinks } from "@/components/footer-policy-links";
 import { getStoreContactInfo } from "@/lib/wp-storefront";
@@ -46,12 +47,14 @@ export async function Footer() {
 
         <div className="footer-grid">
           <div className="footer-brand-column">
-            <Link className="screwnet-brand" href="/" aria-label="screwnet homepage">
-              <span className="brand-logo-text">
-                <span className="brand-logo-main">screw</span>
-                <span className="brand-logo-accent">net</span>
-              </span>
-              <span className="brand-logo-sub">.in</span>
+            <Link className="screwnet-brand" href="/" aria-label="ScrewNet Homepage">
+              <Image
+                src="/images/screwnet-logo.png"
+                alt="ScrewNet"
+                width={230}
+                height={42}
+                className="screwnet-brand-img footer-logo-img"
+              />
             </Link>
             <p>
               Your trusted partner for industrial fasteners. Quality products, reliable service.
