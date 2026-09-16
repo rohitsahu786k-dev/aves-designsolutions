@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { cartSubtotal, couponDiscount } from "@/lib/coupon-utils";
 import { clearCart, readAppliedCoupon, readCart } from "@/lib/cart-store";
+import { getStoredToken } from "@/lib/customer-auth";
 
 const INDIAN_STATES = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
@@ -168,9 +169,14 @@ export function NativeCheckoutForm() {
         customerNote: formData.customerNote.trim(),
       };
 
+      // Sending the portal token lets the store attach this order to the account
+      const authToken = getStoredToken();
       const response = await fetch("/api/checkout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+        },
         body: JSON.stringify(payload),
       });
 

@@ -1,25 +1,29 @@
 "use client";
 
 import { CreditCard, Minus, Plus, ShoppingBag } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { addCartItem, createHandoffUrl, openCartDrawer } from "@/lib/cart-store";
+import { addCartItem, buyNow, openCartDrawer } from "@/lib/cart-store";
 
 export function AddToCartDrawer({ product, compact = false, quantity: suppliedQuantity, disabled = false, cartMeta = {} }) {
+  const router = useRouter();
   const [localQuantity, setLocalQuantity] = useState(1);
   const quantity = suppliedQuantity ?? localQuantity;
   const unavailable = disabled || !product.is_in_stock;
   const needsOptions = product.has_options && !cartMeta.variationId;
   const buttonLabel = !product.is_in_stock ? "Out of stock" : needsOptions ? "Select option" : "Add to bag";
 
+  const variation = { id: cartMeta.variationId || 0, attributes: cartMeta.attributes || {} };
+
   function buyOne() {
     if (unavailable || needsOptions) return;
-    const item = { product: cartMeta.cartProduct || product, quantity, variationId: cartMeta.variationId || 0, variationAttributes: cartMeta.attributes || {} };
-    window.location.href = createHandoffUrl([item], "", "checkout");
+    buyNow(cartMeta.cartProduct || product, quantity, variation);
+    router.push("/checkout");
   }
 
   function addAndOpen() {
     if (unavailable || needsOptions) return;
-    addCartItem(cartMeta.cartProduct || product, quantity, cartMeta);
+    addCartItem(cartMeta.cartProduct || product, quantity, variation);
     openCartDrawer();
   }
 

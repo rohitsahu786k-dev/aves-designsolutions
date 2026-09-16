@@ -1,13 +1,14 @@
 "use client";
 
 import { Check, Clock, FileText, Info, MessageSquare, Minus, PackageCheck, Plus, ShieldCheck, Tag, Truck, Wrench, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { AddToCartDrawer } from "@/components/add-to-cart-drawer";
 import { WishlistButton } from "@/components/wishlist-button";
 import { CouponOffers } from "@/components/coupon-offers";
 import { ProductHighlights } from "@/components/pdp/product-highlights";
 import { BulkEnquiryModal } from "@/components/pdp/bulk-enquiry-modal";
-import { createHandoffUrl } from "@/lib/cart-store";
+import { buyNow } from "@/lib/cart-store";
 import { decodeHtml, formatAttributeLabel, formatPrice, getColorSwatch, isFinishAttribute } from "@/lib/utils";
 
 function normalize(value = "") {
@@ -35,6 +36,7 @@ function alignedQuantity(value, moq, step) {
 }
 
 export function ProductPurchasePanel({ product }) {
+  const router = useRouter();
   const acf = product.acf_fields || {};
   const moq = acf.moq || 1;
   const step = acf.quantityStep || 1;
@@ -327,8 +329,8 @@ export function ProductPurchasePanel({ product }) {
             className="button pdp-buy-now-btn"
             onClick={() => {
               if (!ready || (product.has_options && !variation) || !selectedInStock) return;
-              const item = { product: activeProduct, quantity, variationId: variation?.id || 0, variationAttributes: cartAttributes };
-              window.location.href = createHandoffUrl([item], "", "checkout");
+              buyNow(activeProduct, quantity, { id: variation?.id || 0, attributes: cartAttributes });
+              router.push("/checkout");
             }}
             disabled={!ready || (product.has_options && !variation) || !selectedInStock}
           >
