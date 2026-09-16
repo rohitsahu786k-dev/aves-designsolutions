@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CouponOffers } from "@/components/coupon-offers";
 import { addWishlistItem } from "@/components/wishlist-button";
 import { cartSubtotal, couponDiscount, productUnitPrice } from "@/lib/coupon-utils";
-import { createHandoffUrl, readAppliedCoupon, readCart, removeCartItem, setAppliedCoupon, updateCartItem } from "@/lib/cart-store";
+import { readAppliedCoupon, readCart, removeCartItem, setAppliedCoupon, updateCartItem } from "@/lib/cart-store";
 
 const money = (value) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 }).format(value || 0);
 
@@ -42,7 +42,6 @@ export function CartView() {
   const minimumMet = subtotal >= 300;
   const progress = Math.min(100, (subtotal / 300) * 100);
   const total = useMemo(() => Math.max(0, subtotal - discount), [subtotal, discount]);
-  const checkoutUrl = useMemo(() => createHandoffUrl(items, coupon, "checkout"), [items, coupon]);
 
   function update(key, quantity) {
     if (quantity < 1) {
@@ -198,10 +197,10 @@ export function CartView() {
             </div>
 
             {minimumMet ? (
-              <a className="button full-width-checkout-btn" href={checkoutUrl}>
+              <Link className="button full-width-checkout-btn" href="/checkout">
                 <span>Proceed to Checkout</span>
                 <ArrowRight size={18} />
-              </a>
+              </Link>
             ) : (
               <button className="button full-width-checkout-btn" disabled>
                 Minimum Order {money(300)}

@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CouponOffers } from "@/components/coupon-offers";
 import { addWishlistItem } from "@/components/wishlist-button";
 import { cartSubtotal, couponDiscount, productUnitPrice } from "@/lib/coupon-utils";
-import { createHandoffUrl, readAppliedCoupon, readCart, removeCartItem, setAppliedCoupon, updateCartItem } from "@/lib/cart-store";
+import { readAppliedCoupon, readCart, removeCartItem, setAppliedCoupon, updateCartItem } from "@/lib/cart-store";
 
 const money = (value) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 }).format(value || 0);
 
@@ -61,7 +61,6 @@ export function GlobalCartDrawer() {
   const activeCoupon = useMemo(() => coupons.find((offer) => offer.code.toLowerCase() === coupon.toLowerCase()), [coupons, coupon]);
   const discount = useMemo(() => (activeCoupon ? couponDiscount(activeCoupon, items) : 0), [activeCoupon, items]);
   const total = useMemo(() => Math.max(0, subtotal - discount), [subtotal, discount]);
-  const checkoutUrl = useMemo(() => createHandoffUrl(items, coupon, "checkout"), [items, coupon]);
   const progress = Math.min(100, (subtotal / 300) * 100);
   const itemCount = items.reduce((sum, item) => sum + Number(item.quantity || 1), 0);
 
@@ -216,9 +215,9 @@ export function GlobalCartDrawer() {
             </div>
             <small className="checkout-note">Direct checkout with live pricing, stock and GST billing.</small>
             {subtotal >= 300 ? (
-              <a className="button drawer-checkout" href={checkoutUrl}>
+              <Link className="button drawer-checkout" href="/checkout" onClick={() => setOpen(false)}>
                 <CreditCard size={18} /> Proceed to Checkout
-              </a>
+              </Link>
             ) : (
               <button className="button drawer-checkout" disabled>
                 Minimum Order {money(300)}
