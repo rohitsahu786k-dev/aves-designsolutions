@@ -2,22 +2,25 @@
    Native Checkout & Order Success Styles
    ========================================================================== */
 
+/* The page already renders this inside .container, so no second container
+   here — a nested max-width made the checkout sit inset from the page hero. */
 .native-checkout-container {
-  max-width: 1200px;
-  margin: 0 auto 3rem auto;
-  padding: 0 1rem;
+  width: 100%;
+  margin: 0 0 3rem 0;
+  padding: 0;
 }
 
 .native-checkout-layout {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  gap: 1.75rem;
   align-items: start;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .native-checkout-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
   }
 }
 
@@ -508,4 +511,131 @@
   color: #64748b;
   margin: 0;
   line-height: 1.4;
+}
+
+/* ==========================================================================
+   Checkout layout corrections
+   Global .form-field rules in globals.css carry !important, so the checkout
+   restates its own spacing and control sizing at the same weight.
+   ========================================================================== */
+.native-checkout-layout .form-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.4rem !important;
+  margin-bottom: 0 !important;
+  min-width: 0;
+}
+
+.native-checkout-layout .form-field label {
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  color: #334155 !important;
+}
+
+.native-checkout-layout .form-field input,
+.native-checkout-layout .form-field select,
+.native-checkout-layout .form-field textarea {
+  width: 100% !important;
+  height: 46px !important;
+  padding: 0 0.9rem !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  font-size: 0.95rem !important;
+  line-height: 1.2 !important;
+  color: #0f172a !important;
+  background: #ffffff !important;
+}
+
+.native-checkout-layout .form-field textarea {
+  height: auto !important;
+  min-height: 88px !important;
+  padding: 0.7rem 0.9rem !important;
+  resize: vertical !important;
+}
+
+.native-checkout-layout .form-field input:focus,
+.native-checkout-layout .form-field select:focus,
+.native-checkout-layout .form-field textarea:focus {
+  border-color: #0f172a !important;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08) !important;
+}
+
+.native-checkout-layout .form-field .input-disabled {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+}
+
+/* Payment option: give the label room instead of squeezing it into a column */
+.payment-option-card {
+  align-items: center;
+  gap: 1rem;
+}
+
+.payment-option-card input[type="radio"] {
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+.payment-option-info {
+  min-width: 0;
+}
+
+.payment-title {
+  flex-wrap: wrap;
+  row-gap: 0.35rem;
+}
+
+.payment-option-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #475569;
+}
+
+/* GST row lines up with the step cards around it */
+.gst-toggle-header {
+  align-items: flex-start;
+}
+
+/* Loading skeleton — keeps the page height stable while the bag is read
+   from localStorage, so the checkout no longer flashes the empty state */
+.checkout-skeleton-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: linear-gradient(100deg, #f8fafc 30%, #eef2f7 50%, #f8fafc 70%);
+  background-size: 220% 100%;
+  animation: checkout-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.checkout-skeleton-card.short { height: 150px; }
+.checkout-skeleton-card.tall { height: 260px; }
+.checkout-skeleton-card.taller { height: 380px; }
+
+@keyframes checkout-skeleton-shimmer {
+  from { background-position: 180% 0; }
+  to { background-position: -20% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkout-skeleton-card { animation: none; }
+}
+
+@media (max-width: 767px) {
+  .native-checkout-container { margin-bottom: 2rem; }
+
+  .checkout-step-card,
+  .summary-sticky-card {
+    padding: 1.15rem 1rem;
+    border-radius: 10px;
+  }
+
+  .step-header { gap: 0.65rem; margin-bottom: 1rem; }
+  .step-header h2 { font-size: 1.05rem; }
+  .checkout-form-main { gap: 1rem; }
+  .native-checkout-layout .form-field input,
+  .native-checkout-layout .form-field select { height: 44px !important; }
+  .summary-sticky-card { position: static; }
+  .payment-option-card { padding: 0.9rem; }
 }

@@ -43,6 +43,7 @@ const money = (val) =>
 export function NativeCheckoutForm() {
   const router = useRouter();
   const [items, setItems] = useState([]);
+  const [hydrated, setHydrated] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -65,15 +66,22 @@ export function NativeCheckoutForm() {
   });
 
   useEffect(() => {
-    setItems(readCart());
-    const code = readAppliedCoupon();
-    if (code) setCouponCode(code);
+    // The bag lives in localStorage, so read it after paint and keep the
+    // skeleton until then — otherwise the empty state flashes and the page jumps
+    const frame = window.requestAnimationFrame(() => {
+      setItems(readCart());
+      const code = readAppliedCoupon();
+      if (code) setCouponCode(code);
+      setHydrated(true);
+    });
 
     // Fetch active coupons to calculate discount
     fetch("/api/coupons")
       .then((res) => (res.ok ? res.json() : { coupons: [] }))
       .then((data) => setCoupons(data.coupons || []))
       .catch(() => setCoupons([]));
+
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   const subtotal = useMemo(() => cartSubtotal(items), [items]);
@@ -202,6 +210,23 @@ export function NativeCheckoutForm() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (!hydrated) {
+    return (
+      <div className="native-checkout-container">
+        <div className="native-checkout-layout" aria-hidden="true">
+          <div className="checkout-form-main">
+            <div className="checkout-skeleton-card tall" />
+            <div className="checkout-skeleton-card taller" />
+            <div className="checkout-skeleton-card short" />
+          </div>
+          <div className="checkout-summary-sidebar">
+            <div className="checkout-skeleton-card tall" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!items.length) {
