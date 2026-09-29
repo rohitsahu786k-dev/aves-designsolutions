@@ -1,0 +1,256 @@
+/* ==========================================================================
+   Client review round — loaded last so these corrections win the cascade.
+   ========================================================================== */
+
+/* The markup used .sr-only for the sort <label>, but the utility was never
+   defined, so "Sort by" rendered as visible text pressed against the dropdown. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.collection-toolbar .toolbar-left {
+  gap: 18px;
+}
+
+.sort-select-wrapper .collection-sort-dropdown {
+  min-height: 38px;
+  padding: 0 34px 0 12px;
+}
+
+/* --------------------------------------------------------------------------
+   Header: one search box on desktop, centred action labels
+   -------------------------------------------------------------------------- */
+
+/* The full search row is already visible on desktop, so the icon trigger beside
+   the cart was a second, redundant search entry point. Mobile hides the search
+   row and re-enables this button inside its own media query. */
+.pro-site-header .nav-actions .pro-search-trigger {
+  display: none;
+}
+
+.pro-site-header .nav-actions .icon-button,
+.pro-site-header .cart-nav-button {
+  display: inline-flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.pro-site-header .nav-actions .icon-button::after,
+.pro-site-header .cart-nav-button::after {
+  margin-left: 0;
+  line-height: 1;
+}
+
+/* The category select sat at 1px while the adjoining search field was 1.5px, so
+   the two halves of the control never met and the outline looked broken. */
+.pro-header-search-inner .pro-category-select {
+  border-width: 1.5px;
+  border-right: 0;
+  padding-right: 12px;
+  gap: 16px;
+}
+
+.pro-header-search-inner .pro-category-select svg {
+  flex: 0 0 auto;
+  margin-right: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Home: category strip is scrollable on desktop too
+   -------------------------------------------------------------------------- */
+.wooden-bubble-shell {
+  position: relative;
+}
+
+.wooden-bubble-arrow {
+  position: absolute;
+  top: 34px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--industrial-border, #e4e4e7);
+  border-radius: 50%;
+  background: #ffffff;
+  color: #111111;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+  transition: opacity 150ms ease, background 150ms ease;
+}
+
+.wooden-bubble-arrow.prev { left: -6px; }
+.wooden-bubble-arrow.next { right: -6px; }
+
+.wooden-bubble-arrow:hover {
+  background: #111111;
+  color: #ffffff;
+}
+
+.wooden-bubble-arrow.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .wooden-bubble-arrow {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Product card: roomier stock pill, tighter vertical rhythm
+   -------------------------------------------------------------------------- */
+
+/* .stock-in inherits a green background from the PDP badge rules but had no
+   padding of its own, so the fill hugged the text. */
+.product-stock-line .stock-in,
+.product-stock-line .stock-out {
+  padding: 3px 9px;
+  border-radius: 99px;
+  line-height: 1.35;
+}
+
+.product-stock-line .stock-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+}
+
+.product-card .price-row {
+  margin-bottom: 2px;
+}
+
+.product-card .product-stock-line {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.product-card .product-title-link h3 {
+  margin-bottom: 4px;
+}
+
+.product-grid,
+.wooden-products-grid {
+  gap: 20px 14px;
+}
+
+/* --------------------------------------------------------------------------
+   Cart & coupons
+   -------------------------------------------------------------------------- */
+.coupon-error {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 8px 0 0;
+  padding: 8px 11px;
+  border: 1px solid #fecaca;
+  border-radius: 7px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.coupon-error svg {
+  flex: 0 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Account: icon and field text must not crowd each other
+   -------------------------------------------------------------------------- */
+.input-with-icon .field-icon {
+  left: 13px !important;
+  width: 17px;
+  height: 17px;
+  color: #64748b !important;
+}
+
+.input-with-icon input {
+  padding-left: 42px !important;
+  padding-right: 44px !important;
+  letter-spacing: 0.01em;
+}
+
+.input-with-icon input[type="password"] {
+  letter-spacing: 0.14em;
+}
+
+/* --------------------------------------------------------------------------
+   About: centred value cards
+   -------------------------------------------------------------------------- */
+.values-grid > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.values-grid > div > svg {
+  width: 28px;
+  height: 28px;
+}
+
+.values-grid h3,
+.values-grid p {
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Footer: the pin icon belongs in front of the first address line, and the
+   payment marks should sit on the same baseline as the ISO label.
+   -------------------------------------------------------------------------- */
+.footer-location {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.footer-location svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.footer-column.contact-column a,
+.footer-column.contact-column span {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.footer-column.contact-column svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.developer-credit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.developer-credit img {
+  height: 18px;
+  width: auto;
+  object-fit: contain;
+}
+
+.developer-credit span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+}

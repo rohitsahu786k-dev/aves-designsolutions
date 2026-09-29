@@ -1,7 +1,17 @@
-import { getFeaturedImage, getPostCategoryName, getPostReadTime, getPostCategories, getPosts } from "@/lib/wp";
+import { getFeaturedImage, getPostCategoryName, getPostReadTime, getPosts } from "@/lib/wp";
 import { decodeHtml } from "@/lib/utils";
-import { getBlogCategories } from "@/lib/screwnet-blogs";
 import BlogListView from "@/components/blog-list-view";
+
+function slugify(value = "") {
+  return value.toLowerCase().trim().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function postCategoryNames(post) {
+  const embedded = (post?._embedded?.["wp:term"] || []).flat().filter((term) => term?.taxonomy === "category");
+  const names = embedded.map((term) => decodeHtml(term.name));
+  if (names.length) return names;
+  return post?.category ? [decodeHtml(post.category)] : [];
+}
 
 export const metadata = {
   title: "Fastener Technical Guides & Engineering Blog | screwnet",
@@ -12,34 +22,38 @@ export const metadata = {
 export const revalidate = 86400;
 
 export default async function BlogPage() {
-  const [rawPosts, wpCategories] = await Promise.all([
-    getPosts(),
-    getPostCategories(),
-  ]);
-
-  // Use live WordPress categories if available, otherwise local fallback
-  const categories =
-    Array.isArray(wpCategories) && wpCategories.length > 0
-      ? wpCategories.map((c) => ({
-          name: decodeHtml(c.name),
-          slug: c.slug,
-          count: c.count,
-          id: c.id,
-        }))
-      : getBlogCategories();
+  const rawPosts = await getPosts();
 
   // Pre-normalize posts for instant client rendering
-  const posts = (rawPosts || []).map((post) => ({
-    id: post.id,
-    slug: post.slug,
-    title: post.title,
-    excerpt: post.excerpt,
-    date: post.date,
-    categories: post.categories,
-    categoryName: getPostCategoryName(post),
-    readTime: getPostReadTime(post),
-    featuredImage: getFeaturedImage(post),
-  }));
+  const posts = (rawPosts || []).map((post) => {
+    const names = postCategoryNames(post);
+    return {
+      id: post.id,
+      slug: post.slug,
+      title: post.title,
+      excerpt: post.excerpt,
+      date: post.date,
+      categorySlugs: names.map(slugify),
+      categoryName: decodeHtml(getPostCategoryName(post)),
+      readTime: getPostReadTime(post),
+      featuredImage: getFeaturedImage(post),
+    };
+  });
+
+  // Category pills are derived from the posts actually rendered, so a pill can
+  // never point at a category that yields an empty list.
+  const categoryMap = new Map();
+  (rawPosts || []).forEach((post) => {
+    postCategoryNames(post).forEach((name) => {
+      const slug = slugify(name);
+      const entry = categoryMap.get(slug) || { name, slug, count: 0 };
+      entry.count += 1;
+      categoryMap.set(slug, entry);
+    });
+  });
+  const categories = [...categoryMap.values()]
+    .filter((entry) => entry.slug !== "uncategorized")
+    .sort((a, b) => b.count - a.count);
 
   return (
     <div className="container" style={{ paddingTop: "2.5rem", paddingBottom: "4rem" }}>

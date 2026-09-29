@@ -38,18 +38,7 @@ function BlogListContent({ initialPosts = [], categories = [] }) {
     : null;
 
   const filteredPosts = selectedCategoryObj
-    ? initialPosts.filter((post) => {
-        const catName = post.categoryName || "";
-        if (catName.toLowerCase() === selectedCategoryObj.name.toLowerCase()) return true;
-        if (
-          selectedCategoryObj.id &&
-          Array.isArray(post.categories) &&
-          post.categories.includes(selectedCategoryObj.id)
-        ) {
-          return true;
-        }
-        return false;
-      })
+    ? initialPosts.filter((post) => (post.categorySlugs || []).includes(selectedCategoryObj.slug))
     : initialPosts;
 
   return (
@@ -91,7 +80,7 @@ function BlogListContent({ initialPosts = [], categories = [] }) {
             <button
               type="button"
               key={cat.id || cat.name}
-              onClick={() => handleSelectCategory(cat.slug || cat.name)}
+              onClick={() => handleSelectCategory(cat.slug)}
               className="button"
               style={{
                 fontSize: "0.85rem",

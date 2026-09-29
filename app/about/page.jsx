@@ -5,6 +5,15 @@ import { decodeHtml, stripHtml, yoastToMetadata } from "@/lib/utils";
 
 export const revalidate = 86400;
 
+// The WP About content opens with an <h2>, so take the first paragraph only and
+// cut on a word boundary — a hard character slice truncated "certified" mid-word.
+function introParagraph(html = "") {
+  const firstParagraph = html.match(/<p[^>]*>([\s\S]*?)<\/p>/i)?.[1] || html;
+  const text = stripHtml(firstParagraph);
+  if (text.length <= 260) return text;
+  return `${text.slice(0, 260).replace(/\s+\S*$/, "")}...`;
+}
+
 export async function generateMetadata() {
   const page = await getPage("about-us").catch(() => null);
   return yoastToMetadata(page?.yoast_head_json, {
@@ -24,7 +33,7 @@ export default async function AboutPage() {
             <span className="eyebrow">About screwnet</span>
             <h1>{decodeHtml(page?.title?.rendered || "Engineered Fasteners for Builders, Fabricators & Industry")}</h1>
             <p>
-              {stripHtml(page?.content?.rendered || "").slice(0, 260) ||
+              {introParagraph(page?.content?.rendered || "") ||
                 "screwnet is an online industrial fasteners supplier delivering precision self-drilling screws, drywall fasteners, high tensile bolts, SS 304/316 marine hardware, and anchors across India with live stock tracking and transparent pricing."}
             </p>
             <Link className="button" href="/shop">

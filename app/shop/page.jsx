@@ -10,6 +10,10 @@ export const metadata = {
 
 export const revalidate = 86400;
 
+function titleCase(value = "") {
+  return value.replace(/\b[a-z]/g, (character) => character.toUpperCase());
+}
+
 export default async function ShopPage({ searchParams }) {
   const query = await searchParams;
   const page = query?.page ? Number(query.page) : 1;
@@ -23,7 +27,7 @@ export default async function ShopPage({ searchParams }) {
 
   return (
     <CollectionShell
-      title={query?.search ? `Search: "${query.search}"` : "All Screws & Fasteners"}
+      title={query?.search ? `Search: "${titleCase(query.search)}"` : "All Screws & Fasteners"}
       description="Live warehouse catalog with full dimensional specs, instant stock verification, bulk box pricing and express dispatch."
       products={paginatedData.products}
       pagination={paginatedData}
