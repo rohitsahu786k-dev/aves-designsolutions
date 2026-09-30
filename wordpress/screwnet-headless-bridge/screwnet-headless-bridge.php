@@ -1562,9 +1562,9 @@ add_action( 'login_enqueue_scripts', function () {
 			padding-top: 5% !important;
 		}
 		#login h1 a, .login h1 a {
-			background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 75"><g transform="translate(10, 8)"><circle cx="28" cy="28" r="26" fill="%230f172a"/><circle cx="28" cy="28" r="22" fill="%23c40012"/><path d="M18 28h20M28 18v20" stroke="%23ffffff" stroke-width="4.5" stroke-linecap="round"/><circle cx="28" cy="28" r="13" fill="none" stroke="%230f172a" stroke-width="2.5"/></g><text x="75" y="44" font-family="-apple-system, BlinkMacSystemFont, Montserrat, Segoe UI, Roboto, sans-serif" font-weight="900" font-size="34" fill="%23050505" letter-spacing="-0.04em">screw<tspan fill="%23c40012">net</tspan><tspan font-size="20" font-weight="700" fill="%2371717a">.in</tspan></text><text x="77" y="62" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-weight="700" font-size="9" fill="%2364748b" letter-spacing="3.5px">INDUSTRIAL FASTENERS</text></svg>') !important;
-			height: 75px !important;
-			width: 320px !important;
+			background-image: url('<?php echo esc_url( screwnet_brand_logo_url() ); ?>') !important;
+			height: 56px !important;
+			width: 314px !important;
 			background-size: contain !important;
 			background-repeat: no-repeat !important;
 			background-position: center !important;
@@ -1643,6 +1643,382 @@ add_action( 'admin_bar_menu', function ( $wp_admin_bar ) {
 add_filter( 'admin_footer_text', function () {
 	return '<span id="footer-thankyou">screwnet Store Backend &bull; <a href="https://screwnet.in" target="_blank" rel="noopener noreferrer">View Live Storefront (screwnet.in)</a></span>';
 } );
+
+
+// =========================================================================
+// 5A. SHARED BRAND ASSET HELPERS (official storefront logo, backend-wide)
+// =========================================================================
+
+function screwnet_brand_asset_url( $file ) {
+	$uploads = wp_get_upload_dir();
+	$path    = trailingslashit( $uploads['basedir'] ) . 'screwnet-brand/' . $file;
+	if ( file_exists( $path ) ) {
+		return trailingslashit( $uploads['baseurl'] ) . 'screwnet-brand/' . $file;
+	}
+	// Fallback to the live storefront copy if the local asset is missing
+	return 'https://screwnet.in/images/' . $file;
+}
+
+function screwnet_brand_logo_url() {
+	return screwnet_brand_asset_url( 'screwnet-logo.png' );
+}
+
+function screwnet_brand_logo_white_url() {
+	return screwnet_brand_asset_url( 'screwnet-logo-white.png' );
+}
+
+// F. Official storefront wordmark in the admin bar (replaces the removed WP logo)
+add_action( 'admin_bar_menu', function ( $wp_admin_bar ) {
+	$wp_admin_bar->add_node( array(
+		'id'    => 'screwnet-brand',
+		'title' => '<img class="screwnet-adminbar-logo" src="' . esc_url( screwnet_brand_logo_white_url() ) . '" alt="screwnet" />',
+		'href'  => admin_url(),
+		'meta'  => array( 'title' => 'screwnet Store Backend' ),
+	) );
+}, 1 );
+
+function screwnet_brand_adminbar_css() {
+	if ( ! is_admin_bar_showing() ) {
+		return;
+	}
+	?>
+	<style type="text/css">
+		#wpadminbar #wp-admin-bar-screwnet-brand > .ab-item { padding: 0 12px !important; }
+		#wpadminbar #wp-admin-bar-screwnet-brand .screwnet-adminbar-logo {
+			height: 18px;
+			width: auto;
+			vertical-align: middle;
+			margin-top: 6px;
+		}
+		#wpadminbar #wp-admin-bar-screwnet-brand:hover > .ab-item { background: transparent !important; }
+	</style>
+	<?php
+}
+add_action( 'admin_head', 'screwnet_brand_adminbar_css' );
+add_action( 'wp_head', 'screwnet_brand_adminbar_css' );
+
+
+// =========================================================================
+// 5B. OUTGOING MAIL DIAGNOSTICS (order & transactional email health check)
+// =========================================================================
+
+// The shared secret never lives in this file, because the file is committed.
+// Set it once per environment, either as a wp-config.php constant:
+//     define( 'SCREWNET_MAIL_DIAG_SECRET', '<long random string>' );
+// or as the `screwnet_mail_diag_secret` option. With neither set, the
+// diagnostics routes are reachable only by a logged-in administrator.
+function screwnet_mail_diag_secret() {
+	if ( defined( 'SCREWNET_MAIL_DIAG_SECRET' ) && constant( 'SCREWNET_MAIL_DIAG_SECRET' ) ) {
+		return (string) constant( 'SCREWNET_MAIL_DIAG_SECRET' );
+	}
+	return (string) get_option( 'screwnet_mail_diag_secret', '' );
+}
+
+function screwnet_mail_diag_authorized( WP_REST_Request $request ) {
+	if ( current_user_can( 'manage_options' ) ) {
+		return true;
+	}
+
+	$expected = screwnet_mail_diag_secret();
+	$provided = (string) $request->get_param( 'secret' );
+	if ( '' !== $expected && '' !== $provided && hash_equals( $expected, $provided ) ) {
+		return true;
+	}
+
+	return new WP_Error(
+		'screwnet_forbidden',
+		'Administrator access or a valid diagnostics secret is required.',
+		array( 'status' => 403 )
+	);
+}
+
+function screwnet_mail_option_summary( $option_name ) {
+	$value = get_option( $option_name );
+	if ( empty( $value ) ) {
+		return null;
+	}
+	if ( ! is_array( $value ) ) {
+		return array( 'raw_type' => gettype( $value ) );
+	}
+	$summary = array();
+	array_walk_recursive( $value, function ( $v, $k ) use ( &$summary ) {
+		$key = (string) $k;
+		if ( preg_match( '/pass|secret|api_?key|token/i', $key ) ) {
+			$summary[ $key ] = ( is_string( $v ) && $v !== '' ) ? 'SET (' . strlen( $v ) . ' chars)' : 'EMPTY';
+			return;
+		}
+		if ( is_scalar( $v ) ) {
+			$summary[ $key ] = $v;
+		}
+	} );
+	return $summary;
+}
+
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'screwnet/v1', '/mail-diagnostics', array(
+		'methods'             => array( 'GET', 'POST' ),
+		'permission_callback' => 'screwnet_mail_diag_authorized',
+		'callback'            => function ( WP_REST_Request $request ) {
+			// --- Which mail-related plugins are active ---
+			$active  = (array) get_option( 'active_plugins', array() );
+			$mailish = array_values( array_filter( $active, function ( $p ) {
+				return (bool) preg_match( '/smtp|mail|sendgrid|mailgun|postmark|brevo|sendinblue|gmail/i', $p );
+			} ) );
+
+			// --- wp-config.php level SMTP constants ---
+			$constants = array();
+			foreach ( array( 'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_SECURE', 'SMTP_AUTH', 'SMTP_FROM', 'SMTP_NAME', 'WPMS_ON' ) as $c ) {
+				$constants[ $c ] = defined( $c ) ? constant( $c ) : null;
+			}
+			$constants['SMTP_PASS'] = defined( 'SMTP_PASS' ) ? 'SET (' . strlen( (string) constant( 'SMTP_PASS' ) ) . ' chars)' : null;
+
+			// --- Known SMTP plugin option blobs (passwords masked) ---
+			$plugin_settings = array(
+				'wp_mail_smtp' => screwnet_mail_option_summary( 'wp_mail_smtp' ),
+				'easy_wp_smtp' => screwnet_mail_option_summary( 'swpsmtp_options' ),
+				'fluentmail'   => screwnet_mail_option_summary( 'fluentmail-settings' ),
+				'post_smtp'    => screwnet_mail_option_summary( 'postman_options' ),
+				'wp_smtp'      => screwnet_mail_option_summary( 'wp_smtp_options' ),
+			);
+
+			// --- WooCommerce sender + per-email status ---
+			$wc_emails = array();
+			$email_ids = array(
+				'new_order',
+				'customer_processing_order',
+				'customer_completed_order',
+				'customer_on_hold_order',
+				'customer_new_account',
+				'customer_reset_password',
+				'cancelled_order',
+				'failed_order',
+			);
+			foreach ( $email_ids as $email_id ) {
+				$opt = get_option( 'woocommerce_' . $email_id . '_settings' );
+				if ( is_array( $opt ) ) {
+					$wc_emails[ $email_id ] = array(
+						'enabled'   => $opt['enabled'] ?? null,
+						'recipient' => $opt['recipient'] ?? null,
+					);
+				} else {
+					$wc_emails[ $email_id ] = 'NO SETTINGS ROW (WooCommerce defaults in use)';
+				}
+			}
+
+			// --- PHP mail transport availability ---
+			$disabled = array_map( 'trim', explode( ',', (string) ini_get( 'disable_functions' ) ) );
+
+			$response = array(
+				'site'                 => array(
+					'siteurl'     => get_option( 'siteurl' ),
+					'home'        => get_option( 'home' ),
+					'admin_email' => get_option( 'admin_email' ),
+					'blogname'    => get_option( 'blogname' ),
+				),
+				'active_mail_plugins'  => $mailish,
+				'active_plugin_count'  => count( $active ),
+				'wp_config_constants'  => $constants,
+				'smtp_plugin_settings' => array_filter( $plugin_settings ),
+				'woocommerce'          => array(
+					'from_address' => get_option( 'woocommerce_email_from_address' ),
+					'from_name'    => get_option( 'woocommerce_email_from_name' ),
+					'store_email'  => get_option( 'woocommerce_store_email' ),
+					'emails'       => $wc_emails,
+				),
+				'php_mail'             => array(
+					'mail_function_exists' => function_exists( 'mail' ),
+					'mail_disabled'        => in_array( 'mail', $disabled, true ),
+					'sendmail_path'        => ini_get( 'sendmail_path' ),
+					'disable_functions'    => array_values( array_filter( $disabled ) ),
+				),
+				'test_send'            => 'not requested (add &send=1&to=you@example.com)',
+			);
+
+			// --- Mailer capture hooks (used by both live tests below) ---
+			$snapshot = array();
+			$errors   = array();
+			{
+
+				add_action( 'phpmailer_init', function ( $phpmailer ) use ( &$snapshot ) {
+					$snapshot = array(
+						'Mailer'      => $phpmailer->Mailer,
+						'Host'        => $phpmailer->Host,
+						'Port'        => $phpmailer->Port,
+						'SMTPAuth'    => (bool) $phpmailer->SMTPAuth,
+						'SMTPSecure'  => $phpmailer->SMTPSecure,
+						'Username'    => $phpmailer->Username,
+						'PasswordSet' => '' !== (string) $phpmailer->Password,
+						'PasswordLen' => strlen( (string) $phpmailer->Password ),
+						'From'        => $phpmailer->From,
+						'FromName'    => $phpmailer->FromName,
+						'Sender'      => $phpmailer->Sender,
+					);
+				}, 99999 );
+
+				add_action( 'wp_mail_failed', function ( $error ) use ( &$errors ) {
+					$errors[] = array(
+						'code'    => $error->get_error_code(),
+						'message' => $error->get_error_message(),
+					);
+				}, 10, 1 );
+
+			}
+
+			// --- Optional live test send with full PHPMailer snapshot ---
+			if ( '1' === (string) $request->get_param( 'send' ) ) {
+				$to = sanitize_email( (string) $request->get_param( 'to' ) );
+				if ( ! $to ) {
+					$to = get_option( 'admin_email' );
+				}
+
+				$sent = wp_mail(
+					$to,
+					'[screwnet] Mail diagnostics test ' . current_time( 'H:i:s' ),
+					'<p>Delivery test from the screwnet backend at ' . current_time( 'mysql' ) . '.</p>',
+					array( 'Content-Type: text/html; charset=UTF-8' )
+				);
+
+				$response['test_send'] = array(
+					'to'               => $to,
+					'wp_mail_returned' => (bool) $sent,
+					'phpmailer'        => $snapshot,
+					'errors'           => $errors,
+				);
+			}
+
+			// --- Optional: fire a real WooCommerce order email for one order ---
+			// Only the admin "New order" notification, which goes to admin_email,
+			// so testing never mails the actual customer.
+			$wc_order_id = absint( $request->get_param( 'wc_order' ) );
+			if ( $wc_order_id ) {
+				$result = array( 'order_id' => $wc_order_id );
+				if ( function_exists( 'WC' ) ) {
+					$mailer = WC()->mailer();
+					$emails = $mailer->get_emails();
+					if ( isset( $emails['WC_Email_New_Order'] ) ) {
+						$email               = $emails['WC_Email_New_Order'];
+						$result['email_id']  = $email->id;
+						$result['enabled']   = $email->is_enabled();
+						$result['recipient'] = $email->get_recipient();
+						// WooCommerce stamps _new_order_email_sent so an order never
+						// mails admin twice; clear it to re-test a real order email.
+						if ( $request->get_param( 'wc_force' ) ) {
+							$order = wc_get_order( $wc_order_id );
+							if ( $order ) {
+								$order->update_meta_data( '_new_order_email_sent', 'false' );
+								$order->save();
+								$result['forced'] = true;
+							}
+						}
+						$email->trigger( $wc_order_id );
+						$result['triggered'] = true;
+						$result['phpmailer'] = $snapshot;
+						$result['errors']    = $errors;
+					} else {
+						$result['error'] = 'WC_Email_New_Order not registered';
+					}
+				} else {
+					$result['error'] = 'WooCommerce not loaded';
+				}
+				$response['wc_order_email'] = $result;
+			}
+
+			return rest_ensure_response( $response );
+		},
+	) );
+} );
+
+
+// =========================================================================
+// 5C. OUTGOING MAIL VIA RESEND SMTP
+// =========================================================================
+// screwnet.in is verified in Resend (resend._domainkey + send/rsend CNAMEs are
+// live in DNS), so every transactional email — WooCommerce order mails, account
+// verification, password resets — goes out over Resend SMTP and lands in the
+// inbox instead of PHP mail() getting it spam-filtered.
+//
+// The API key is never stored in this file; it lives in the wp_options row
+// `screwnet_resend_api_key`, written once through /screwnet/v1/configure-mail.
+
+define( 'SCREWNET_MAIL_FROM', 'noreply@screwnet.in' );
+define( 'SCREWNET_MAIL_FROM_NAME', 'ScrewNet' );
+define( 'SCREWNET_MAIL_REPLY_TO', 'aves.designsolutions@gmail.com' );
+
+function screwnet_resend_api_key() {
+	if ( defined( 'SCREWNET_RESEND_API_KEY' ) && constant( 'SCREWNET_RESEND_API_KEY' ) ) {
+		return (string) constant( 'SCREWNET_RESEND_API_KEY' );
+	}
+	return (string) get_option( 'screwnet_resend_api_key', '' );
+}
+
+// Sender identity for everything WordPress and WooCommerce send
+add_filter( 'wp_mail_from', function ( $from ) {
+	return SCREWNET_MAIL_FROM;
+}, 99 );
+
+add_filter( 'wp_mail_from_name', function ( $name ) {
+	return SCREWNET_MAIL_FROM_NAME;
+}, 99 );
+
+add_action( 'phpmailer_init', function ( $phpmailer ) {
+	$api_key = screwnet_resend_api_key();
+	if ( '' === $api_key ) {
+		return; // No key configured yet — leave PHP mail() in place.
+	}
+
+	$phpmailer->isSMTP();
+	$phpmailer->Host       = 'smtp.resend.com';
+	$phpmailer->Port       = (int) get_option( 'screwnet_resend_smtp_port', 465 );
+	$phpmailer->SMTPSecure = 465 === (int) $phpmailer->Port ? 'ssl' : 'tls';
+	$phpmailer->SMTPAuth   = true;
+	$phpmailer->Username   = 'resend';
+	$phpmailer->Password   = $api_key;
+	$phpmailer->Timeout    = 20;
+
+	// Resend only accepts a From on a verified domain, so force it regardless
+	// of what the calling code asked for (third arg: do not touch Reply-To).
+	$phpmailer->setFrom( SCREWNET_MAIL_FROM, SCREWNET_MAIL_FROM_NAME, false );
+	$phpmailer->Sender = SCREWNET_MAIL_FROM;
+
+	// Customer replies should reach the business inbox, not the no-reply box.
+	if ( ! $phpmailer->getReplyToAddresses() ) {
+		$phpmailer->addReplyTo( SCREWNET_MAIL_REPLY_TO, SCREWNET_MAIL_FROM_NAME );
+	}
+}, 100 );
+
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'screwnet/v1', '/configure-mail', array(
+		'methods'             => 'POST',
+		'permission_callback' => 'screwnet_mail_diag_authorized',
+		'callback'            => function ( WP_REST_Request $request ) {
+			$updated = array();
+
+			$api_key = trim( (string) $request->get_param( 'resend_api_key' ) );
+			if ( '' !== $api_key ) {
+				update_option( 'screwnet_resend_api_key', $api_key, false );
+				$updated['resend_api_key'] = substr( $api_key, 0, 6 ) . '…(' . strlen( $api_key ) . ' chars)';
+			}
+
+			$port = (int) $request->get_param( 'port' );
+			if ( $port ) {
+				update_option( 'screwnet_resend_smtp_port', $port, false );
+				$updated['smtp_port'] = $port;
+			}
+
+			// Keep the WooCommerce sender in step with the SMTP identity
+			update_option( 'woocommerce_email_from_address', SCREWNET_MAIL_FROM );
+			update_option( 'woocommerce_email_from_name', SCREWNET_MAIL_FROM_NAME );
+			$updated['woocommerce_from'] = SCREWNET_MAIL_FROM_NAME . ' <' . SCREWNET_MAIL_FROM . '>';
+
+			return rest_ensure_response( array(
+				'success' => true,
+				'updated' => $updated,
+				'key_set' => '' !== screwnet_resend_api_key(),
+			) );
+		},
+	) );
+} );
+
 
 // =========================================================================
 // 12. AUTOMATIC FRONTEND CACHE PURGE & ON-DEMAND REVALIDATION
