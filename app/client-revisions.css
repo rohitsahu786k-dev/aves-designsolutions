@@ -29,13 +29,6 @@
    Header: one search box on desktop, centred action labels
    -------------------------------------------------------------------------- */
 
-/* The full search row is already visible on desktop, so the icon trigger beside
-   the cart was a second, redundant search entry point. Mobile hides the search
-   row and re-enables this button inside its own media query. */
-.pro-site-header .nav-actions .pro-search-trigger {
-  display: none;
-}
-
 .pro-site-header .nav-actions .icon-button,
 .pro-site-header .cart-nav-button {
   display: inline-flex !important;
@@ -44,6 +37,17 @@
   justify-content: center;
   gap: 2px;
   text-align: center;
+}
+
+/* The full search row is already visible from 768px up, so the icon trigger
+   beside the cart was a second, redundant search entry point. Scoped to
+   desktop: below 768px the search row is hidden and this button is the only
+   way to search, so it must stay. The tag qualifier outranks the
+   .icon-button rule above, which is !important. */
+@media (min-width: 768px) {
+  .pro-site-header .nav-actions button.pro-search-trigger {
+    display: none !important;
+  }
 }
 
 .pro-site-header .nav-actions .icon-button::after,
@@ -64,6 +68,107 @@
 .pro-header-search-inner .pro-category-select svg {
   flex: 0 0 auto;
   margin-right: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Black header with the white wordmark.
+   Earlier sheets paint every strip white with !important, so each surface is
+   restated here rather than relying on a single parent background.
+   -------------------------------------------------------------------------- */
+header.site-header,
+.site-header,
+.pro-site-header {
+  background: #0A0A0A !important;
+  border-bottom: 1px solid #262626 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28) !important;
+}
+
+.site-header .nav-row,
+.site-header .main-nav,
+.pro-site-header .pro-header-main {
+  background: #0A0A0A !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.pro-header-top {
+  background: #000000 !important;
+  border-bottom: 1px solid #1F1F1F !important;
+  color: #E4E4E7 !important;
+}
+
+.pro-header-contact a,
+.pro-header-services a,
+.pro-currency-pill {
+  color: #D4D4D8 !important;
+}
+
+.pro-header-contact a:hover,
+.pro-header-services a:hover {
+  color: #FFFFFF !important;
+}
+
+.pro-currency-pill {
+  border-color: #3F3F46 !important;
+}
+
+.pro-site-header .header-utilities button,
+.pro-site-header .nav-actions .icon-button,
+.pro-site-header .cart-nav-button,
+.pro-site-header .nav-actions .pro-search-trigger {
+  color: #FFFFFF !important;
+}
+
+.pro-site-header .nav-support-pill {
+  border-color: #3F3F46 !important;
+  background: transparent !important;
+  color: #FFFFFF !important;
+}
+
+.pro-site-header .nav-support-pill:hover {
+  border-color: #FFFFFF !important;
+}
+
+.pro-header-search-row {
+  background: #0A0A0A !important;
+}
+
+/* The search control itself stays light so the field reads as an input, and
+   keeps the border it shares with the search box (see the join fix above). */
+
+.pro-site-header .main-nav > a,
+.pro-site-header .main-nav .mega-trigger > a {
+  color: #FFFFFF !important;
+}
+
+/* Cart and wishlist counts as a corner badge over the icon. The cart count had
+   no styling at all, so it rendered as loose text beside the label. */
+.pro-site-header .cart-nav-button,
+.pro-site-header .wishlist-nav {
+  position: relative;
+}
+
+.pro-site-header .cart-nav-button > span,
+.pro-site-header .wishlist-nav > span {
+  position: absolute;
+  top: -2px;
+  left: calc(50% + 2px);
+  right: auto;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  border: 2px solid #0A0A0A;
+  border-radius: 999px;
+  background: #D50012;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
 }
 
 /* --------------------------------------------------------------------------

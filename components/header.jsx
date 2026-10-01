@@ -61,7 +61,7 @@ export async function Header() {
 
         <Link prefetch={false} className="brand screwnet-brand" href="/" aria-label="ScrewNet Homepage">
           <Image
-            src="/images/screwnet-logo.png"
+            src="/images/screwnet-logo-white.png"
             alt="ScrewNet"
             width={240}
             height={44}
