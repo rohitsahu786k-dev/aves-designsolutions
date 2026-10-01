@@ -273,6 +273,65 @@ header.site-header,
 }
 
 /* --------------------------------------------------------------------------
+   Contact page: icon centred on the label line only, not the whole block
+   -------------------------------------------------------------------------- */
+.contact-detail-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.contact-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.contact-detail-head .contact-detail-icon {
+  margin-top: 0;
+}
+
+.contact-detail-row strong {
+  margin: 0;
+}
+
+.contact-detail-body {
+  padding-left: 30px;
+}
+
+/* Contact form: native select arrow was hugging the field's right border */
+.checkout-form select {
+  padding-right: 36px;
+}
+
+/* --------------------------------------------------------------------------
+   Header: logo truly centred regardless of how wide either flank is, and a
+   touch bolder since it's a flat white PNG wordmark (faux-bold via stacked
+   drop-shadows rather than any real font weight).
+   -------------------------------------------------------------------------- */
+.pro-site-header .brand {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  grid-column: auto !important;
+}
+
+.screwnet-brand-img {
+  filter:
+    drop-shadow(0.5px 0 0 currentColor)
+    drop-shadow(-0.5px 0 0 currentColor)
+    drop-shadow(0 0.5px 0 currentColor)
+    drop-shadow(0 -0.5px 0 currentColor);
+  color: #ffffff;
+}
+
+/* Header search row: give the bar a clean closing edge against the page below */
+.pro-header-search-row {
+  border-bottom: 1px solid #e4e4e7;
+}
+
+/* --------------------------------------------------------------------------
    Account: icon and field text must not crowd each other
    -------------------------------------------------------------------------- */
 .input-with-icon .field-icon {
@@ -333,6 +392,14 @@ header.site-header,
   display: flex;
   align-items: flex-start;
   gap: 8px;
+}
+
+/* storefront-polish.css sets word-break: break-all on every contact-column
+   link, which also caught the plain-text address and could strand a single
+   character ("R...ajasthan") on its own line. */
+.footer-column.contact-column a {
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .footer-column.contact-column svg {

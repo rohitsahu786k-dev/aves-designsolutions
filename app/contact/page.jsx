@@ -53,9 +53,11 @@ export default async function ContactPage() {
 
           <div className="contact-details-list">
             <div className="contact-detail-row">
-              <Phone size={18} className="contact-detail-icon mono" />
-              <div>
+              <div className="contact-detail-head">
+                <Phone size={18} className="contact-detail-icon mono" />
                 <strong>Direct Sales & Support:</strong>
+              </div>
+              <div className="contact-detail-body">
                 <a href={`tel:${phoneRaw}`} className="contact-link">
                   {phoneDisplay}
                 </a>
@@ -68,9 +70,11 @@ export default async function ContactPage() {
             </div>
 
             <div className="contact-detail-row">
-              <MessageCircle size={18} className="contact-detail-icon mono" />
-              <div>
+              <div className="contact-detail-head">
+                <MessageCircle size={18} className="contact-detail-icon mono" />
                 <strong>WhatsApp Order Desk:</strong>
+              </div>
+              <div className="contact-detail-body">
                 <a href={whatsappUrl} target="_blank" rel="noreferrer" className="contact-link whatsapp-highlight">
                   Chat on WhatsApp ({phoneDisplay}) <ExternalLink size={13} />
                 </a>
@@ -79,9 +83,11 @@ export default async function ContactPage() {
 
             {contact.salesEmail || contact.supportEmail ? (
               <div className="contact-detail-row">
-                <Mail size={18} className="contact-detail-icon mono" />
-                <div>
+                <div className="contact-detail-head">
+                  <Mail size={18} className="contact-detail-icon mono" />
                   <strong>Email Quotations:</strong>
+                </div>
+                <div className="contact-detail-body">
                   {contact.salesEmail ? (
                     <a href={`mailto:${contact.salesEmail}`} className="contact-link">
                       {contact.salesEmail}
@@ -97,9 +103,11 @@ export default async function ContactPage() {
             ) : null}
 
             <div className="contact-detail-row">
-              <MapPin size={18} className="contact-detail-icon mono" />
-              <div>
+              <div className="contact-detail-head">
+                <MapPin size={18} className="contact-detail-icon mono" />
                 <strong>Office & Fulfillment Center:</strong>
+              </div>
+              <div className="contact-detail-body">
                 <p className="address-text">{address}</p>
                 <a href={directionsUrl} target="_blank" rel="noreferrer" className="directions-link">
                   Open in Google Maps <ExternalLink size={12} />
@@ -108,9 +116,11 @@ export default async function ContactPage() {
             </div>
 
             <div className="contact-detail-row">
-              <Clock size={18} className="contact-detail-icon mono" />
-              <div>
+              <div className="contact-detail-head">
+                <Clock size={18} className="contact-detail-icon mono" />
                 <strong>Business Hours:</strong>
+              </div>
+              <div className="contact-detail-body">
                 <p className="hours-text">{contact.supportHours || "9:00 AM - 6:00 PM (Mon - Sat)"}</p>
               </div>
             </div>

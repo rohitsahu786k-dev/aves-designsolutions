@@ -101,6 +101,11 @@ function BlogListContent({ initialPosts = [], categories = [] }) {
       </div>
 
       {/* Blog Cards Grid */}
+      {filteredPosts.length === 0 ? (
+        <p style={{ textAlign: "center", padding: "3rem 0", color: "#71717a", fontSize: "0.95rem" }}>
+          No articles found in this category yet.
+        </p>
+      ) : (
       <div
         className="blog-grid section"
         style={{
@@ -244,6 +249,7 @@ function BlogListContent({ initialPosts = [], categories = [] }) {
           );
         })}
       </div>
+      )}
     </>
   );
 }
